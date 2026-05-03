@@ -1,32 +1,33 @@
 {{-- produits/_card.blade.php --}}
 
-<div class="product-card group">
-
-    <div class="overflow-hidden rounded-3xl">
-        <img src="{{ asset('storage/'.$p->image) }}"
-             class="product-image group-hover:scale-105 transition duration-300">
+<div class="product-card">
+    <div class="product-card-image">
+        @if(isset($p->created_at) && $p->created_at->gt(now()->subDays(30)))
+            <span class="badge badge-new">Nouveau</span>
+        @endif
+        @php
+            $imagePath = $p->image;
+            $imageUrl = asset('images/2020-nike.jpg');
+            if ($imagePath) {
+                if (file_exists(public_path('storage/'.$imagePath))) {
+                    $imageUrl = asset('storage/'.$imagePath);
+                } elseif (file_exists(public_path('images/'.$imagePath))) {
+                    $imageUrl = asset('images/'.$imagePath);
+                }
+            }
+        @endphp
+        <a href="{{ route('produits.show', $p->id) }}" class="product-card-image-link" aria-label="Voir le produit {{ $p->nom }}">
+            <img src="{{ $imageUrl }}" class="product-image" alt="{{ $p->nom }}">
+        </a>
     </div>
 
-    <div class="mt-4">
-        <h3 class="product-name">{{ strtoupper($p->nom) }}</h3>
-        <p class="product-desc">{{ Str::limit($p->description, 28) }}</p>
+    <div class="product-card-body">
+        <p class="product-category">{{ $p->category->nom ?? 'Chaussure' }}</p>
+        <h3 class="product-name">{{ $p->nom }}</h3>
+        <p class="product-desc">{{ Str::limit($p->description, 60) }}</p>
     </div>
 
-    <div class="product-footer">
-        <div>
-            <span class="price">{{ number_format($p->prix, 0, ' ', ' ') }} CDF</span>
-            <p class="text-[11px] text-gray-500 mt-1">{{ $p->category->nom ?? 'Catégorie' }}</p>
-        </div>
-        <span class="badge">{{ $p->category->nom ?? 'N/A' }}</span>
+    <div class="product-card-footer">
+        <span class="price">{{ number_format($p->prix, 0, ' ', ' ') }} CDF</span>
     </div>
-
-    <div class="mt-4">
-        <a href="{{ route('produits.show', $p->id) }}" class="inline-block text-sm font-medium text-blue-700 hover:underline">Voir le produit</a>
-    </div>
-
-    <form action="{{ route('panier.ajouter', $p->id) }}" method="POST" class="mt-4">
-        @csrf
-        <button type="submit" class="btn-cart">Ajouter au panier</button>
-    </form>
-
 </div>

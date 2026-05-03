@@ -49,7 +49,18 @@
                             <tr>
                                 <td class="px-6 py-5 align-top">
                                     <div class="flex items-center gap-4">
-                                        <img src="{{ asset('storage/'.$item['image']) }}" alt="{{ $item['nom'] }}" class="h-20 w-20 rounded-3xl object-cover border border-slate-200">
+                                        @php
+                                        $itemImagePath = $item['image'] ?? null;
+                                        $itemImageUrl = asset('images/2020-nike.jpg');
+                                        if ($itemImagePath) {
+                                            if (file_exists(public_path('storage/'.$itemImagePath))) {
+                                                $itemImageUrl = asset('storage/'.$itemImagePath);
+                                            } elseif (file_exists(public_path('images/'.$itemImagePath))) {
+                                                $itemImageUrl = asset('images/'.$itemImagePath);
+                                            }
+                                        }
+                                    @endphp
+                                    <img src="{{ $itemImageUrl }}" alt="{{ $item['nom'] }}" class="h-20 w-20 rounded-3xl object-cover border border-slate-200">
                                         <div>
                                             <p class="font-semibold text-slate-900">{{ $item['nom'] }}</p>
                                             <p class="text-sm text-slate-500">{{ number_format($item['prix'], 0, ' ', ' ') }} FCFA</p>

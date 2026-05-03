@@ -4,29 +4,45 @@
 
 @section('content')
 
-<div class="page-hero">
-    <div class="hero-card">
-        <p class="text-sm uppercase tracking-[0.4em] text-slate-400">Collection</p>
-        <h1>La sélection STE<span class="text-white/70">PORA</span> — silhouette moderne, look sport.</h1>
-        <p class="mt-4 text-base leading-7 text-slate-300">Filtre par prix, catégorie et pointure. Choisis ta paire et passe directement à l’action avec un design inspiré des grandes marques de sport.</p>
+<div class="catalog-page">
+    <div class="catalog-header">
+        <div>
+            <p class="catalog-eyebrow">Catalogue chaussures</p>
+            <h1 class="catalog-title">Sélection premium de baskets et sneakers</h1>
+            <p class="catalog-copy">Un assortiment trié sur le volet, conçu pour offrir une expérience claire, moderne et haut de gamme.</p>
+        </div>
+
+        <div class="catalog-quick-info">
+            <span>{{ $produits->count() }} modèles disponibles</span>
+            <label for="tri" class="sr-only">Trier par</label>
+            <select id="tri" name="tri" form="productFiltersForm" class="catalog-sort" onchange="document.getElementById('productFiltersForm').submit()">
+                <option value="recent" {{ request('tri', 'recent') == 'recent' ? 'selected' : '' }}>Plus récents</option>
+                <option value="price_asc" {{ request('tri') == 'price_asc' ? 'selected' : '' }}>Prix croissant</option>
+                <option value="price_desc" {{ request('tri') == 'price_desc' ? 'selected' : '' }}>Prix décroissant</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="catalog-layout">
+        <aside class="catalog-sidebar">
+            <form action="{{ route('produits.index') }}" method="GET" id="productFiltersForm" class="sidebar-form">
+                @include('produits._filters')
+            </form>
+        </aside>
+
+        <main class="catalog-main">
+            <div class="produits-grid">
+                @forelse($produits as $p)
+                    @include('produits._card', ['p' => $p])
+                @empty
+                    <p>Aucun produit trouvé.</p>
+                @endforelse
+            </div>
+        </main>
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto px-4 py-8">
-    <form action="{{ route('produits.index') }}" method="GET" id="productFiltersForm">
-        @include('produits._toolbar')
-        @include('produits._filters')
-    </form>
-
-    @include('produits._grid')
-</div>
-
 <script>
-    function toggleFilters() {
-        const panel = document.getElementById('filtersPanel');
-        panel.classList.toggle('hidden');
-    }
-
     function updatePriceDisplay(value) {
         const element = document.getElementById('prixMaxValue');
         if (element) {

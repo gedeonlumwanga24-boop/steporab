@@ -1,40 +1,47 @@
 {{-- produits/_filters.blade.php --}}
 
-<div id="filtersPanel" class="mt-6 grid gap-4 lg:grid-cols-3">
-
-    <div class="filter-card">
-        <div class="flex items-center justify-between mb-4">
-            <div>
-                <p class="text-xs uppercase tracking-[0.25em] text-gray-500">Prix max</p>
-                <p id="prixMaxValue" class="text-lg font-semibold text-black"></p>
-            </div>
-        </div>
-        <input id="prixMax" type="range" name="prixMax" min="0" max="{{ $sliderMax ?? 80000 }}"
-               value="{{ request('prixMax', $prixMax ?? $sliderMax ?? 80000) }}"
-               onchange="this.form.submit()"
-               class="w-full">
+<div class="filter-section">
+    <div class="filter-group filter-group--categories">
+        <p class="filter-label">Catégorie</p>
+        @foreach($categories as $cat)
+            <label class="filter-option">
+                <input type="radio" name="categorie" value="{{ $cat->id }}" onchange="this.form.submit()" {{ request('categorie') == $cat->id ? 'checked' : '' }}>
+                <span>{{ $cat->nom }}</span>
+            </label>
+        @endforeach
+        <label class="filter-option">
+            <input type="radio" name="categorie" value="" onchange="this.form.submit()" {{ request('categorie') ? '' : 'checked' }}>
+            <span>Toutes</span>
+        </label>
     </div>
 
-    <div class="filter-card">
-        <label class="text-xs uppercase tracking-[0.25em] text-gray-500 mb-2 block">Catégorie</label>
-        <select name="categorie" onchange="this.form.submit()"
-            class="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm">
-            <option value="">Toutes</option>
-            @foreach($categories as $cat)
-                <option value="{{ $cat->id }}" {{ request('categorie') == $cat->id ? 'selected' : '' }}>{{ $cat->nom }}</option>
-            @endforeach
-        </select>
+    <div class="filter-group">
+        <p class="filter-label">Prix max</p>
+        <div class="price-value" id="prixMaxValue"></div>
+        <input id="prixMax" type="range" name="prixMax" min="0" max="{{ $sliderMax ?? 80000 }}" value="{{ request('prixMax', $prixMax ?? $sliderMax ?? 80000) }}" onchange="this.form.submit()" class="filter-range">
     </div>
 
-    <div class="filter-card">
-        <label class="text-xs uppercase tracking-[0.25em] text-gray-500 mb-2 block">Pointure</label>
-        <select name="pointure" onchange="this.form.submit()"
-            class="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm">
-            <option value="">Toutes</option>
+    <div class="filter-group">
+        <p class="filter-label">Pointure</p>
+        <div class="filter-tags">
             @foreach(['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'] as $size)
-                <option value="{{ $size }}" {{ request('pointure') == $size ? 'selected' : '' }}>{{ $size }}</option>
+                <label class="filter-chip">
+                    <input type="radio" name="pointure" value="{{ $size }}" onchange="this.form.submit()" {{ request('pointure') == $size ? 'checked' : '' }}>
+                    <span>{{ $size }}</span>
+                </label>
             @endforeach
-        </select>
+            <label class="filter-chip filter-chip--all">
+                <input type="radio" name="pointure" value="" onchange="this.form.submit()" {{ request('pointure') ? '' : 'checked' }}>
+                <span>Toutes</span>
+            </label>
+        </div>
     </div>
 
+    <div class="filter-group">
+        <p class="filter-label">Filtres</p>
+        <label class="filter-option filter-option--checkbox">
+            <input type="checkbox" name="promotion" value="1" onchange="this.form.submit()" {{ request('promotion') ? 'checked' : '' }}>
+            <span>En promotion</span>
+        </label>
+    </div>
 </div>
