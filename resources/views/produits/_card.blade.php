@@ -2,19 +2,8 @@
 
 <div class="product-card">
     <div class="product-card-image">
-        @if(isset($p->created_at) && $p->created_at->gt(now()->subDays(30)))
-            <span class="badge badge-new">Nouveau</span>
-        @endif
         @php
-            $imagePath = $p->image;
-            $imageUrl = asset('images/2020-nike.jpg');
-            if ($imagePath) {
-                if (file_exists(public_path('storage/'.$imagePath))) {
-                    $imageUrl = asset('storage/'.$imagePath);
-                } elseif (file_exists(public_path('images/'.$imagePath))) {
-                    $imageUrl = asset('images/'.$imagePath);
-                }
-            }
+            $imageUrl = $p->image_url;
         @endphp
         <a href="{{ route('produits.show', $p->id) }}" class="product-card-image-link" aria-label="Voir le produit {{ $p->nom }}">
             <img src="{{ $imageUrl }}" class="product-image" alt="{{ $p->nom }}">

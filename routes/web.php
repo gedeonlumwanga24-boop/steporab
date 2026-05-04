@@ -23,6 +23,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Serve images stored in resources/images when the public/images folder is not present
+Route::get('/images/{path}', function ($path) {
+    $imagesDir = realpath(resource_path('images'));
+    $requestedFile = realpath(resource_path('images/' . $path));
+
+    if (!$imagesDir || !$requestedFile || !str_starts_with($requestedFile, $imagesDir)) {
+        abort(404);
+    }
+
+    return response()->file($requestedFile);
+})->where('path', '.*');
+
 // Produits
 Route::get('/produits', [ProduitController::class, 'index'])->name('produits.index');
 Route::get('/produits/{id}', [ProduitController::class, 'show'])->name('produits.show');

@@ -1,128 +1,125 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-10">
-    <div class="product-show-hero">
-        <div class="product-show-media">
-            <span class="product-badge">Nouveauté</span>
-            @php
-                $imagePath = $produit->image;
-                $productImageUrl = asset('images/2020-nike.jpg');
-                if ($imagePath) {
-                    if (file_exists(public_path('storage/'.$imagePath))) {
-                        $productImageUrl = asset('storage/'.$imagePath);
-                    } elseif (file_exists(public_path('images/'.$imagePath))) {
-                        $productImageUrl = asset('images/'.$imagePath);
-                    }
-                }
-            @endphp
-            <img src="{{ $productImageUrl }}" alt="{{ $produit->nom }}" class="w-full h-full object-cover">
+<div class="product-show-container">
+    <div class="product-show-layout">
+        <!-- LEFT: Image Gallery -->
+        <div class="product-gallery">
+            <div class="product-main-image">
+                @if($produit->stock > 0)
+                    <span class="product-badge">En stock</span>
+                @else
+                    <span class="product-badge product-badge--outofstock">Rupture</span>
+                @endif
+                @php
+                    $productImageUrl = $produit->image_url;
+                @endphp
+                <img id="mainImage" src="{{ $productImageUrl }}" alt="{{ $produit->nom }}" class="product-image-main">
+            </div>
+
+            <!-- Thumbnails -->
+            <div class="product-thumbnails">
+                <div class="product-thumbnail active" onclick="changeImage(this)">
+                    <img src="{{ $productImageUrl }}" alt="{{ $produit->nom }}">
+                </div>
+            </div>
         </div>
 
-        <div class="product-show-summary">
-            <span class="product-label">{{ $produit->category->nom ?? 'Catégorie' }}</span>
-            <h1 class="product-title">{{ $produit->nom }}</h1>
-            <p class="text-sm uppercase tracking-[0.25em] text-gray-500 mb-4">Collection STE<span class="text-gray-900">PORA</span></p>
-            <p class="product-lead">{{ $produit->description }}</p>
+        <!-- RIGHT: Product Info -->
+        <div class="product-info-panel">
+            <!-- Category & Badge -->
+            <span class="product-category-tag">{{ $produit->category->nom ?? 'Chaussure' }}</span>
+            
+            <!-- Title -->
+            <h1 class="product-show-title">{{ $produit->nom }}</h1>
+            
+            <!-- Tagline -->
+            <p class="product-tagline">Chaussure pour homme</p>
 
-            <div class="product-meta-grid">
-                <div>
-                    <span class="meta-title">Prix</span>
-                    <p class="meta-value">{{ number_format($produit->prix, 0, ' ', ' ') }} CDF</p>
-                </div>
-                <div>
-                    <span class="meta-title">Disponibilité</span>
-                    <p class="meta-value">{{ $produit->stock > 0 ? 'En stock' : 'Rupture' }}</p>
-                </div>
-                <div>
-                    <span class="meta-title">Référence</span>
-                    <p class="meta-value">#{{ $produit->id }}</p>
+            <!-- Price -->
+            <div class="product-price-section">
+                <span class="product-price">{{ number_format($produit->prix, 0, ' ', ' ') }} CDF</span>
+            </div>
+
+            <!-- Size Selection -->
+            <div class="product-size-section">
+                <label class="size-label">Sélectionner la taille</label>
+                <div class="size-grid">
+                    @php $sizes = ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44', 'EU 45']; @endphp
+                    @foreach($sizes as $size)
+                        <button class="size-btn" onclick="selectSize(this)">{{ $size }}</button>
+                    @endforeach
                 </div>
             </div>
 
-            <div class="product-action-group">
+            <!-- Color Selection -->
+            <div class="product-color-section">
+                <label class="color-label">Couleur</label>
+                <div class="color-options">
+                    <button class="color-btn active" style="background-color: #333;" title="Noir"></button>
+                    <button class="color-btn" style="background-color: #4682B4;" title="Bleu"></button>
+                    <button class="color-btn" style="background-color: #DC143C;" title="Rouge"></button>
+                    <button class="color-btn" style="background-color: #FFD700;" title="Or"></button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="product-action-buttons">
                 <form action="{{ route('panier.ajouter', $produit->id) }}" method="POST" class="w-full">
                     @csrf
-                    <button type="submit" class="btn-cart w-full">Ajouter au panier</button>
+                    <button type="submit" class="btn-add-to-cart">Ajouter au panier</button>
                 </form>
-                <a href="{{ route('produits.index') }}" class="btn-secondary w-full">Retour aux produits</a>
+                <button class="btn-wishlist">
+                    <i class="fa-solid fa-heart"></i> Ajouter aux favoris
+                </button>
             </div>
+
+            <!-- Free Delivery Info -->
+            <div class="product-info-box">
+                <p><strong>Livraison gratuite</strong><br>Traceur en magasin</p>
+            </div>
+
+            <!-- Return Info -->
+            <div class="product-info-box">
+                <p><strong>Retour gratuit</strong><br>Traceur en magasin</p>
+            </div>
+
+            <!-- Description -->
+            <div class="product-description-section">
+                <p>{{ $produit->description }}</p>
+            </div>
+
+            <!-- Product Details -->
+            <details class="product-details-accordion">
+                <summary class="details-summary">Afficher les détails du produit</summary>
+                <div class="details-content">
+                    <ul>
+                        <li><strong>Catégorie :</strong> {{ $produit->category->nom ?? 'N/A' }}</li>
+                        <li><strong>Code produit :</strong> #{{ $produit->id }}</li>
+                        <li><strong>Stock disponible :</strong> {{ $produit->stock }} unités</li>
+                    </ul>
+                </div>
+            </details>
         </div>
     </div>
 
-    <div class="grid gap-8 lg:grid-cols-[1.6fr_0.9fr] mt-10">
-        <div class="bg-white rounded-3xl p-8 shadow-soft">
-            <h2 class="section-title">Présentation détaillée</h2>
-            <p class="section-copy">Découvrez tous les éléments qui font de ce produit un article professionnel et incontournable de votre garde-robe.</p>
-
-            <div class="product-detail-block">
-                <h3>Design et finition</h3>
-                <p>Ce modèle associe une silhouette moderne à une fabrication soignée, des finitions premium et un rendu visuel irréprochable.</p>
-            </div>
-
-            <div class="product-detail-grid">
-                <div class="detail-card">
-                    <span class="detail-icon">🧵</span>
-                    <div>
-                        <strong>Matériaux qualitatifs</strong>
-                        <p>Tissus résistants, confort optimal et maintien renforcé.</p>
-                    </div>
-                </div>
-                <div class="detail-card">
-                    <span class="detail-icon">⚡</span>
-                    <div>
-                        <strong>Performance</strong>
-                        <p>Conçu pour un usage quotidien, sportif et lifestyle.</p>
-                    </div>
-                </div>
-                <div class="detail-card">
-                    <span class="detail-icon">🏁</span>
-                    <div>
-                        <strong>Look affirmé</strong>
-                        <p>Un style premium adapté aux tendances actuelles et aux grandes enseignes.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="product-specs">
-                <h3>Caractéristiques</h3>
-                <ul>
-                    <li>Catégorie : {{ $produit->category->nom ?? 'N/A' }}</li>
-                    <li>Stock disponible : {{ $produit->stock }}</li>
-                    <li>Code produit : #{{ $produit->id }}</li>
-                    <li>Prix : {{ number_format($produit->prix, 0, ' ', ' ') }} CDF</li>
-                </ul>
-            </div>
-        </div>
-
-        <aside class="bg-slate-950 text-white rounded-3xl p-8 shadow-soft">
-            <div class="aside-card">
-                <h2 class="aside-title">Pourquoi choisir ce modèle ?</h2>
-                <p class="aside-copy">Une présentation soignée, un parcours d'achat haut de gamme et des informations conçues pour rassurer vos clients.</p>
-            </div>
-
-            <div class="aside-feature">
-                <span class="aside-icon">🚚</span>
-                <div>
-                    <strong>Livraison express</strong>
-                    <p>Expédition rapide et suivi premium.</p>
-                </div>
-            </div>
-            <div class="aside-feature">
-                <span class="aside-icon">🔒</span>
-                <div>
-                    <strong>Paiement sécurisé</strong>
-                    <p>Transactions garanties sur toute la plateforme.</p>
-                </div>
-            </div>
-            <div class="aside-feature">
-                <span class="aside-icon">⭐</span>
-                <div>
-                    <strong>Service client dédié</strong>
-                    <p>Un accompagnement fiable pour chaque commande.</p>
-                </div>
-            </div>
-        </aside>
+    <!-- Additional Content Below -->
+    <div class="product-additional-section">
+        <h2>À propos de ce produit</h2>
+        <p>Découvrez une sélection premium de baskets et chaussures pour tous les styles. Confortable, durable et à la mode.</p>
     </div>
 </div>
+
+<script>
+    function changeImage(el) {
+        document.querySelectorAll('.product-thumbnail').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('mainImage').src = el.querySelector('img').src;
+    }
+
+    function selectSize(el) {
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+    }
+</script>
 @endsection
