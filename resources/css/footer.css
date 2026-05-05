@@ -1,26 +1,33 @@
-/* Footer styles */
+/* ==========================================================================
+   Premium Footer Styles - Stepora
+   ========================================================================== */
+
 .footer {
-    background: #fff;
-    color: #111;
+    background: #000000;
+    color: #ffffff;
     font-family: "Inter", sans-serif;
+    padding-top: 4rem;
 }
 
 .footer-top {
-    padding: 60px 40px;
-    border-bottom: 1px solid #e5e5e5;
+    padding: 0 5% 4rem;
+    border-bottom: 1px solid #222;
 }
 
 .footer-top h3 {
-    text-align: center;
-    font-size: 1.4rem;
-    margin-bottom: 40px;
-    letter-spacing: 1px;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff;
 }
 
 .footer-categories {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
 }
 
 .footer-categories ul {
@@ -30,60 +37,64 @@
 }
 
 .footer-categories li {
-    font-size: 0.85rem;
-    color: #555;
-    margin-bottom: 10px;
+    font-size: 0.813rem;
+    color: #7e7e7e;
+    margin-bottom: 0.75rem;
     cursor: pointer;
+    transition: color 0.2s;
 }
 
 .footer-categories li:hover {
-    text-decoration: underline;
+    color: #ffffff;
 }
 
 .footer-description {
-    max-width: 900px;
-    margin: 40px auto 0;
-    font-size: 0.9rem;
-    color: #666;
-    text-align: center;
+    max-width: 100%;
+    margin: 3rem 0 0;
+    font-size: 0.813rem;
+    color: #7e7e7e;
+    text-align: left;
     line-height: 1.6;
+}
+
+.footer-description strong {
+    color: #fff;
 }
 
 .footer-socials {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 25px;
-    padding: 25px 0;
-    border-top: 1px solid #e5e5e5;
-    border-bottom: 1px solid #e5e5e5;
+    gap: 1.5rem;
+    padding: 2rem 5%;
 }
 
 .footer-socials a {
-    font-size: 1.4rem;
-    color: #111;
-    transition:
-        transform 0.3s ease,
-        opacity 0.3s ease;
+    font-size: 1.2rem;
+    color: #7e7e7e;
+    transition: all 0.3s ease;
 }
 
 .footer-socials a:hover {
-    transform: scale(1.15);
-    opacity: 0.7;
+    color: #ffffff;
+    transform: translateY(-3px);
 }
 
 .footer-bottom {
-    background: #111;
-    color: #fff;
+    background: #000000;
+    color: #ffffff;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30px;
-    padding: 50px 40px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3rem;
+    padding: 4rem 5%;
 }
 
 .footer-column h4 {
-    font-size: 0.9rem;
-    margin-bottom: 15px;
+    font-size: 0.875rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .footer-column ul {
@@ -92,29 +103,58 @@
     margin: 0;
 }
 
-.footer-column li {
-    font-size: 0.85rem;
-    color: #bbb;
-    margin-bottom: 10px;
+.footer-column li, .footer-column a {
+    font-size: 0.813rem;
+    color: #7e7e7e;
+    margin-bottom: 0.75rem;
     cursor: pointer;
+    text-decoration: none;
+    display: block;
+    transition: color 0.2s;
 }
 
-.footer-column li:hover {
-    color: #fff;
+.footer-column li:hover, .footer-column a:hover {
+    color: #ffffff;
 }
 
 .change-country {
-    color: #fff;
-    font-size: 0.85rem;
-    text-decoration: underline;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 0.5rem;
+    border-bottom: 1px solid #fff;
+}
+
+.footer-copy-container {
+    padding: 1.5rem 5%;
+    border-top: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .footer-copy {
-    background: #000;
-    color: #aaa;
-    text-align: center;
-    padding: 15px;
-    font-size: 0.8rem;
+    color: #7e7e7e;
+    font-size: 0.75rem;
+}
+
+.footer-legal {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-legal a {
+    color: #7e7e7e;
+    font-size: 0.75rem;
+    text-decoration: none;
+}
+
+.footer-legal a:hover {
+    color: #fff;
 }
 
 @media (max-width: 768px) {
@@ -124,6 +164,10 @@
 
     .footer-bottom {
         grid-template-columns: 1fr;
+    }
+    
+    .footer-copy-container {
+        flex-direction: column;
         text-align: center;
     }
 }

@@ -11,5 +11,15 @@
 }
 
 /* IMPORT CSS PROJET */
+@import "./navbar.css";
 @import "./produits.css";
+@import "./filters.css";
+@import "./cards.css";
 @import "./footer.css";
+@import "./show.css";
+@import "./panier.css";
+@import "./contact.css";
+@import "./auth.css";
+@import "./compte.css";
+@import "./home.css";
+@import "./admin.css";

@@ -20,7 +20,23 @@ class ProduitController extends Controller
         }
 
         if ($request->categorie) {
-            $query->where('category_id', $request->categorie);
+            $category = Category::with('children')
+                ->where('id', $request->categorie)
+                ->orWhere('slug', $request->categorie)
+                ->first();
+
+            if ($category) {
+                $categoryIds = $category->children->pluck('id')->push($category->id);
+                $query->whereIn('category_id', $categoryIds);
+            }
+        }
+
+        if ($request->q) {
+            $q = $request->q;
+            $query->where(function($sq) use ($q) {
+                $sq->where('nom', 'LIKE', "%$q%")
+                   ->orWhere('description', 'LIKE', "%$q%");
+            });
         }
 
         switch ($request->tri) {
@@ -36,7 +52,7 @@ class ProduitController extends Controller
         }
 
         $produits = $query->get();
-        $categories = Category::orderBy('nom')->get();
+        $categories = Category::navigation()->get();
 
         return view('produits.index', compact('produits', 'categories', 'prixMax', 'sliderMax'));
     }

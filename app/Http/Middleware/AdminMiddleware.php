@@ -13,12 +13,17 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        // Vérifie si l'utilisateur est connecté et est admin
-        if (Auth::check() && Auth::user()->is_admin) {
+        // 1. Vérifie si l'utilisateur est connecté
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Veuillez vous connecter pour accéder à l\'administration.');
+        }
+
+        // 2. Vérifie si l'utilisateur est admin
+        if (Auth::user()->isAdmin()) {
             return $next($request);
         }
 
-        // Sinon, redirige vers la page d'accueil ou une page d'erreur
-        return redirect('/')->with('error', 'Accès refusé');
+        // Sinon, redirige vers la page d'accueil avec un message d'erreur
+        return redirect('/')->with('error', 'Accès refusé : vous n\'avez pas les droits d\'administrateur.');
     }
 }

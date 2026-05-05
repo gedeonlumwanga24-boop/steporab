@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
 
             // Nom de la catégorie (ex: Sneakers, Baskets...)
             $table->string('nom');
 
             // Optionnel mais utile (slug pour URL propre)
             $table->string('slug')->unique()->nullable();
+            $table->unsignedSmallInteger('display_order')->default(0);
 
             // Timestamps Laravel (created_at, updated_at)
             $table->timestamps();

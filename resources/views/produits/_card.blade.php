@@ -19,4 +19,5 @@
     <div class="product-card-footer">
         <span class="price">{{ number_format($p->prix, 0, ' ', ' ') }} CDF</span>
     </div>
+
 </div>

@@ -14,6 +14,10 @@ class CommandeController extends Controller
      */
     public function checkout(Request $request)
     {
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour finaliser votre commande.');
+        }
+
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
@@ -30,12 +34,29 @@ class CommandeController extends Controller
         // 🧑 Utilisateur connecté
         $user = Auth::user();
 
+        // 🔄 Mettre à jour le profil client pour les prochaines commandes
+        if ($request->filled('name')) {
+            $user->update(['name' => $request->name]);
+        }
+        
+        $user->client()->updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'telephone' => $request->telephone,
+                'adresse' => $request->adresse,
+                'ville' => $request->ville
+            ]
+        );
+
+        // 📝 Concaténer l'adresse complète pour la commande
+        $adresseLivraison = $request->adresse . ', ' . $request->ville . ' - Tél: ' . $request->telephone;
+
         // 📦 Création commande
         $commande = Commande::create([
             'user_id' => $user->id,
             'total' => $total,
             'statut' => 'en_attente',
-            'adresse' => $request->adresse
+            'adresse' => $adresseLivraison
         ]);
 
         // 🔗 Ajouter produits dans pivot
@@ -51,6 +72,6 @@ class CommandeController extends Controller
         // 🧹 Vider panier
         session()->forget('cart');
 
-        return redirect('/')->with('success', 'Commande validée avec succès');
+        return redirect()->route('commande.succes')->with('success', 'Commande validée avec succès');
     }
 }

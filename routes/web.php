@@ -7,6 +7,8 @@ use App\Http\Controllers\ProduitController;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\CommandeController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 
 // Admin Controllers
 use App\Http\Controllers\Admin\ProduitController as AdminProduitController;
@@ -20,7 +22,10 @@ use App\Http\Controllers\Admin\StatsController;
 
 // Accueil
 Route::get('/', function () {
-    return view('welcome');
+    $trendingProducts = \App\Models\Produit::latest()->take(4)->get();
+    $configs = \App\Models\SiteConfig::pluck('value', 'key');
+    $categories = \App\Models\Category::navigation()->get();
+    return view('welcome', compact('trendingProducts', 'configs', 'categories'));
 });
 
 // Serve images stored in resources/images when the public/images folder is not present
@@ -48,11 +53,28 @@ Route::get('/panier/vider', [PanierController::class, 'vider'])->name('panier.vi
 
 // Commande
 Route::post('/commande', [CommandeController::class, 'checkout'])->name('commande.store');
+Route::get('/commande/succes', function() {
+    return view('commande.succes');
+})->name('commande.succes');
 
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 
+
+// Auth
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Compte Client
+Route::middleware('auth')->group(function () {
+    Route::get('/compte', [ProfileController::class, 'show'])->name('compte.show');
+    Route::get('/compte/modifier', [ProfileController::class, 'edit'])->name('compte.edit');
+    Route::put('/compte/modifier', [ProfileController::class, 'update'])->name('compte.update');
+});
 
 // -------------------- ADMIN --------------------
 
@@ -61,15 +83,22 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     // Dashboard
     Route::get('/', [StatsController::class, 'index'])->name('admin.dashboard');
 
-    // Produits (inclut create + store automatiquement)
-    Route::resource('produits', AdminProduitController::class);
+    // Produits
+    Route::resource('produits', AdminProduitController::class)->names('admin.produits');
+
+    // Catégories
+    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->names('admin.categories');
 
     // Commandes
-    Route::resource('commandes', AdminCommandeController::class);
+    Route::resource('commandes', AdminCommandeController::class)->names('admin.commandes');
 
     // Clients
-    Route::resource('clients', AdminClientController::class);
+    Route::resource('clients', AdminClientController::class)->names('admin.clients');
 
     // Messages
-    Route::resource('messages', AdminMessageController::class);
+    Route::resource('messages', AdminMessageController::class)->names('admin.messages');
+
+    // Configuration du site
+    Route::get('config', [\App\Http\Controllers\Admin\ConfigController::class, 'index'])->name('admin.config.index');
+    Route::post('config', [\App\Http\Controllers\Admin\ConfigController::class, 'update'])->name('admin.config.update');
 });

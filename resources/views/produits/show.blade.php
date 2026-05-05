@@ -2,6 +2,13 @@
 
 @section('content')
 <div class="product-show-container">
+    @if(session('success'))
+        <div style="background: #10b981; color: white; padding: 1rem; text-align: center; font-weight: bold; margin-bottom: 1rem; border-radius: 8px; animation: slideDown 0.3s ease-out;">
+            <i class="fa-solid fa-check-circle" style="margin-right: 0.5rem;"></i> {{ session('success') }}
+            <a href="{{ route('panier.index') }}" style="text-decoration: underline; margin-left: 1rem;">Voir le panier</a>
+        </div>
+    @endif
+
     <div class="product-show-layout">
         <!-- LEFT: Image Gallery -->
         <div class="product-gallery">
@@ -22,6 +29,13 @@
                 <div class="product-thumbnail active" onclick="changeImage(this)">
                     <img src="{{ $productImageUrl }}" alt="{{ $produit->nom }}">
                 </div>
+                @if($produit->galerie && is_array($produit->galerie))
+                    @foreach($produit->galerie as $miniature)
+                        <div class="product-thumbnail" onclick="changeImage(this)">
+                            <img src="{{ asset('storage/produits/'.$miniature) }}" alt="{{ $produit->nom }}">
+                        </div>
+                    @endforeach
+                @endif
             </div>
         </div>
 

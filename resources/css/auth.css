@@ -1,0 +1,167 @@
+/* =============================================
+   AUTH SYSTEM — Stepora Design System
+   ============================================= */
+
+.auth-page {
+    min-height: calc(100vh - 150px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2xl, 3rem) var(--spacing-md, 1rem);
+    background: var(--color-bg, #f5f5f5);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--color-white, #ffffff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: var(--radius-xl, 16px);
+    padding: var(--spacing-xl, 2rem) var(--spacing-xl, 2.5rem);
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.04), 0 2px 4px -1px rgba(0,0,0,0.02);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl, 2rem);
+}
+
+.auth-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-text, #111827);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.auth-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text, #111827);
+}
+
+.auth-desc {
+    margin: 0;
+    color: var(--color-text-secondary, #6b7280);
+    font-size: 0.9rem;
+}
+
+.auth-form-group {
+    margin-bottom: var(--spacing-md, 1rem);
+}
+
+.auth-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text, #111827);
+    margin-bottom: 0.5rem;
+}
+
+.auth-input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: var(--radius-sm, 6px);
+    font-size: 0.95rem;
+    color: var(--color-text, #111827);
+    background: var(--color-bg-light, #fafafa);
+    transition: all var(--duration-fast, 150ms) ease;
+    font-family: inherit;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: var(--color-text, #111827);
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.08);
+    background: var(--color-white, #ffffff);
+}
+
+.auth-input::placeholder {
+    color: var(--color-text-light, #9ca3af);
+}
+
+.auth-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-lg, 1.5rem);
+    font-size: 0.85rem;
+}
+
+.auth-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text-secondary, #6b7280);
+}
+
+.auth-link {
+    color: var(--color-text, #111827);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-link:hover {
+    text-decoration: underline;
+}
+
+.auth-submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+    background: var(--color-text, #111827);
+    color: var(--color-white, #ffffff);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: var(--radius-sm, 6px);
+    cursor: pointer;
+    transition: all var(--duration-fast, 150ms) ease;
+}
+
+.auth-submit:hover {
+    background: #000000;
+    transform: translateY(-1px);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: var(--spacing-lg, 1.5rem);
+    font-size: 0.9rem;
+    color: var(--color-text-secondary, #6b7280);
+}
+
+.auth-error-msg {
+    color: var(--color-accent, #dc2626);
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    display: block;
+}
+
+.auth-alert {
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm, 6px);
+    margin-bottom: var(--spacing-md, 1rem);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.auth-alert-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}

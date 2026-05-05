@@ -8,8 +8,13 @@
     <div class="catalog-header">
         <div>
             <p class="catalog-eyebrow">Catalogue chaussures</p>
-            <h1 class="catalog-title">Sélection premium de baskets et sneakers</h1>
-            <p class="catalog-copy">Un assortiment trié sur le volet, conçu pour offrir une expérience claire, moderne et haut de gamme.</p>
+            @if(request('q'))
+                <h1 class="catalog-title">Résultats pour "{{ request('q') }}"</h1>
+                <p class="catalog-copy">Nous avons trouvé {{ $produits->count() }} modèles correspondant à votre recherche. <a href="{{ route('produits.index') }}" style="text-decoration: underline; color: #000;">Effacer la recherche</a></p>
+            @else
+                <h1 class="catalog-title">Sélection premium de baskets et sneakers</h1>
+                <p class="catalog-copy">Un assortiment trié sur le volet, conçu pour offrir une expérience claire, moderne et haut de gamme.</p>
+            @endif
         </div>
 
         <div class="catalog-quick-info">

@@ -14,8 +14,13 @@ class Produit extends Model
         'prix',
         'description',
         'image',
+        'galerie',
         'stock',
         'category_id'
+    ];
+
+    protected $casts = [
+        'galerie' => 'array'
     ];
 
     // produit → catégorie

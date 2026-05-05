@@ -1,0 +1,190 @@
+/* =============================================
+   COMPTE CLIENT — Stepora Design System
+   ============================================= */
+
+.compte-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-2xl, 3rem) var(--spacing-lg, 1.5rem) 4rem;
+    min-height: calc(100vh - 150px);
+}
+
+.compte-header {
+    margin-bottom: var(--spacing-xl, 2rem);
+    padding-bottom: var(--spacing-lg, 1.5rem);
+    border-bottom: 1px solid var(--color-border, #e5e7eb);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.compte-title {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text, #111827);
+    letter-spacing: -0.02em;
+}
+
+.compte-subtitle {
+    margin: 0;
+    color: var(--color-text-secondary, #6b7280);
+    font-size: 1rem;
+}
+
+.btn-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    background: transparent;
+    color: var(--color-accent, #dc2626);
+    border: 1px solid var(--color-accent, #dc2626);
+    border-radius: var(--radius-sm, 6px);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all var(--duration-fast, 150ms) ease;
+    text-decoration: none;
+}
+
+.btn-logout:hover {
+    background: var(--color-accent, #dc2626);
+    color: var(--color-white, #ffffff);
+}
+
+/* ---------- LAYOUT ---------- */
+
+.compte-layout {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: var(--spacing-xl, 2rem);
+    align-items: start;
+}
+
+@media (max-width: 900px) {
+    .compte-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------- BLOCS ---------- */
+
+.compte-card {
+    background: var(--color-white, #ffffff);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: var(--radius-lg, 12px);
+    padding: var(--spacing-lg, 1.5rem);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.compte-card-title {
+    margin: 0 0 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text, #111827);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* ---------- INFOS PROFIL ---------- */
+
+.profil-info {
+    margin-bottom: 1rem;
+}
+
+.profil-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-secondary, #6b7280);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.profil-value {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--color-text, #111827);
+    font-weight: 500;
+}
+
+.btn-edit {
+    font-size: 0.8rem;
+    color: var(--color-text, #111827);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* ---------- HISTORIQUE COMMANDES ---------- */
+
+.commandes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.commande-item {
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: var(--radius-sm, 6px);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-bg-light, #fafafa);
+}
+
+.commande-info h4 {
+    margin: 0 0 0.25rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.commande-date {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary, #6b7280);
+}
+
+.commande-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-en_attente {
+    background: #fef3c7;
+    color: #92400e;
+}
+.status-livree {
+    background: #ecfdf5;
+    color: #065f46;
+}
+.status-annulee {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.commande-total {
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--color-text, #111827);
+}
+
+.commandes-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-text-secondary, #6b7280);
+    background: var(--color-bg-light, #fafafa);
+    border-radius: var(--radius-sm, 6px);
+    border: 1px dashed var(--color-border, #cbd5e1);
+}

@@ -1,75 +1,76 @@
-@extends('layouts.app')
+@extends('layouts.admin')
+
+@section('title', 'Ajouter un Produit')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-6 bg-white rounded-3xl shadow-lg">
-    <h1 class="text-2xl font-semibold mb-4">Ajouter un produit</h1>
-
-    @if(session('success'))
-        <div class="mb-4 rounded-xl bg-green-50 border border-green-200 p-4 text-green-800">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="mb-4 rounded-xl bg-red-50 border border-red-200 p-4 text-red-800">
-            <ul class="list-disc pl-5">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form method="POST" action="{{ route('produits.store') }}" enctype="multipart/form-data" class="space-y-6">
-        @csrf
-
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Nom</label>
-                <input type="text" name="nom" value="{{ old('nom') }}" placeholder="Nom du produit"
-                       class="mt-1 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none">
+<div class="admin-card" style="max-width: 800px;">
+    <div class="admin-card-header">
+        <h3 class="admin-card-title">Détails du nouveau produit</h3>
+        <a href="{{ route('admin.produits.index') }}" class="btn-visit-site">
+            <i class="fa-solid fa-arrow-left"></i> Retour
+        </a>
+    </div>
+    
+    <div style="padding: 1.5rem;">
+        <form action="{{ route('admin.produits.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            
+            <div class="admin-form-group">
+                <label class="admin-label">Nom du produit</label>
+                <input type="text" name="nom" class="admin-input" value="{{ old('nom') }}" required>
+                @error('nom') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Prix (CDF)</label>
-                <input type="number" name="prix" value="{{ old('prix') }}" placeholder="Prix"
-                       class="mt-1 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="admin-form-group">
+                    <label class="admin-label">Catégorie</label>
+                    <select name="category_id" class="admin-select" required>
+                        <option value="">Sélectionner une catégorie</option>
+                        @foreach($categories as $cat)
+                            <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->nom }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="admin-form-group">
+                    <label class="admin-label">Prix (CDF)</label>
+                    <input type="number" name="prix" class="admin-input" value="{{ old('prix') }}" min="0" required>
+                    @error('prix') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
+                </div>
             </div>
-        </div>
 
-        <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Catégorie</label>
-                <select name="category_id"
-                        class="mt-1 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none">
-                    <option value="">Sélectionnez une catégorie</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->nom }}</option>
-                    @endforeach
-                </select>
+            <div class="admin-form-group">
+                <label class="admin-label">Stock disponible</label>
+                <input type="number" name="stock" class="admin-input" value="{{ old('stock', 0) }}" min="0" required style="width: 200px;">
+                @error('stock') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
             </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Stock</label>
-                <input type="number" name="stock" value="{{ old('stock', 0) }}" min="0" placeholder="Quantité disponible"
-                       class="mt-1 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none">
+            <div class="admin-form-group">
+                <label class="admin-label">Description</label>
+                <textarea name="description" class="admin-textarea" rows="5" required>{{ old('description') }}</textarea>
+                @error('description') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
             </div>
-        </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Description</label>
-            <textarea name="description" rows="5" placeholder="Description du produit"
-                      class="mt-1 w-full rounded-2xl border border-gray-300 bg-white px-4 py-3 text-sm shadow-sm focus:border-blue-500 focus:outline-none">{{ old('description') }}</textarea>
-        </div>
+            <div class="admin-form-group">
+                <label class="admin-label">Image principale</label>
+                <input type="file" name="image" class="admin-input" accept="image/*" required>
+                @error('image') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
+            </div>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Image principale</label>
-            <input type="file" name="image" class="mt-2 block w-full text-sm text-gray-700" accept="image/*">
-        </div>
+            <div class="admin-form-group">
+                <label class="admin-label">Miniatures (Galerie d'images)</label>
+                <input type="file" name="galerie[]" class="admin-input" accept="image/*" multiple>
+                <p style="font-size: 0.8rem; color: #6b7280; margin-top: 0.25rem;">Sélectionnez plusieurs images pour accompagner le produit. Max 2MB par image.</p>
+                @error('galerie.*') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror
+            </div>
 
-        <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-800">
-            Ajouter le produit
-        </button>
-    </form>
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); text-align: right;">
+                <button type="submit" class="btn-primary-sm" style="padding: 0.75rem 2rem; font-size: 1rem;">Enregistrer le produit</button>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection
