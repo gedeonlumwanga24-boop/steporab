@@ -12,30 +12,44 @@
     <div class="product-show-layout">
         <!-- LEFT: Image Gallery -->
         <div class="product-gallery">
-            <div class="product-main-image">
-                @if($produit->stock > 0)
-                    <span class="product-badge">En stock</span>
-                @else
-                    <span class="product-badge product-badge--outofstock">Rupture</span>
-                @endif
-                @php
-                    $productImageUrl = $produit->image_url;
-                @endphp
-                <img id="mainImage" src="{{ $productImageUrl }}" alt="{{ $produit->nom }}" class="product-image-main">
-            </div>
-
-            <!-- Thumbnails -->
-            <div class="product-thumbnails">
-                <div class="product-thumbnail active" onclick="changeImage(this)">
+            @php
+                $productImageUrl = $produit->image_url;
+            @endphp
+            <!-- Thumbnails on the left -->
+            <div class="product-thumbnails-container" id="thumbnailsContainer">
+                <div class="product-thumbnail active" onclick="changeImage(this, 0)">
                     <img src="{{ $productImageUrl }}" alt="{{ $produit->nom }}">
                 </div>
                 @if($produit->galerie && is_array($produit->galerie))
-                    @foreach($produit->galerie as $miniature)
-                        <div class="product-thumbnail" onclick="changeImage(this)">
+                    @foreach($produit->galerie as $index => $miniature)
+                        <div class="product-thumbnail" onclick="changeImage(this, {{ $index + 1 }})">
                             <img src="{{ asset('storage/produits/'.$miniature) }}" alt="{{ $produit->nom }}">
                         </div>
                     @endforeach
                 @endif
+            </div>
+
+            <!-- Main Image Wrapper -->
+            <div class="product-main-image-wrapper">
+                <div class="product-main-image">
+                    @if($produit->stock <= 0)
+                        <span class="product-badge product-badge--outofstock">Rupture de stock</span>
+                    @elseif($produit->prix > 150000)
+                        <span class="product-badge">Premium</span>
+                    @else
+                        <span class="product-badge">En stock</span>
+                    @endif
+
+                    <button class="gallery-nav-btn prev" onclick="navigateGallery(-1)" aria-label="Image précédente">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    
+                    <img id="mainImage" src="{{ $productImageUrl }}" alt="{{ $produit->nom }}" class="product-image-main">
+                    
+                    <button class="gallery-nav-btn next" onclick="navigateGallery(1)" aria-label="Image suivante">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -125,15 +139,54 @@
 </div>
 
 <script>
-    function changeImage(el) {
-        document.querySelectorAll('.product-thumbnail').forEach(t => t.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('mainImage').src = el.querySelector('img').src;
+    let currentIndex = 0;
+    const thumbnails = document.querySelectorAll('.product-thumbnail');
+    const mainImage = document.getElementById('mainImage');
+
+    function changeImage(element, index) {
+        currentIndex = index;
+        
+        // Update Main Image
+        const newSrc = element.querySelector('img').src;
+        mainImage.style.opacity = '0';
+        
+        setTimeout(() => {
+            mainImage.src = newSrc;
+            mainImage.style.opacity = '1';
+        }, 200);
+
+        // Update Thumbnails Active State
+        thumbnails.forEach(thumb => thumb.classList.remove('active'));
+        element.classList.add('active');
+
+        // Scroll thumbnail into view if needed
+        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }
 
-    function selectSize(el) {
+    function navigateGallery(direction) {
+        let newIndex = currentIndex + direction;
+        
+        if (newIndex < 0) newIndex = thumbnails.length - 1;
+        if (newIndex >= thumbnails.length) newIndex = 0;
+        
+        changeImage(thumbnails[newIndex], newIndex);
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            navigateGallery(-1);
+        } else if (e.key === 'ArrowRight') {
+            navigateGallery(1);
+        }
+    });
+
+    function selectSize(btn) {
         document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
+        btn.classList.add('active');
+        // If there's a hidden input for size, update it here
+        const sizeInput = document.getElementById('selectedSize');
+        if (sizeInput) sizeInput.value = btn.innerText;
     }
 </script>
 @endsection
