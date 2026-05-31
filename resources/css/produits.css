@@ -161,22 +161,128 @@ body {
 
 .produits-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: var(--spacing-xl);
     margin: 0;
 }
 
 @media (max-width: 1200px) {
     .produits-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, 1fr);
         gap: var(--spacing-lg);
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .produits-grid {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-lg);
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .produits-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+/*--------------------------------------------------
+  PRODUCT CARD STYLES
+--------------------------------------------------*/
+
+.product-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.product-img-wrapper {
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 0.5rem; /* Very small padding so it's big */
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+}
+
+.product-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Contain so shoes are never cut off */
+    mix-blend-mode: multiply; /* Multiply makes white backgrounds disappear into the grey card */
+}
+
+.product-card-category {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #9ca3af;
+    margin: 0 0 0.2rem;
+    font-weight: 700;
+}
+
+.product-card-title {
+    font-size: 0.95rem; /* Slightly larger name */
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+    color: #111827;
+}
+
+.product-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+}
+
+.product-card-price {
+    font-size: 0.95rem;
+    color: #ef4444; /* Red color for price */
+    font-weight: 800;
+}
+
+.product-card-action {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #111;
+}
+
+/*--------------------------------------------------
+  MOBILE FILTER BUTTON
+--------------------------------------------------*/
+.mobile-filter-btn {
+    display: none;
+    width: 100%;
+    background: #4b5563; /* Dark grey */
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+    .mobile-filter-btn {
+        display: block;
+    }
+    .catalog-sidebar {
+        display: none; /* Hide by default on mobile, can be toggled via JS */
+    }
+    .catalog-sidebar.open {
+        display: block;
+        margin-bottom: 2rem;
     }
 }
 

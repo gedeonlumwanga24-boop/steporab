@@ -27,7 +27,12 @@ Route::get('/', function () {
     $configs = \App\Models\SiteConfig::pluck('value', 'key');
     $categories = \App\Models\Category::navigation()->get();
     return view('welcome', compact('trendingProducts', 'configs', 'categories'));
-});
+})->name('home');
+
+// A propos
+Route::get('/apropos', function () {
+    return view('apropos');
+})->name('apropos');
 
 // Serve images stored in resources/images when the public/images folder is not present
 Route::get('/images/{path}', function ($path) {

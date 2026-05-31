@@ -93,9 +93,13 @@
 
             <!-- Action Buttons -->
             <div class="product-action-buttons">
-                <form action="{{ route('panier.ajouter', $produit->id) }}" method="POST" class="w-full">
+                <form id="addToCartForm" action="{{ route('panier.ajouter', $produit->id) }}" method="POST" class="w-full">
                     @csrf
-                    <button type="submit" class="btn-add-to-cart">Ajouter au panier</button>
+                    <input type="hidden" name="taille" id="selectedSizeInput" value="">
+                    <input type="hidden" name="couleur" id="selectedColorInput" value="">
+                    <button type="submit" class="btn-add-to-cart" id="addToCartBtn">
+                        Ajouter au panier
+                    </button>
                 </form>
                 <button class="btn-wishlist">
                     <i class="fa-solid fa-heart"></i> Ajouter aux favoris
@@ -138,55 +142,230 @@
     </div>
 </div>
 
+<!-- CART SUCCESS DRAWER (Nike Style) -->
+<div class="cart-success-overlay" id="cartSuccessOverlay"></div>
+<div class="cart-success-drawer" id="cartSuccessDrawer">
+    <div class="drawer-header">
+        <div class="drawer-title">
+            <svg viewBox="0 0 24 24" fill="#10b981" width="20" height="20"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            Ajouté au panier
+        </div>
+        <button type="button" class="drawer-close" onclick="closeCartDrawer()">&times;</button>
+    </div>
+
+    <div class="drawer-product">
+        <img src="" alt="Product" id="drawerProductImage">
+        <div class="drawer-product-info">
+            <h4 id="drawerProductCategory">Sneakers</h4>
+            <h3 id="drawerProductName">Produit</h3>
+            <p id="drawerProductVariant" style="color:#666;font-size:0.9rem;margin-top:0.2rem;"></p>
+            <p id="drawerProductPrice" style="font-weight:800;margin-top:0.4rem;color:#111;"></p>
+        </div>
+    </div>
+
+    <div class="drawer-actions">
+        <a href="{{ route('panier.index') }}" class="drawer-btn drawer-btn-outline">
+            Voir le panier (<span id="drawerCartCount">1</span>)
+        </a>
+        <a href="{{ route('panier.index') }}" class="drawer-btn drawer-btn-solid">Paiement</a>
+    </div>
+</div>
+
+<style>
+/* ── CART DRAWER ─────────────────────────────────────────── */
+.cart-success-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 10000;
+    opacity: 0; visibility: hidden;
+    transition: all 0.3s ease;
+}
+.cart-success-overlay.active { opacity: 1; visibility: visible; }
+
+.cart-success-drawer {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: min(420px, 100vw);
+    background: #fff;
+    z-index: 10001;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.25rem;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.18);
+}
+.cart-success-drawer.active { transform: translateX(0); }
+
+.drawer-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 1rem;
+}
+.drawer-title {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 1rem; font-weight: 700; color: #111;
+}
+.drawer-close {
+    background: none; border: none;
+    font-size: 1.6rem; cursor: pointer;
+    color: #6b7280; line-height: 1;
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    transition: background 150ms;
+}
+.drawer-close:hover { background: #f3f4f6; }
+
+.drawer-product {
+    display: flex; gap: 1rem; align-items: center;
+}
+.drawer-product img {
+    width: 90px; height: 90px;
+    object-fit: cover; border-radius: 8px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    flex-shrink: 0;
+}
+.drawer-product-info h4 {
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: #6b7280; margin: 0 0 0.2rem;
+}
+.drawer-product-info h3 {
+    font-size: 1rem; font-weight: 800;
+    color: #111; margin: 0;
+    line-height: 1.3;
+}
+
+.drawer-actions {
+    display: flex; flex-direction: column; gap: 0.75rem;
+    margin-top: auto;
+}
+.drawer-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; padding: 0.9rem 1rem;
+    font-size: 0.9rem; font-weight: 800;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    text-decoration: none; border-radius: 4px;
+    cursor: pointer; transition: all 0.2s ease;
+    border: 2px solid #111;
+}
+.drawer-btn-outline {
+    background: #fff; color: #111;
+}
+.drawer-btn-outline:hover { background: #f3f4f6; }
+.drawer-btn-solid {
+    background: #111; color: #fff;
+}
+.drawer-btn-solid:hover { background: #000; }
+</style>
+
 <script>
-    let currentIndex = 0;
-    const thumbnails = document.querySelectorAll('.product-thumbnail');
-    const mainImage = document.getElementById('mainImage');
+let currentIndex = 0;
+const thumbnails = document.querySelectorAll('.product-thumbnail');
+const mainImage  = document.getElementById('mainImage');
 
-    function changeImage(element, index) {
-        currentIndex = index;
-        
-        // Update Main Image
-        const newSrc = element.querySelector('img').src;
-        mainImage.style.opacity = '0';
-        
-        setTimeout(() => {
-            mainImage.src = newSrc;
-            mainImage.style.opacity = '1';
-        }, 200);
+function changeImage(element, index) {
+    currentIndex = index;
+    const newSrc = element.querySelector('img').src;
+    mainImage.style.opacity = '0';
+    setTimeout(() => { mainImage.src = newSrc; mainImage.style.opacity = '1'; }, 200);
+    thumbnails.forEach(t => t.classList.remove('active'));
+    element.classList.add('active');
+    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+}
 
-        // Update Thumbnails Active State
-        thumbnails.forEach(thumb => thumb.classList.remove('active'));
-        element.classList.add('active');
+function navigateGallery(direction) {
+    let idx = currentIndex + direction;
+    if (idx < 0) idx = thumbnails.length - 1;
+    if (idx >= thumbnails.length) idx = 0;
+    changeImage(thumbnails[idx], idx);
+}
 
-        // Scroll thumbnail into view if needed
-        element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-    }
+document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft') navigateGallery(-1);
+    else if (e.key === 'ArrowRight') navigateGallery(1);
+});
 
-    function navigateGallery(direction) {
-        let newIndex = currentIndex + direction;
-        
-        if (newIndex < 0) newIndex = thumbnails.length - 1;
-        if (newIndex >= thumbnails.length) newIndex = 0;
-        
-        changeImage(thumbnails[newIndex], newIndex);
-    }
+function selectSize(btn) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const sizeInput = document.getElementById('selectedSizeInput');
+    if (sizeInput) sizeInput.value = btn.innerText;
+}
 
-    // Keyboard Navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') {
-            navigateGallery(-1);
-        } else if (e.key === 'ArrowRight') {
-            navigateGallery(1);
+// Cart drawer functions
+function openCartDrawer() {
+    document.getElementById('cartSuccessOverlay').classList.add('active');
+    document.getElementById('cartSuccessDrawer').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCartDrawer() {
+    document.getElementById('cartSuccessOverlay').classList.remove('active');
+    document.getElementById('cartSuccessDrawer').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('cartSuccessOverlay').addEventListener('click', closeCartDrawer);
+
+// AJAX form submit
+const addToCartForm = document.getElementById('addToCartForm');
+if (addToCartForm) {
+    addToCartForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('addToCartBtn');
+        btn.disabled = true;
+        btn.textContent = 'Ajout en cours…';
+
+        try {
+            const formData = new FormData(this);
+            const response = await fetch(this.action, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' },
+                body: formData
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    // Fill drawer
+                    document.getElementById('drawerProductName').textContent     = data.product.nom;
+                    document.getElementById('drawerProductCategory').textContent = data.product.category;
+                    document.getElementById('drawerProductPrice').textContent    = data.product.prix;
+                    document.getElementById('drawerProductImage').src            = data.product.image;
+                    document.getElementById('drawerCartCount').textContent       = data.cart_count;
+
+                    const variantEl = document.getElementById('drawerProductVariant');
+                    if (data.product.variant) {
+                        variantEl.textContent = data.product.variant;
+                        variantEl.style.display = 'block';
+                    } else {
+                        variantEl.style.display = 'none';
+                    }
+
+                    // Update navbar badge
+                    const badge = document.getElementById('navCartBadge');
+                    if (badge) {
+                        badge.textContent = data.cart_count;
+                        badge.classList.remove('cart-badge--hidden');
+                    }
+
+                    openCartDrawer();
+                }
+            } else {
+                addToCartForm.submit();
+            }
+        } catch (err) {
+            addToCartForm.submit();
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Ajouter au panier';
         }
     });
-
-    function selectSize(btn) {
-        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        // If there's a hidden input for size, update it here
-        const sizeInput = document.getElementById('selectedSize');
-        if (sizeInput) sizeInput.value = btn.innerText;
-    }
+}
 </script>
 @endsection
+

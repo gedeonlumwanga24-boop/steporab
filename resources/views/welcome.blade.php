@@ -32,7 +32,29 @@
     </div>
     
     <div class="categories-slider-wrapper">
-        <div class="categories-slider" id="categoriesSlider">
+        <div class="categories-slider marquee-content" id="categoriesSlider">
+            <!-- ORIGINAL -->
+            @foreach($categories as $category)
+                <a href="{{ route('produits.index', ['categorie' => $category->slug]) }}" class="category-card">
+                    @php
+                        $catImg = $category->image 
+                            ? asset('storage/categories/' . $category->image) 
+                            : match ($category->slug) {
+                                'hommes' => 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=800&auto=format&fit=crop',
+                                'femmes' => 'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=800&auto=format&fit=crop',
+                                'accessoires' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop',
+                                default => 'https://images.unsplash.com/photo-1552346154-21d32810baa3?q=80&w=800&auto=format&fit=crop'
+                            };
+                    @endphp
+                    <img src="{{ $catImg }}" alt="{{ $category->nom }}">
+                    <div class="category-overlay"></div>
+                    <div class="category-content">
+                        <h3 class="category-title">{{ $category->nom }}</h3>
+                        <span class="category-btn">Acheter</span>
+                    </div>
+                </a>
+            @endforeach
+            <!-- DUPLICATE FOR INFINITE MARQUEE -->
             @foreach($categories as $category)
                 <a href="{{ route('produits.index', ['categorie' => $category->slug]) }}" class="category-card">
                     @php
@@ -57,47 +79,82 @@
     </div>
 </section>
 
-<!-- TRENDING / LATEST PRODUCTS -->
-<section class="home-section reveal" style="background: #f9fafb;">
+<!-- VIDEO BANNER (Tendances) -->
+@php
+    $trendingVideo   = $configs['trending_video']   ?? null;
+    $trendingTagline = $configs['trending_tagline']  ?? 'Les essentiels de la saison';
+    $trendingTitle   = $configs['trending_title']    ?? "Pour ceux\nqui bougent.";
+    if ($trendingVideo && !str_starts_with($trendingVideo, 'http')) {
+        $trendingVideo = asset('storage/' . $trendingVideo);
+    }
+@endphp
+<section class="video-banner-section reveal">
+    <div class="video-banner-media">
+        @if($trendingVideo)
+            <video src="{{ $trendingVideo }}" autoplay loop muted playsinline class="video-banner-video"></video>
+        @else
+            <img src="https://images.unsplash.com/photo-1556906781-9a412961a28c?q=80&w=1600&auto=format&fit=crop"
+                 alt="Tendances Stepora" class="video-banner-video" style="object-fit:cover;">
+        @endif
+        <div class="video-banner-overlay"></div>
+    </div>
+    <div class="video-banner-content">
+        <p class="video-banner-tagline">{{ $trendingTagline }}</p>
+        <h2 class="video-banner-title">{!! nl2br(e($trendingTitle)) !!}</h2>
+        <a href="{{ route('produits.index') }}" class="video-banner-btn">
+            Voir la collection <i class="fa-solid fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
+
+<!-- NOS MODÈLES ICONIQUES -->
+<section class="home-section iconic-section reveal" style="background: #f9fafb;">
     <div class="section-header">
-        <h2 class="section-title">Tendances du moment</h2>
-        <a href="{{ route('produits.index') }}" class="section-link">Tout voir</a>
+        <h2 class="section-title">Nos modèles iconiques</h2>
+        <div class="iconic-controls">
+            <button class="slider-btn prev" id="iconicPrev" aria-label="Précédent">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="slider-btn next" id="iconicNext" aria-label="Suivant">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
     </div>
 
-    <div class="trending-grid">
-        @forelse($trendingProducts ?? [] as $produit)
-            <a href="{{ route('produits.show', $produit->id) }}" class="product-card">
-                <div class="product-img-wrapper">
-                    @if($loop->first)
-                        <span class="product-badge-new">Nouveau</span>
-                    @endif
+    <div class="iconic-slider-wrapper">
+        <div class="iconic-slider" id="iconicSlider">
+            @php
+                $allSubcategories = collect();
+                foreach($categories as $cat) {
+                    $children = collect(data_get($cat, 'children', []));
+                    if ($children->isNotEmpty()) {
+                        $allSubcategories = $allSubcategories->merge($children);
+                    }
+                }
+            @endphp
+            @forelse($allSubcategories as $subcat)
+                <a href="{{ route('produits.index', ['categorie' => data_get($subcat, 'slug')]) }}" class="iconic-product-card">
                     @php
-                        $productImageUrl = $produit->image ? asset('storage/produits/' . $produit->image) : asset('images/2020-nike.jpg');
+                        $subcatImg = data_get($subcat, 'image') 
+                            ? asset('storage/categories/' . data_get($subcat, 'image')) 
+                            : 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop';
                     @endphp
-                    <img src="{{ $productImageUrl }}" alt="{{ $produit->nom }}" onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'">
-                </div>
-                <div class="product-card-info">
-                    <p class="product-card-category">{{ $produit->category->nom ?? 'Sneakers' }}</p>
-                    <h3 class="product-card-title">{{ $produit->nom }}</h3>
-                    <p class="product-card-price">{{ number_format($produit->prix, 0, ' ', ' ') }} CDF</p>
-                </div>
-            </a>
-        @empty
-            <!-- Fallback if database is empty -->
-            @for($i=1; $i<=4; $i++)
-            <a href="{{ route('produits.index') }}" class="product-card">
-                <div class="product-img-wrapper">
-                    @if($i==1) <span class="product-badge-new">Nouveau</span> @endif
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop" alt="Sneaker">
-                </div>
-                <div class="product-card-info">
-                    <p class="product-card-category">Sneakers</p>
-                    <h3 class="product-card-title">Stepora Air Max</h3>
-                    <p class="product-card-price">120 000 CDF</p>
-                </div>
-            </a>
-            @endfor
-        @endforelse
+                    <div class="iconic-img-wrapper">
+                        <img src="{{ $subcatImg }}" alt="{{ data_get($subcat, 'nom') }}" class="iconic-product-img">
+                    </div>
+                    <span class="iconic-product-pill">{{ data_get($subcat, 'nom') }}</span>
+                </a>
+            @empty
+                @for($i=1; $i<=4; $i++)
+                <a href="{{ route('produits.index') }}" class="iconic-product-card">
+                    <div class="iconic-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop" alt="Sneaker" class="iconic-product-img">
+                    </div>
+                    <span class="iconic-product-pill">Stepora Air {{ $i }}</span>
+                </a>
+                @endfor
+            @endforelse
+        </div>
     </div>
 </section>
 
@@ -131,29 +188,45 @@
 <script>
     // Reveal animations on scroll
     document.addEventListener('DOMContentLoaded', function() {
-        const observerOptions = {
-            threshold: 0.1
-        };
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('active');
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
 
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
-        });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Iconic slider - manual navigation
+        const iconicSlider = document.getElementById('iconicSlider');
+        const iconicPrev   = document.getElementById('iconicPrev');
+        const iconicNext   = document.getElementById('iconicNext');
+
+        if (iconicSlider && iconicPrev && iconicNext) {
+            const getScrollAmount = () => {
+                const card = iconicSlider.querySelector('.iconic-product-card');
+                if (!card) return 380;
+                const style = window.getComputedStyle(iconicSlider);
+                const gap = parseFloat(style.gap) || 24;
+                return card.offsetWidth + gap;
+            };
+
+            iconicNext.addEventListener('click', () => {
+                iconicSlider.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+            });
+
+            iconicPrev.addEventListener('click', () => {
+                iconicSlider.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+            });
+        }
     });
 
+    // Categories slider - manual navigation
     function scrollSlider(direction) {
         const slider = document.getElementById('categoriesSlider');
-        const scrollAmount = 400; // Ajuster selon la largeur de la carte + gap
-        slider.scrollBy({
-            left: direction * scrollAmount,
-            behavior: 'smooth'
-        });
+        const card = slider.querySelector('.category-card');
+        const gap = 16;
+        const scrollAmount = card ? card.offsetWidth + gap : 400;
+        slider.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
     }
 </script>
+

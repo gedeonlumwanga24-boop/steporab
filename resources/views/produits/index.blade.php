@@ -29,6 +29,10 @@
     </div>
 
     <div class="catalog-layout">
+        <button type="button" class="mobile-filter-btn" onclick="document.querySelector('.catalog-sidebar').classList.toggle('open')">
+            Filtres et tri
+        </button>
+
         <aside class="catalog-sidebar">
             <form action="{{ route('produits.index') }}" method="GET" id="productFiltersForm" class="sidebar-form">
                 @include('produits._filters')

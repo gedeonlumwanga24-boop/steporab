@@ -38,21 +38,23 @@
     z-index: 3;
     padding: 0 5%;
     max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
     color: #ffffff;
     animation: fadeInUp 1s ease-out;
 }
 
 .hero-tagline {
-    font-size: 1rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 4px;
+    letter-spacing: 0.15em;
     margin-bottom: 1rem;
-    font-weight: 600;
-    color: #facc15; /* Yellow accent */
+    font-weight: 700;
+    color: #ffffff;
 }
 
 .hero-title {
-    font-size: clamp(3rem, 6vw, 5.5rem);
+    font-size: clamp(3rem, 10vw, 5.5rem);
     font-weight: 900;
     line-height: 1.1;
     text-transform: uppercase;
@@ -61,23 +63,25 @@
 }
 
 .hero-desc {
-    font-size: 1.125rem;
-    line-height: 1.6;
-    margin-bottom: 2.5rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 auto 2.5rem;
     max-width: 500px;
-    color: #e5e7eb;
+    color: #f3f4f6;
 }
 
 .hero-btn {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     background: #ffffff;
-    color: #000000;
-    padding: 1rem 2.5rem;
-    font-size: 1rem;
-    font-weight: 700;
+    color: #111111;
+    padding: 1.1rem 2.5rem;
+    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
-    border-radius: 30px;
+    border-radius: 999px;
     transition: all 0.3s ease;
     text-decoration: none;
 }
@@ -113,6 +117,21 @@
     scrollbar-width: none; /* Firefox */
 }
 
+.categories-slider.marquee-content {
+    animation: marquee 25s linear infinite;
+    flex-wrap: nowrap;
+    overflow: visible;
+}
+
+.categories-slider-wrapper:hover .marquee-content {
+    animation-play-state: paused;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-50% - 0.75rem)); }
+}
+
 .categories-slider::-webkit-scrollbar {
     display: none; /* Chrome/Safari */
 }
@@ -129,28 +148,26 @@
 }
 
 .slider-btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    color: #000;
+    border: none;
+    background: #f3f4f6; /* Light grey background */
+    color: #111827;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .slider-btn:hover {
-    background: #000;
-    color: #fff;
-    border-color: #000;
+    background: #e5e7eb;
 }
 
 /* Section Global Styles */
 .home-section {
-    padding: 5rem 5%;
+    padding: 1.5rem 5%; /* Even smaller gaps */
     background: #ffffff;
 }
 
@@ -158,7 +175,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 3rem;
+    margin-bottom: 1.5rem; /* Reduced margin */
 }
 
 .section-title {
@@ -443,5 +460,181 @@
     
     .hero-section {
         height: 70vh;
+    }
+}
+
+/* ── Video Banner Section ── */
+.video-banner-section {
+    position: relative;
+    height: 75vh;
+    min-height: 500px;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-banner-media {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.video-banner-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+    z-index: 2;
+}
+
+.video-banner-content {
+    position: relative;
+    z-index: 3;
+    text-align: center;
+    padding: 2rem;
+    color: #fff;
+    max-width: 800px;
+}
+
+.video-banner-tagline {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #facc15;
+    margin-bottom: 1rem;
+}
+
+.video-banner-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+}
+
+.video-banner-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: #fff;
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 999px;
+    transition: transform 0.3s ease;
+}
+
+.video-banner-btn:hover {
+    transform: translateY(-2px);
+    background: #f3f4f6;
+}
+
+/* ── Iconic Slider ── */
+.iconic-section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}
+
+.iconic-slider-wrapper {
+    position: relative;
+    overflow: hidden;
+    margin-top: 1.5rem;
+}
+
+.iconic-slider {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 1.5rem;
+    scrollbar-width: none;
+}
+
+.iconic-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.iconic-product-card {
+    flex: 0 0 380px;
+    position: relative;
+    text-decoration: none;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.iconic-product-card:hover {
+    transform: translateY(-5px);
+}
+
+.iconic-img-wrapper {
+    width: 100%;
+    height: 100%;
+    /* Gradient mimicking the image: darker top to lighter bottom */
+    background: linear-gradient(to bottom, #374151 0%, #d1d5db 100%);
+    aspect-ratio: 1.4; /* Wider format like the image */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.iconic-product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.iconic-product-card:hover .iconic-product-img {
+    transform: scale(1.05);
+}
+
+.iconic-product-pill {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    background: #ffffff;
+    color: #111111;
+    padding: 0.6rem 1.25rem;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.iconic-controls {
+    display: flex;
+    gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .video-banner-title {
+        font-size: 2rem;
+    }
+    
+    .iconic-product-card {
+        flex: 0 0 85%;
+    }
+    
+    .iconic-section {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    
+    .iconic-product-pill {
+        bottom: 1rem;
+        left: 1rem;
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
     }
 }

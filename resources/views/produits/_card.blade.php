@@ -1,23 +1,15 @@
 {{-- produits/_card.blade.php --}}
 
-<div class="product-card">
-    <div class="product-card-image">
-        @php
-            $imageUrl = $p->image_url;
-        @endphp
-        <a href="{{ route('produits.show', $p->id) }}" class="product-card-image-link" aria-label="Voir le produit {{ $p->nom }}">
-            <img src="{{ $imageUrl }}" class="product-image" alt="{{ $p->nom }}">
-        </a>
+<a href="{{ route('produits.show', $p->id) }}" class="product-card">
+    <div class="product-img-wrapper">
+        <img src="{{ $p->image_url }}" alt="{{ $p->nom }}" onerror="this.src='https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'">
     </div>
-
-    <div class="product-card-body">
-        <p class="product-category">{{ $p->category->nom ?? 'Chaussure' }}</p>
-        <h3 class="product-name">{{ $p->nom }}</h3>
-        <p class="product-desc">{{ Str::limit($p->description, 60) }}</p>
+    <div class="product-card-info">
+        <p class="product-card-category">{{ $p->category->nom ?? 'Sneakers' }}</p>
+        <h3 class="product-card-title">{{ $p->nom }}</h3>
+        <div class="product-card-bottom">
+            <span class="product-card-price">{{ number_format($p->prix, 0, ' ', ' ') }} CDF</span>
+            <span class="product-card-action">Choisir</span>
+        </div>
     </div>
-
-    <div class="product-card-footer">
-        <span class="price">{{ number_format($p->prix, 0, ' ', ' ') }} CDF</span>
-    </div>
-
-</div>
+</a>
