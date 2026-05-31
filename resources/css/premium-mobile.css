@@ -188,7 +188,8 @@ body.is-scrolled .navbar {
         margin-top: 0 !important;
     }
 
-    .hero-bg {
+    .hero-bg,
+    .hero-bg-video {
         object-position: center 30% !important;
     }
 
@@ -305,7 +306,7 @@ body.is-scrolled .navbar {
     }
 
     body {
-        padding-top: 56px !important;
+        padding-top: 60px !important;
     }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

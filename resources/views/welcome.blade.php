@@ -5,11 +5,34 @@
 <section class="hero-section">
     @php
         $heroImage = $configs['hero_image'] ?? 'https://images.unsplash.com/photo-1552346154-21d32810baa3?q=80&w=2000&auto=format&fit=crop';
-        if (!str_starts_with($heroImage, 'http')) {
+        if (! str_starts_with($heroImage, 'http')) {
             $heroImage = asset('storage/' . $heroImage);
         }
+
+        $heroVideo = $configs['hero_video'] ?? null;
+        if ($heroVideo && ! str_starts_with($heroVideo, 'http')) {
+            $heroVideo = asset('storage/' . $heroVideo);
+        }
     @endphp
-    <img src="{{ $heroImage }}" alt="Stepora Sneakers" class="hero-bg animate-zoom">
+
+    <div class="hero-media">
+        @if($heroVideo)
+            <video
+                class="hero-bg hero-bg-video animate-zoom"
+                autoplay
+                muted
+                loop
+                playsinline
+                poster="{{ $heroImage }}"
+                aria-label="Vidéo d'accueil Stepora"
+            >
+                <source src="{{ $heroVideo }}" type="video/mp4">
+            </video>
+        @else
+            <img src="{{ $heroImage }}" alt="Stepora Sneakers" class="hero-bg animate-zoom">
+        @endif
+    </div>
+
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <p class="hero-tagline animate-fade-in">{{ strtoupper($configs['hero_tagline'] ?? 'Nouvelle Collection') }}</p>

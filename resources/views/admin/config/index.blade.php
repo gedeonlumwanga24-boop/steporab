@@ -26,11 +26,11 @@
                     </div>
                 </div>
 
-                <!-- Droite: Image -->
+                <!-- Droite: Médias -->
                 <div>
                     <div class="admin-form-group">
-                        <label class="admin-label">Image de fond (Hero Image)</label>
-                        
+                        <label class="admin-label">Image de fond (fallback si pas de vidéo)</label>
+
                         @if(isset($configs['hero_image']))
                             <div style="margin-bottom: 1rem;">
                                 @php
@@ -42,7 +42,28 @@
                         @endif
 
                         <input type="file" name="hero_image" class="admin-input" accept="image/*">
-                        <p style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">L'upload d'une nouvelle image remplacera l'image actuelle.</p>
+                        <p style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">Affichée par défaut. Utilisée aussi comme poster pendant le chargement de la vidéo.</p>
+                    </div>
+
+                    <div class="admin-form-group" style="margin-top: 1.5rem;">
+                        <label class="admin-label">Vidéo de fond Hero (MP4 recommandé)</label>
+
+                        @if(!empty($configs['hero_video']))
+                            <div style="margin-bottom: 1rem;">
+                                @php
+                                    $heroVid = $configs['hero_video'];
+                                    $urlHeroVid = str_starts_with($heroVid, 'http') ? $heroVid : asset('storage/' . $heroVid);
+                                @endphp
+                                <video src="{{ $urlHeroVid }}" autoplay loop muted playsinline style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);"></video>
+                            </div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #6b7280; margin-bottom: 0.75rem; cursor: pointer;">
+                                <input type="checkbox" name="remove_hero_video" value="1">
+                                Supprimer la vidéo hero (l'image sera affichée)
+                            </label>
+                        @endif
+
+                        <input type="file" name="hero_video" class="admin-input" accept="video/mp4,video/webm,video/quicktime">
+                        <p style="font-size: 0.8rem; color: #6b7280; margin-top: 0.5rem;">Si une vidéo est configurée, elle remplace l'image sur la bannière d'accueil. Taille max recommandée : 20 Mo.</p>
                     </div>
                 </div>
             </div>
@@ -93,6 +114,10 @@
                                 @endphp
                                 <video src="{{ $urlVid }}" autoplay loop muted playsinline style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);"></video>
                             </div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #6b7280; margin-bottom: 0.75rem; cursor: pointer;">
+                                <input type="checkbox" name="remove_trending_video" value="1">
+                                Supprimer la vidéo tendances
+                            </label>
                         @endif
 
                         <input type="file" name="trending_video" class="admin-input" accept="video/mp4,video/webm">
@@ -117,7 +142,8 @@
     <div style="padding: 1.5rem;">
         <p>Les animations suivantes sont maintenant actives sur la page d'accueil :</p>
         <ul style="list-style: none; padding: 0;">
-            <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-check" style="color: #10b981; margin-right: 10px;"></i> <strong>Zoom progressif</strong> sur l'image de fond du Hero.</li>
+            <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-check" style="color: #10b981; margin-right: 10px;"></i> <strong>Vidéo ou image</strong> en arrière-plan du Hero (configurable depuis l'admin).</li>
+            <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-check" style="color: #10b981; margin-right: 10px;"></i> <strong>Zoom progressif</strong> sur le média de fond du Hero.</li>
             <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-check" style="color: #10b981; margin-right: 10px;"></i> <strong>Apparition en cascade</strong> (Fade in & Slide up) des textes du Hero.</li>
             <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-check" style="color: #10b981; margin-right: 10px;"></i> <strong>Révélation au défilement</strong> (Scroll Reveal) pour les sections Collections, Tendances et Valeurs.</li>
             <li style="margin-bottom: 0.5rem;"><i class="fa-solid fa-check" style="color: #10b981; margin-right: 10px;"></i> <strong>Bannière vidéo</strong> en arrière-plan dans la section Tendances.</li>
