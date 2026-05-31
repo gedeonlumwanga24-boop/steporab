@@ -1,0 +1,764 @@
+/* ============================================================
+   PREMIUM MOBILE STYLESHEET — Stepora
+   Chargé en DERNIER dans app.css, il a la priorité maximale
+   ============================================================ */
+
+/* ── Base globale ── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Empêche tout overflow horizontal ── */
+html {
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    min-width: 320px;
+}
+
+/* ── Scroll scrolled state ── */
+body.is-scrolled .navbar {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ── Panier badge toujours visible ── */
+.nav-actions a[aria-label="Panier"] {
+    overflow: visible !important;
+}
+
+/* ── Reveal animations ── */
+.reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+        opacity 0.65s ease,
+        transform 0.65s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ── Tap ripple effect ── */
+.tap-ripple {
+    position: absolute;
+    border-radius: 999px;
+    transform: scale(0);
+    animation: tapRipple 480ms ease-out forwards;
+    background: rgba(17, 17, 17, 0.12);
+    pointer-events: none;
+}
+
+@keyframes tapRipple {
+    to {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+/* ============================================================
+   VIDEO BANNER SECTION — Desktop (Default)
+   ============================================================ */
+.video-banner-section {
+    padding: 0;
+    background: #111111;
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 75vh;
+    min-height: 500px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 3rem 4rem;
+}
+
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.video-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.65) 0%,
+        rgba(0, 0, 0, 0) 40%
+    );
+    z-index: 2;
+}
+
+.video-content {
+    position: relative;
+    z-index: 3;
+    text-align: left;
+    width: 100%;
+    max-width: 600px;
+}
+
+.video-tagline {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin: 0 0 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.video-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    color: #ffffff;
+    line-height: 1.1;
+    margin: 0 0 1.5rem;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.video-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #111111;
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 1rem 2.2rem;
+    border-radius: 999px;
+    text-decoration: none;
+    min-height: 52px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.video-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 255, 255, 0.25);
+}
+
+.video-btn:active {
+    transform: scale(0.96);
+}
+
+/* ============================================================
+   MOBILE — max-width 900px
+   ============================================================ */
+@media (max-width: 900px) {
+    /* ── Fond global mobile ── */
+    html,
+    body {
+        background: #f5f5f3;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       HERO SECTION — premium mobile look
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .hero-section {
+        min-height: 100svh !important;
+        min-height: 100vh !important;
+        height: 100vh;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding-top: 60px !important; /* navbar height */
+        padding-bottom: 2rem !important;
+        overflow: hidden;
+        border-radius: 0 !important;
+    }
+
+    /* Overlay extrêmement léger pour laisser respirer l'image */
+    .hero-overlay {
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.05) 0%,
+            rgba(0, 0, 0, 0.35) 100%
+        ) !important;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 3;
+        width: min(92vw, 400px) !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+
+    /* ── Hero card (suppression du look "boîte" pour un style pur image) ── */
+    .hero-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0 1rem !important;
+        gap: 0.5rem !important;
+        background: transparent !important;
+        border: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    /* ── Tagline ── */
+    .hero-tagline {
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.1em !important;
+        text-transform: uppercase !important;
+        color: #ffffff !important;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8) !important;
+        margin: 0 0 0.5rem !important;
+        text-align: center !important;
+    }
+
+    /* ── Hero title ── */
+    .hero-card .hero-title,
+    .hero-title {
+        font-size: clamp(2.8rem, 13vw, 4rem) !important;
+        font-weight: 900 !important;
+        line-height: 0.95 !important;
+        letter-spacing: -0.04em !important;
+        text-transform: uppercase !important;
+        text-align: center !important;
+        color: #ffffff !important;
+        margin: 0 0 1rem !important;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8) !important;
+        width: 100% !important;
+    }
+
+    /* ── Hero description ── */
+    .hero-card .hero-desc,
+    .hero-desc {
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+        color: #ffffff !important;
+        text-align: center !important;
+        max-width: 95% !important;
+        margin: 0 0 2.5rem !important;
+        font-weight: 500 !important;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9) !important;
+    }
+
+    /* ── CTA Button — premium redesign ── */
+    .hero-card .hero-btn,
+    .hero-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        width: auto !important;
+        min-width: 200px !important;
+        min-height: 54px !important;
+        padding: 0.9rem 2rem !important;
+        font-size: 1rem !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.02em !important;
+        border-radius: 999px !important;
+        border: none !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        text-decoration: none !important;
+        transition:
+            transform 0.2s ease,
+            background 0.2s ease !important;
+        margin-top: 1.5rem !important;
+    }
+
+    .hero-card .hero-btn:active,
+    .hero-btn:active {
+        transform: scale(0.97) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .hero-btn i {
+        font-size: 0.9rem;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       HOME SECTIONS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .home-section {
+        padding: 1.6rem 0.95rem !important;
+        background: #f5f5f3 !important;
+    }
+
+    .home-section[style*="background: #f9fafb"] {
+        background: #f5f5f3 !important;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.1rem !important;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .section-title {
+        font-size: 1.35rem !important;
+        letter-spacing: -0.02em !important;
+        color: #111111 !important;
+    }
+
+    .section-link {
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+    }
+
+    .slider-controls {
+        display: none !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CATEGORIES SLIDER
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .categories-slider-wrapper {
+        overflow: hidden;
+        margin: 0 -0.95rem;
+        padding: 0 0.95rem;
+    }
+
+    .categories-slider {
+        gap: 0.75rem !important;
+        width: max-content;
+        overflow: visible;
+        animation: categories-marquee-loop 22s linear infinite;
+        will-change: transform;
+        padding-bottom: 0.25rem;
+    }
+
+    .categories-slider .category-card {
+        flex: 0 0 80vw !important;
+        height: 58vw !important;
+        max-height: 380px;
+        border-radius: 16px !important;
+    }
+
+    .category-overlay {
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.78),
+            rgba(0, 0, 0, 0.05)
+        ) !important;
+    }
+
+    .category-content {
+        padding: 1rem 1.1rem !important;
+    }
+
+    .category-title {
+        font-size: 1.4rem !important;
+        letter-spacing: -0.01em !important;
+    }
+
+    .category-btn {
+        display: inline-block !important;
+        background: #ffffff !important;
+        color: #111111 !important;
+        border: 0 !important;
+        border-radius: 999px !important;
+        padding: 0.38rem 0.85rem !important;
+        font-size: 0.74rem !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.06em !important;
+        text-transform: uppercase !important;
+        margin-top: 0.3rem !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       VIDEO BANNER SECTION (Nike Style)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .video-banner-section {
+        padding: 0 !important;
+        background: #111111 !important;
+        margin-top: 1rem !important;
+    }
+
+    .video-container {
+        position: relative !important;
+        width: 100% !important;
+        height: 75vh !important;
+        min-height: 500px !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-end !important;
+        padding: 2rem 1.25rem !important;
+    }
+
+    .bg-video {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        z-index: 1 !important;
+    }
+
+    .video-overlay {
+        position: absolute !important;
+        inset: 0 !important;
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.65) 0%,
+            rgba(0, 0, 0, 0) 40%
+        ) !important;
+        z-index: 2 !important;
+    }
+
+    .video-content {
+        position: relative !important;
+        z-index: 3 !important;
+        text-align: left !important;
+        width: 100% !important;
+    }
+
+    .video-tagline {
+        font-size: 1.1rem !important;
+        font-weight: 500 !important;
+        color: #ffffff !important;
+        margin: 0 0 0.2rem !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .video-title {
+        font-size: clamp(2rem, 9vw, 3rem) !important;
+        font-weight: 900 !important;
+        color: #ffffff !important;
+        line-height: 1.1 !important;
+        margin: 0 0 1.25rem !important;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+    }
+
+    .video-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #ffffff !important;
+        color: #111111 !important;
+        font-weight: 800 !important;
+        font-size: 0.95rem !important;
+        padding: 0.85rem 1.8rem !important;
+        border-radius: 999px !important;
+        text-decoration: none !important;
+        min-height: 48px !important;
+        transition: transform 0.2s ease !important;
+    }
+
+    .video-btn:active {
+        transform: scale(0.96) !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       VALUES / BRAND SECTION
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .values-section {
+        border-radius: 0 !important;
+        margin-top: 0.5rem !important;
+        padding: 2.5rem 1rem !important;
+    }
+
+    .values-title {
+        font-size: 1.45rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 2rem !important;
+        text-align: center;
+    }
+
+    .values-grid {
+        gap: 0.85rem !important;
+    }
+
+    .value-item {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 14px !important;
+        padding: 1.1rem !important;
+        text-align: left;
+    }
+
+    .value-item i {
+        font-size: 1.8rem !important;
+        margin-bottom: 0.65rem !important;
+    }
+
+    .value-item h3 {
+        font-size: 0.95rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+
+    .value-item p {
+        font-size: 0.82rem !important;
+        line-height: 1.5 !important;
+        color: #9ca3af !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       FOOTER MOBILE
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .footer {
+        background: #111111 !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CATALOG PAGE
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .catalog-page {
+        padding: 1rem 0.85rem 2rem !important;
+    }
+
+    .catalog-header {
+        margin-bottom: 1.2rem !important;
+    }
+
+    .catalog-title {
+        font-size: 1.25rem !important;
+    }
+
+    .produits-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 0.85rem !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       PANIER / CART
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .cart-page {
+        padding: 1.25rem 0.9rem 2rem !important;
+    }
+
+    .cart-header h1 {
+        font-size: 1.6rem !important;
+    }
+
+    .cart-layout {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+    }
+
+    .cart-sidebar {
+        position: static !important;
+        order: -1;
+    }
+
+    .cart-item {
+        gap: 0.85rem !important;
+    }
+
+    .cart-item-image {
+        width: 5rem !important;
+        height: 5rem !important;
+        border-radius: 8px !important;
+        object-fit: cover !important;
+        flex-shrink: 0;
+    }
+
+    .cart-item-total {
+        text-align: left !important;
+        padding-left: 0 !important;
+        width: auto !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       AUTH
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .auth-page {
+        padding: 1.5rem 1rem !important;
+        min-height: calc(100svh - 60px) !important;
+    }
+
+    .auth-card {
+        padding: 1.5rem 1.25rem !important;
+        border-radius: 16px !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       COMPTE / ACCOUNT
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .compte-page {
+        padding: 1.25rem 0.9rem 2rem !important;
+    }
+
+    .compte-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.75rem !important;
+    }
+
+    .compte-title {
+        font-size: 1.5rem !important;
+    }
+
+    .compte-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    .commande-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem !important;
+    }
+
+    .commande-total {
+        align-self: flex-end !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       CONTACT
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .contact-page {
+        padding: 1.25rem 0.9rem 2rem !important;
+    }
+
+    .contact-header {
+        margin-bottom: 1.5rem !important;
+        padding-bottom: 1.25rem !important;
+    }
+
+    .contact-title {
+        font-size: 1.6rem !important;
+    }
+
+    .contact-form-card {
+        padding: 1.25rem !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       PRODUCT SHOW / DETAIL
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .product-show-container {
+        padding: 1rem 0.9rem 1.5rem !important;
+    }
+
+    .product-show-layout {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem !important;
+    }
+
+    .product-gallery {
+        flex-direction: column-reverse !important;
+    }
+
+    .product-thumbnails-container {
+        flex-direction: row !important;
+        width: 100% !important;
+        max-height: none !important;
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+    }
+
+    .product-thumbnails-container::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .product-thumbnail {
+        flex-shrink: 0 !important;
+    }
+
+    .product-show-title {
+        font-size: 1.4rem !important;
+    }
+
+    .product-price {
+        font-size: 1.3rem !important;
+    }
+
+    /* Gallery nav buttons — always show on mobile (no hover possible) */
+    .gallery-nav-btn {
+        opacity: 1 !important;
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+    .gallery-nav-btn.prev {
+        left: 0.6rem !important;
+    }
+    .gallery-nav-btn.next {
+        right: 0.6rem !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       ICONES / BOUTONS GLOBAUX — tap targets
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .btn-add-to-cart,
+    .btn-wishlist,
+    .auth-submit,
+    .contact-submit,
+    .cart-delivery button,
+    .client-request-submit {
+        min-height: 50px !important;
+    }
+
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       FILTERS (catalog sidebar toggle)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .filters-mobile-toggle {
+        display: inline-flex !important;
+        min-height: 48px !important;
+        font-size: 0.88rem !important;
+        letter-spacing: 0.04em !important;
+    }
+}
+
+/* ── Very small screens ── */
+@media (max-width: 390px) {
+    .hero-card {
+        padding: 1.5rem 1rem 1.6rem !important;
+    }
+
+    .hero-card .hero-title,
+    .hero-title {
+        font-size: clamp(2rem, 11vw, 2.8rem) !important;
+    }
+
+    .trending-grid {
+        gap: 0.6rem !important;
+    }
+
+    .product-card-title {
+        font-size: 0.82rem !important;
+    }
+
+    .product-card-price {
+        font-size: 0.78rem !important;
+    }
+}
+
+/* ── Marquee animation ── */
+@keyframes categories-marquee-loop {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(calc(-50% - 0.375rem));
+    }
+}

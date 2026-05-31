@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files and directories
+<FilesMatch "^\.|\.(env|xml|config|sh|log|sql|json|lock)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<DirectoryMatch "^(\.git|vendor|storage|tests|node_modules|bootstrap|config|database|resources)">
+    Order allow,deny
+    Deny from all
+</DirectoryMatch>
+ 

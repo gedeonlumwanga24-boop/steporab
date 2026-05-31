@@ -1,0 +1,371 @@
+/* ==========================================
+   CART DRAWER - CSS & ANIMATIONS
+   ========================================== */
+
+/* ================== DRAWER CONTAINER ================== */
+.cart-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+/* Overlay/Backdrop */
+.cart-drawer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+    pointer-events: none;
+}
+
+.cart-drawer.active .cart-drawer-overlay {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ================== MAIN DRAWER ================== */
+.cart-drawer-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    background: white;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: auto;
+
+    /* Slide-up animation */
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: auto;
+}
+
+.cart-drawer.active .cart-drawer-container {
+    transform: translateY(0);
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .cart-drawer-container {
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 24px 24px 0 0;
+    }
+}
+
+/* ================== DRAWER HEADER ================== */
+.cart-drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.cart-drawer-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.cart-drawer-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.cart-drawer-close:hover {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+/* ================== DRAWER CONTENT ================== */
+.cart-drawer-content {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    flex-grow: 1;
+    align-items: start;
+}
+
+/* Product Image */
+.cart-drawer-product-image {
+    width: 120px;
+    height: 120px;
+    background-color: #f9fafb;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-drawer-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* Product Details */
+.cart-drawer-product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.cart-drawer-product-name {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.cart-drawer-product-category {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    margin: 0;
+}
+
+/* Product Meta Information */
+.cart-drawer-product-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+.cart-drawer-meta-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+}
+
+.cart-drawer-meta-item .label {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.cart-drawer-meta-item .value {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* Product Price */
+.cart-drawer-product-price {
+    padding-top: 0.75rem;
+    border-top: 1px solid #f0f0f0;
+}
+
+#cartDrawerPrice {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+/* ================== DRAWER ACTIONS ================== */
+.cart-drawer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    padding: 1.5rem;
+    border-top: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.btn-drawer-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* Primary Button */
+.btn-drawer-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.btn-drawer-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+}
+
+.btn-drawer-primary:active {
+    transform: translateY(0);
+}
+
+/* Secondary Button */
+.btn-drawer-secondary {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    border: 1px solid #e5e7eb;
+}
+
+.btn-drawer-secondary:hover {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+    transform: translateY(-2px);
+}
+
+.btn-drawer-secondary:active {
+    transform: translateY(0);
+}
+
+/* ================== SUCCESS MESSAGE ================== */
+.cart-drawer-success-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #dcfce7;
+    color: #166534;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 8px;
+    margin: 0 1.5rem 1.5rem;
+    opacity: 0;
+    animation: slideInSuccess 0.4s ease-out 0.2s forwards;
+}
+
+.cart-drawer-success-message i {
+    font-size: 1.125rem;
+}
+
+/* ================== ANIMATIONS ================== */
+
+/* Slide in animation */
+@keyframes slideInSuccess {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Drawer entrance animation */
+@keyframes drawerSlideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* ================== SCROLLBAR STYLING ================== */
+.cart-drawer-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cart-drawer-container::-webkit-scrollbar-track {
+    background: #f9fafb;
+    border-radius: 10px;
+}
+
+.cart-drawer-container::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 10px;
+}
+
+.cart-drawer-container::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* ================== RESPONSIVE ================== */
+
+@media (max-width: 640px) {
+    .cart-drawer-container {
+        border-radius: 24px 24px 0 0;
+    }
+
+    .cart-drawer-header {
+        padding: 1.25rem;
+    }
+
+    .cart-drawer-content {
+        padding: 1.25rem;
+        grid-template-columns: 100px 1fr;
+        gap: 1.25rem;
+    }
+
+    .cart-drawer-product-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .cart-drawer-actions {
+        padding: 1.25rem;
+    }
+
+    .btn-drawer-action {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* ================== LOADING STATE ================== */
+.cart-drawer.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.cart-drawer-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
