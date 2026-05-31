@@ -3,20 +3,20 @@
 use Illuminate\Support\Facades\Route;
 
 // Controllers
-use App\Http\Controllers\ProduitController;
-use App\Http\Controllers\PanierController;
-use App\Http\Controllers\CommandeController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Auth\GoogleController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Web\ProduitController;
+use App\Http\Controllers\Web\PanierController;
+use App\Http\Controllers\Web\CommandeController;
+use App\Http\Controllers\Web\ContactController;
+use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\Auth\GoogleController;
+use App\Http\Controllers\Web\ProfileController;
 
 // Admin Controllers
-use App\Http\Controllers\Admin\ProduitController as AdminProduitController;
-use App\Http\Controllers\Admin\CommandeController as AdminCommandeController;
-use App\Http\Controllers\Admin\ClientController as AdminClientController;
-use App\Http\Controllers\Admin\MessageController as AdminMessageController;
-use App\Http\Controllers\Admin\StatsController;
+use App\Http\Controllers\Web\Admin\ProduitController as AdminProduitController;
+use App\Http\Controllers\Web\Admin\CommandeController as AdminCommandeController;
+use App\Http\Controllers\Web\Admin\ClientController as AdminClientController;
+use App\Http\Controllers\Web\Admin\MessageController as AdminMessageController;
+use App\Http\Controllers\Web\Admin\StatsController;
 
 
 // -------------------- FRONT-END --------------------
@@ -95,7 +95,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('produits', AdminProduitController::class)->names('admin.produits');
 
     // Catégories
-    Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->names('admin.categories');
+    Route::resource('categories', \App\Http\Controllers\Web\Admin\CategoryController::class)->names('admin.categories');
 
     // Commandes
     Route::resource('commandes', AdminCommandeController::class)->names('admin.commandes');
@@ -107,6 +107,6 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('messages', AdminMessageController::class)->names('admin.messages');
 
     // Configuration du site
-    Route::get('config', [\App\Http\Controllers\Admin\ConfigController::class, 'index'])->name('admin.config.index');
-    Route::post('config', [\App\Http\Controllers\Admin\ConfigController::class, 'update'])->name('admin.config.update');
+    Route::get('config', [\App\Http\Controllers\Web\Admin\ConfigController::class, 'index'])->name('admin.config.index');
+    Route::post('config', [\App\Http\Controllers\Web\Admin\ConfigController::class, 'update'])->name('admin.config.update');
 });

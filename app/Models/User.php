@@ -7,11 +7,13 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -20,9 +22,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'nom',
         'email',
         'password',
-        'role',
+        'role',  // Legacy field for backward compatibility
     ];
 
     /**
@@ -48,6 +51,9 @@ class User extends Authenticatable
         ];
     }
 
+    /**
+     * Relations
+     */
     public function commandes()
     {
         return $this->hasMany(Commande::class);
@@ -58,8 +64,59 @@ class User extends Authenticatable
         return $this->hasOne(Client::class);
     }
 
+    /**
+     * Checks if user is an admin (backward compatibility)
+     */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->hasRole('admin');
+    }
+
+    /**
+     * Check if user is a manager
+     */
+    public function isManager(): bool
+    {
+        return $this->hasAnyRole(['admin', 'manager']);
+    }
+
+    /**
+     * Check if user is a customer
+     */
+    public function isCustomer(): bool
+    {
+        return $this->hasRole('customer');
+    }
+
+    /**
+     * Give multiple roles to user
+     */
+    public function giveRoles(...$roles): self
+    {
+        foreach ($roles as $role) {
+            $this->assignRole($role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Revoke multiple roles from user
+     */
+    public function revokeRoles(...$roles): self
+    {
+        foreach ($roles as $role) {
+            $this->removeRole($role);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the display name
+     */
+    public function getDisplayNameAttribute(): string
+    {
+        return $this->nom ?? $this->name ?? $this->email;
     }
 }

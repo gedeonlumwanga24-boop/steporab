@@ -1,11 +1,17 @@
+@php
+    $cartItems = session('cart_items', []);
+    $cartCount = is_array($cartItems)
+        ? array_sum(array_column($cartItems, 'quantite'))
+        : 0;
+@endphp
+
 <nav class="navbar" id="mainNavbar">
     <div class="nav-inner">
-        <!-- BRAND LOGO -->
         <div class="nav-brand">
             <a href="{{ route('home') }}" class="logo">STEPORA</a>
         </div>
 
-        <!-- DESKTOP NAV LINKS -->
+        {{-- Desktop nav --}}
         <div class="desktop-nav-list">
             @foreach($navCategories ?? collect() as $category)
                 @php
@@ -47,60 +53,45 @@
             <a href="{{ route('apropos') }}" class="nav-menu-trigger nav-link-simple {{ request()->routeIs('apropos') ? 'active' : '' }}">À propos</a>
         </div>
 
-        <!-- SEARCH (desktop) -->
         <form action="{{ route('produits.index') }}" method="GET" class="nav-search desktop-search" role="search">
             <label for="nav-search-input" class="sr-only">Rechercher</label>
             <input id="nav-search-input" name="q" type="search" placeholder="Rechercher…" class="search-input" value="{{ request('q') }}">
             <button type="submit" class="search-button" aria-label="Chercher">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="7"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
         </form>
 
-        <!-- NAV ACTIONS -->
         <div class="nav-actions">
-            <!-- Mobile Search Button -->
-            <button class="icon-btn mobile-search-btn" id="mobileSearchToggle" aria-label="Rechercher">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="7"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
+            <button class="icon-btn icon-btn--pill mobile-search-btn" id="mobileSearchToggle" aria-label="Rechercher">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
 
-            <!-- Compte -->
-            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn" aria-label="Compte">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                </svg>
+            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill" aria-label="Compte">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </a>
 
-            <!-- Panier -->
-            <a href="{{ route('panier.index') }}" class="icon-btn" aria-label="Panier" style="position: relative;" id="navCartLink">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            <a href="{{ route('panier.index') }}" class="icon-btn icon-btn--pill nav-cart-btn" aria-label="Panier" id="navCartLink">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
                 </svg>
-                @php $cartCount = collect(session('cart', []))->sum('quantite'); @endphp
-                <span class="cart-badge {{ $cartCount > 0 ? '' : 'cart-badge--hidden' }}" id="navCartBadge">{{ $cartCount }}</span>
+                <span class="cart-dot {{ $cartCount > 0 ? '' : 'cart-dot--hidden' }}" id="navCartBadge"></span>
             </a>
 
-            <!-- Mobile Hamburger -->
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="mobileNavShell">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
+            <button class="icon-btn icon-btn--pill mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="mobileNavShell">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+                    <line x1="4" y1="7" x2="20" y2="7"/>
+                    <line x1="4" y1="12" x2="20" y2="12"/>
+                    <line x1="4" y1="17" x2="20" y2="17"/>
+                </svg>
             </button>
         </div>
     </div>
 
-    <!-- Mobile Search Bar (hidden by default) -->
     <div class="mobile-search-bar" id="mobileSearchBar">
         <form action="{{ route('produits.index') }}" method="GET" role="search">
-            <input name="q" type="search" placeholder="Rechercher des sneakers…" class="mobile-search-input" value="{{ request('q') }}" autofocus>
+            <input name="q" type="search" placeholder="Rechercher des sneakers…" class="mobile-search-input" value="{{ request('q') }}">
             <button type="submit" aria-label="Chercher">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
@@ -108,188 +99,150 @@
     </div>
 </nav>
 
-<!-- MOBILE NAV OVERLAY -->
 <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
 
-<!-- MOBILE NAV SHELL (Drawer) -->
 <div class="mobile-nav-shell" id="mobileNavShell" role="dialog" aria-modal="true" aria-label="Menu de navigation">
-
-    <!-- VIEW: Main Menu -->
-    <div class="mobile-nav-view" id="mobileViewMain">
-        <div class="mobile-nav-header" style="justify-content: flex-end; padding: 1rem 1.5rem; border-bottom: none;">
-            <button class="mobile-nav-icon" id="mobileNavClose" aria-label="Fermer le menu" style="width: 32px; height: 32px; font-size: 1.5rem; background: transparent;">✕</button>
-        </div>
-
-        <div style="padding: 0 1.5rem;">
-            <!-- Links List -->
-            <div class="mobile-links-list">
-                @foreach($navCategories ?? collect() as $category)
-                    @php
-                        $catName  = data_get($category, 'nom');
-                        $catSlug  = data_get($category, 'slug');
-                        $children = collect(data_get($category, 'children', []));
-                    @endphp
-                    @if($children->isNotEmpty())
-                        <button class="mobile-nav-item" data-target="{{ $catSlug }}" aria-expanded="false">
-                            {{ $catName }}
-                            <span class="mobile-nav-chevron" aria-hidden="true">›</span>
-                        </button>
-                    @else
-                        <a href="{{ route('produits.index', ['categorie' => $catSlug]) }}" class="mobile-nav-item mobile-nav-link">
-                            {{ $catName }}
-                        </a>
-                    @endif
-                @endforeach
-            </div>
-
-            <!-- Promo Text -->
-            <p class="mobile-promo-text">
-                Deviens membre Stepora pour accéder au meilleur des produits et découvrir des contenus inspirants sur le sport. <strong>En savoir plus</strong>
-            </p>
-
-            <!-- Auth Buttons -->
-            <div class="mobile-auth-buttons">
-                <a href="{{ route('register') }}" class="mobile-btn-dark">S'inscrire</a>
-                <a href="{{ route('login') }}" class="mobile-btn-light">S'identifier</a>
-            </div>
-
-            <!-- Footer Links -->
-            <div class="mobile-bottom-links">
-                <a href="{{ route('contact.index') }}" class="mobile-bottom-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                    Aide
-                </a>
-                <a href="{{ route('panier.index') }}" class="mobile-bottom-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                    Panier
-                </a>
-                <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="mobile-bottom-link">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                    Commandes
-                </a>
-            </div>
-        </div>
+    <div class="mobile-nav-topbar">
+        <button class="mobile-nav-close" id="mobileNavClose" aria-label="Fermer le menu">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
     </div>
 
-    <!-- SUB VIEWS (Categories) -->
-    @foreach($navCategories ?? collect() as $category)
-        @php
-            $catName  = data_get($category, 'nom');
-            $catSlug  = data_get($category, 'slug');
-            $children = collect(data_get($category, 'children', []));
-            $allLabel = match ($catSlug) {
-                'chaussures' => 'Toutes les chaussures',
-                'vetements'  => 'Tous les vêtements',
-                'accessoires'=> 'Tous les accessoires',
-                default      => 'Tout voir',
-            };
-        @endphp
-        @if($children->isNotEmpty())
-        <div class="mobile-nav-view mobile-nav-sub" id="mobileView{{ $catSlug }}" hidden>
-            <div class="mobile-nav-header mobile-nav-header-sub">
-                <button class="mobile-nav-icon mobile-nav-back" data-back="true" aria-label="Retour">‹</button>
-                <strong>{{ $catName }}</strong>
-                <button class="mobile-nav-icon" data-close="true" aria-label="Fermer">✕</button>
-            </div>
-            <nav class="mobile-nav-list">
-                <a href="{{ route('produits.index', ['categorie' => $catSlug]) }}" class="mobile-sub-link mobile-sub-link-all">{{ $allLabel }}</a>
-                @foreach($children as $child)
-                    <a href="{{ route('produits.index', ['categorie' => data_get($child,'slug')]) }}" class="mobile-sub-link">
-                        {{ data_get($child,'nom') }}
-                    </a>
-                @endforeach
-            </nav>
-        </div>
-        @endif
-    @endforeach
+    <div class="mobile-nav-body">
+        <div class="mobile-category-list">
+            @foreach($navCategories ?? collect() as $category)
+                @php
+                    $catName  = data_get($category, 'nom');
+                    $catSlug  = data_get($category, 'slug');
+                    $children = collect(data_get($category, 'children', []));
+                    $allLabel = match ($catSlug) {
+                        'chaussures' => 'Toutes les chaussures',
+                        'vetements'  => 'Tous les vêtements',
+                        'accessoires'=> 'Tous les accessoires',
+                        default      => 'Tout voir',
+                    };
+                @endphp
 
+                @if($children->isNotEmpty())
+                    <div class="mobile-category-card" data-accordion>
+                        <button class="mobile-category-trigger" type="button" aria-expanded="false">
+                            <span>{{ $catName }}</span>
+                            <svg class="mobile-category-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                        </button>
+                        <div class="mobile-accordion-panel" hidden>
+                            <a href="{{ route('produits.index', ['categorie' => $catSlug]) }}" class="mobile-sub-link mobile-sub-link--all">{{ $allLabel }}</a>
+                            @foreach($children as $child)
+                                <a href="{{ route('produits.index', ['categorie' => data_get($child, 'slug')]) }}" class="mobile-sub-link">
+                                    {{ data_get($child, 'nom') }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('produits.index', ['categorie' => $catSlug]) }}" class="mobile-category-card mobile-category-card--link">
+                        <span>{{ $catName }}</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </a>
+                @endif
+            @endforeach
+        </div>
+
+        <p class="mobile-promo-text">
+            Deviens membre Stepora pour accéder au meilleur des produits et découvrir des contenus inspirants sur le sport. <strong>En savoir plus</strong>
+        </p>
+
+        <div class="mobile-auth-buttons">
+            <a href="{{ route('register') }}" class="mobile-btn-dark">S'inscrire</a>
+            <a href="{{ route('login') }}" class="mobile-btn-light">S'identifier</a>
+        </div>
+
+        <div class="mobile-bottom-links">
+            <a href="{{ route('contact.index') }}" class="mobile-bottom-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Aide
+            </a>
+            <a href="{{ route('panier.index') }}" class="mobile-bottom-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Panier
+            </a>
+            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="mobile-bottom-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Commandes
+            </a>
+        </div>
+    </div>
 </div>
 
 <script>
-(function() {
+(function () {
     const btn       = document.getElementById('mobileMenuBtn');
     const overlay   = document.getElementById('mobileNavOverlay');
     const shell     = document.getElementById('mobileNavShell');
     const closeBtn  = document.getElementById('mobileNavClose');
-    const mainView  = document.getElementById('mobileViewMain');
     const searchBtn = document.getElementById('mobileSearchToggle');
     const searchBar = document.getElementById('mobileSearchBar');
+    const navbar    = document.getElementById('mainNavbar');
 
     function openMenu() {
         shell.classList.add('open');
         overlay.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        btn.setAttribute('aria-expanded', 'true');
-        showView(mainView);
+        document.body.classList.add('mobile-menu-open');
+        btn?.setAttribute('aria-expanded', 'true');
     }
 
     function closeMenu() {
         shell.classList.remove('open');
         overlay.classList.remove('open');
-        document.body.style.overflow = '';
-        btn.setAttribute('aria-expanded', 'false');
-        searchBar.classList.remove('open');
-    }
-
-    function showView(view) {
-        document.querySelectorAll('.mobile-nav-view').forEach(v => {
-            v.hidden = true;
-            v.setAttribute('aria-hidden', 'true');
-        });
-        view.hidden = false;
-        view.removeAttribute('aria-hidden');
-    }
-
-    btn.addEventListener('click', openMenu);
-    overlay.addEventListener('click', closeMenu);
-    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
-
-    // Category triggers
-    document.querySelectorAll('.mobile-nav-item[data-target]').forEach(item => {
-        item.addEventListener('click', function() {
-            const target = this.dataset.target;
-            const subView = document.getElementById('mobileView' + target);
-            if (subView) showView(subView);
-        });
-    });
-
-    // Back buttons
-    document.querySelectorAll('[data-back="true"]').forEach(btn => {
-        btn.addEventListener('click', () => showView(mainView));
-    });
-
-    // Close buttons inside sub-views
-    document.querySelectorAll('[data-close="true"]').forEach(b => {
-        b.addEventListener('click', closeMenu);
-    });
-
-    // Mobile search toggle
-    if (searchBtn) {
-        searchBtn.addEventListener('click', function() {
-            searchBar.classList.toggle('open');
-            if (searchBar.classList.contains('open')) {
-                searchBar.querySelector('input').focus();
-            }
+        document.body.classList.remove('mobile-menu-open');
+        btn?.setAttribute('aria-expanded', 'false');
+        searchBar?.classList.remove('open');
+        document.querySelectorAll('[data-accordion].is-open').forEach(el => {
+            el.classList.remove('is-open');
+            el.querySelector('.mobile-category-trigger')?.setAttribute('aria-expanded', 'false');
+            const panel = el.querySelector('.mobile-accordion-panel');
+            if (panel) panel.hidden = true;
         });
     }
 
-    // Show mobile search btn + hide desktop search on mobile
-    function handleResize() {
-        if (window.innerWidth <= 900) {
-            searchBtn.style.display = 'inline-flex';
-        } else {
-            searchBtn.style.display = 'none';
-            searchBar.classList.remove('open');
-            closeMenu();
+    btn?.addEventListener('click', openMenu);
+    overlay?.addEventListener('click', closeMenu);
+    closeBtn?.addEventListener('click', closeMenu);
+
+    document.querySelectorAll('[data-accordion]').forEach(card => {
+        const trigger = card.querySelector('.mobile-category-trigger');
+        const panel   = card.querySelector('.mobile-accordion-panel');
+        if (!trigger || !panel) return;
+
+        trigger.addEventListener('click', () => {
+            const isOpen = card.classList.contains('is-open');
+            document.querySelectorAll('[data-accordion].is-open').forEach(other => {
+                if (other === card) return;
+                other.classList.remove('is-open');
+                other.querySelector('.mobile-category-trigger')?.setAttribute('aria-expanded', 'false');
+                const p = other.querySelector('.mobile-accordion-panel');
+                if (p) p.hidden = true;
+            });
+            card.classList.toggle('is-open', !isOpen);
+            trigger.setAttribute('aria-expanded', String(!isOpen));
+            panel.hidden = isOpen;
+        });
+    });
+
+    searchBtn?.addEventListener('click', () => {
+        searchBar?.classList.toggle('open');
+        if (searchBar?.classList.contains('open')) {
+            searchBar.querySelector('input')?.focus();
         }
-    }
-    handleResize();
-    window.addEventListener('resize', handleResize);
+    });
 
-    // Navbar scroll shadow
-    const navbar = document.getElementById('mainNavbar');
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 900) closeMenu();
+    }, { passive: true });
+
     window.addEventListener('scroll', () => {
-        navbar.classList.toggle('scrolled', window.scrollY > 10);
+        navbar?.classList.toggle('scrolled', window.scrollY > 10);
     }, { passive: true });
 })();
 </script>

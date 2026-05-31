@@ -12,11 +12,11 @@
     <img src="{{ $heroImage }}" alt="Stepora Sneakers" class="hero-bg animate-zoom">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <p class="hero-tagline animate-fade-in">{{ $configs['hero_tagline'] ?? 'Nouvelle Collection' }}</p>
-        <h1 class="hero-title animate-slide-up">{{ $configs['hero_title'] ?? 'L\'élégance à chaque pas.' }}</h1>
+        <p class="hero-tagline animate-fade-in">{{ strtoupper($configs['hero_tagline'] ?? 'Nouvelle Collection') }}</p>
+        <h1 class="hero-title animate-slide-up">{{ strtoupper($configs['hero_title'] ?? 'L\'élégance à chaque pas.') }}</h1>
         <p class="hero-desc animate-fade-in-delay">Découvrez notre nouvelle gamme de sneakers premium. Conçues pour le confort, pensées pour le style urbain.</p>
         <a href="{{ route('produits.index') }}" class="hero-btn animate-slide-up-delay">
-            Découvrir la collection <i class="fa-solid fa-arrow-right"></i>
+            Découvrir la collection
         </a>
     </div>
 </section>
