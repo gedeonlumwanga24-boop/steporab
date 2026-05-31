@@ -18,5 +18,6 @@
 
     @include('partials.footer')
 
+    @include('components.cart-drawer')
 </body>
 </html>

@@ -47,6 +47,10 @@
 
             <button type="submit" class="auth-submit">Se connecter</button>
 
+            <a href="{{ route('google.redirect') }}" class="auth-google-button" style="display:block;text-align:center;margin:1rem 0;padding:0.75rem 1rem;background:#4285F4;color:#fff;border-radius:0.5rem;text-decoration:none;">
+                <i class="fa-brands fa-google"></i> Se connecter avec Google
+            </a>
+
             <div class="auth-footer">
                 Vous n'avez pas de compte ? <a href="{{ route('register') }}" class="auth-link">S'inscrire</a>
             </div>

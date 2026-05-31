@@ -1,4 +1,6 @@
 import './bootstrap';
+import './components/CartDrawer';
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const toggle = document.querySelector(".menu-toggle");
