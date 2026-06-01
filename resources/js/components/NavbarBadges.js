@@ -15,9 +15,42 @@ export class NavbarBadges {
     init() {
         this.setupCartBadgeListener();
         this.setupAccountBadgeListener();
+        this.setupCartBadgeGuard();
 
         // Vérifier le panier initial
         this.checkInitialCart();
+    }
+
+    /**
+     * Empêcher d'autres scripts de masquer le badge alors que le compteur > 0
+     * Utilise un MutationObserver pour rétablir la visibilité si nécessaire
+     */
+    setupCartBadgeGuard() {
+        if (!this.cartBadge || typeof MutationObserver === 'undefined') return;
+
+        const guard = (mutationsList) => {
+            for (const m of mutationsList) {
+                // Si contenu texte changé, ou classes changées, réappliquer la règle
+                const text = (this.cartBadge.textContent || '').trim();
+                const count = text.endsWith('+') ? parseInt(text, 10) || 9 : parseInt(text, 10) || 0;
+                if (count > 0 && this.cartBadge.classList.contains('cart-badge--hidden')) {
+                    this.cartBadge.classList.remove('cart-badge--hidden');
+                }
+                // If count is zero, ensure hidden
+                if (count <= 0 && !this.cartBadge.classList.contains('cart-badge--hidden')) {
+                    this.cartBadge.classList.add('cart-badge--hidden');
+                }
+            }
+        };
+
+        this._cartBadgeObserver = new MutationObserver(guard);
+        this._cartBadgeObserver.observe(this.cartBadge, {
+            attributes: true,
+            attributeFilter: ['class'],
+            childList: true,
+            characterData: true,
+            subtree: true,
+        });
     }
 
     /**
@@ -39,7 +72,6 @@ export class NavbarBadges {
      */
     showCartBadgeWithAnimation() {
         if (!this.cartBadge) return;
-
 
         // Assurez-vous que le badge est visible — ne pas le masquer automatiquement
         this.cartBadge.classList.remove("cart-badge--hidden");
