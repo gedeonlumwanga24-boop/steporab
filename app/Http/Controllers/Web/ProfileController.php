@@ -17,8 +17,15 @@ class ProfileController extends Controller
         $user    = Auth::user();
         $client  = $user->client;
         $commandes = $user->commandes()->latest()->get();
+        $messages = \App\Models\Message::where('email', $user->email)->latest()->get();
 
-        return view('compte.show', compact('user', 'client', 'commandes'));
+        // Marquer les messages répondus comme lus par le client
+        \App\Models\Message::where('email', $user->email)
+            ->where('status', 'répondu')
+            ->where('client_read', false)
+            ->update(['client_read' => true]);
+
+        return view('compte.show', compact('user', 'client', 'commandes', 'messages'));
     }
 
     /**

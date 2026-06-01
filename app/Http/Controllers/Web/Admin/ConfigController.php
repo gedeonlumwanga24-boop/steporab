@@ -18,7 +18,7 @@ class ConfigController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->except('_token', 'hero_image', 'hero_video', 'trending_video', 'remove_hero_video', 'remove_trending_video');
+        $data = $request->except('_token', 'hero_image', 'hero_video', 'trending_video', 'remove_hero_video', 'remove_trending_video', 'about_hero_image', 'about_image_1', 'about_image_2');
 
         if ($request->boolean('remove_hero_video')) {
             $this->deleteStoredFile(SiteConfig::where('key', 'hero_video')->value('value'));
@@ -49,6 +49,21 @@ class ConfigController extends Controller
 
             $path = $request->file('trending_video')->store('site/videos', 'public');
             SiteConfig::updateOrCreate(['key' => 'trending_video'], ['value' => $path]);
+        }
+
+        if ($request->hasFile('about_hero_image')) {
+            $path = $request->file('about_hero_image')->store('site', 'public');
+            SiteConfig::updateOrCreate(['key' => 'about_hero_image'], ['value' => $path]);
+        }
+
+        if ($request->hasFile('about_image_1')) {
+            $path = $request->file('about_image_1')->store('site', 'public');
+            SiteConfig::updateOrCreate(['key' => 'about_image_1'], ['value' => $path]);
+        }
+
+        if ($request->hasFile('about_image_2')) {
+            $path = $request->file('about_image_2')->store('site', 'public');
+            SiteConfig::updateOrCreate(['key' => 'about_image_2'], ['value' => $path]);
         }
 
         foreach ($data as $key => $value) {

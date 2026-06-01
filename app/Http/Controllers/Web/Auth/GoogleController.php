@@ -57,6 +57,29 @@ class GoogleController extends Controller
 
         Auth::login($user, remember: true);
 
+        // Fusion du panier
+        $sessionId = session()->getId();
+        $sessionCart = \App\Models\Panier::where('session_id', $sessionId)->whereNull('user_id')->where('status', 'active')->first();
+        
+        if ($sessionCart) {
+            $userCart = \App\Models\Panier::firstOrCreate(
+                ['user_id' => Auth::id(), 'status' => 'active'],
+                ['total' => 0]
+            );
+            
+            foreach ($sessionCart->items as $item) {
+                $existing = $userCart->items()->where('produit_id', $item->produit_id)->first();
+                if ($existing) {
+                    $existing->update(['quantite' => $existing->quantite + $item->quantite]);
+                    $item->delete();
+                } else {
+                    $item->update(['panier_id' => $userCart->id]);
+                }
+            }
+            $sessionCart->delete();
+            $userCart->updateTotal();
+        }
+
         return redirect()->intended(route('compte.show'))
             ->with('success', 'Connecté avec Google. Bienvenue ' . $user->name . ' !');
     }

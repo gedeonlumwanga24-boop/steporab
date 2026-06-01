@@ -55,6 +55,29 @@ class AuthController extends Controller
         // Connecter automatiquement
         Auth::login($user);
 
+        // Fusion du panier
+        $sessionId = session()->getId();
+        $sessionCart = \App\Models\Panier::where('session_id', $sessionId)->whereNull('user_id')->where('status', 'active')->first();
+        
+        if ($sessionCart) {
+            $userCart = \App\Models\Panier::firstOrCreate(
+                ['user_id' => Auth::id(), 'status' => 'active'],
+                ['total' => 0]
+            );
+            
+            foreach ($sessionCart->items as $item) {
+                $existing = $userCart->items()->where('produit_id', $item->produit_id)->first();
+                if ($existing) {
+                    $existing->update(['quantite' => $existing->quantite + $item->quantite]);
+                    $item->delete();
+                } else {
+                    $item->update(['panier_id' => $userCart->id]);
+                }
+            }
+            $sessionCart->delete();
+            $userCart->updateTotal();
+        }
+
         return redirect()->route('compte.show')
             ->with('success', 'Bienvenue ' . $user->name . ' ! Votre compte a été créé.');
     }
@@ -86,6 +109,29 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
+            // Fusion du panier
+            $sessionId = session()->getId();
+            $sessionCart = \App\Models\Panier::where('session_id', $sessionId)->whereNull('user_id')->where('status', 'active')->first();
+            
+            if ($sessionCart) {
+                $userCart = \App\Models\Panier::firstOrCreate(
+                    ['user_id' => Auth::id(), 'status' => 'active'],
+                    ['total' => 0]
+                );
+                
+                foreach ($sessionCart->items as $item) {
+                    $existing = $userCart->items()->where('produit_id', $item->produit_id)->first();
+                    if ($existing) {
+                        $existing->update(['quantite' => $existing->quantite + $item->quantite]);
+                        $item->delete();
+                    } else {
+                        $item->update(['panier_id' => $userCart->id]);
+                    }
+                }
+                $sessionCart->delete();
+                $userCart->updateTotal();
+            }
 
             // Si une URL était prévue (ex: panier → login → retour panier)
             return redirect()->intended(route('compte.show'))

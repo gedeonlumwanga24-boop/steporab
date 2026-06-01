@@ -9,6 +9,13 @@ class Message extends Model
     protected $fillable = [
         'nom',
         'email',
-        'message'
+        'message',
+        'status',
+        'reply',
+        'client_read'
+    ];
+
+    protected $casts = [
+        'client_read' => 'boolean',
     ];
 }

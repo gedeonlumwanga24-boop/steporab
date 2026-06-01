@@ -158,92 +158,129 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Sales Evolution Chart
-    const salesCtx = document.getElementById('salesChart').getContext('2d');
-    new Chart(salesCtx, {
-        type: 'bar',
-        data: {
+    // Données PHP encodées avant le chargement de Chart.js
+    const dashboardData = {
+        sales: {
             labels: {!! json_encode($ventesMensuelles->map(fn($v) => 'Mois ' . $v->mois)) !!},
-            datasets: [{
-                label: 'Ventes (CDF)',
-                data: {!! json_encode($ventesMensuelles->pluck('montant')) !!},
-                backgroundColor: 'rgba(37, 99, 235, 0.6)',
-                borderColor: 'rgb(37, 99, 235)',
-                borderWidth: 1
-            }]
+            data: {!! json_encode($ventesMensuelles->pluck('montant')) !!}
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
-
-    // Traffic Chart (Visitors vs Page Views)
-    const trafficCtx = document.getElementById('trafficChart').getContext('2d');
-    new Chart(trafficCtx, {
-        type: 'line',
-        data: {
+        traffic: {
             labels: {!! json_encode($trafficData['labels']) !!},
-            datasets: [
-                {
-                    label: 'Visiteurs Uniques',
-                    data: {!! json_encode($trafficData['visitors']) !!},
-                    borderColor: 'rgb(37, 99, 235)',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                },
-                {
-                    label: 'Vues de pages',
-                    data: {!! json_encode($trafficData['pageViews']) !!},
-                    borderColor: 'rgb(16, 185, 129)',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }
-            ]
+            visitors: {!! json_encode($trafficData['visitors']) !!},
+            pageViews: {!! json_encode($trafficData['pageViews']) !!}
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' }
-            },
-            scales: {
-                y: { beginAtZero: true }
-            }
+        orders: {
+            labels: {!! json_encode($statsStatuts->pluck('statut')->map(fn($s) => ucfirst(str_replace('_', ' ', $s)))) !!},
+            data: {!! json_encode($statsStatuts->pluck('count')) !!}
         }
-    });
+    };
 
-    // Orders Status Distribution Chart
-    const ordersCtx = document.getElementById('ordersChart').getContext('2d');
-    new Chart(ordersCtx, {
-        type: 'doughnut',
-        data: {
-            labels: {!! json_encode($statsStatuts->pluck('statut')->map(fn($s) => ucfirst($s))) !!},
-            datasets: [{
-                data: {!! json_encode($statsStatuts->pluck('count')) !!},
-                backgroundColor: [
-                    'rgba(245, 158, 11, 0.6)', // Pending (Yellow)
-                    'rgba(16, 185, 129, 0.6)', // Completed (Green)
-                    'rgba(239, 68, 68, 0.6)',   // Cancelled (Red)
-                    'rgba(37, 99, 235, 0.6)'    // Other (Blue)
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom' }
-            }
+    function initCharts() {
+        if (typeof Chart === 'undefined') return;
+
+        // Évolution des Ventes
+        const salesCtx = document.getElementById('salesChart');
+        if (salesCtx) {
+            new Chart(salesCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: dashboardData.sales.labels,
+                    datasets: [{
+                        label: 'Ventes (CDF)',
+                        data: dashboardData.sales.data,
+                        backgroundColor: 'rgba(37, 99, 235, 0.6)',
+                        borderColor: 'rgb(37, 99, 235)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } }
+                }
+            });
         }
-    });
+
+        // Trafic
+        const trafficCtx = document.getElementById('trafficChart');
+        if (trafficCtx) {
+            new Chart(trafficCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: dashboardData.traffic.labels,
+                    datasets: [
+                        {
+                            label: 'Visiteurs Uniques',
+                            data: dashboardData.traffic.visitors,
+                            borderColor: 'rgb(37, 99, 235)',
+                            backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgb(37, 99, 235)'
+                        },
+                        {
+                            label: 'Vues de pages',
+                            data: dashboardData.traffic.pageViews,
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgb(16, 185, 129)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top' } },
+                    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } } }
+                }
+            });
+        }
+
+        // Répartition des Commandes
+        const ordersCtx = document.getElementById('ordersChart');
+        if (ordersCtx) {
+            new Chart(ordersCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: dashboardData.orders.labels,
+                    datasets: [{
+                        data: dashboardData.orders.data,
+                        backgroundColor: [
+                            'rgba(245, 158, 11, 0.75)',
+                            'rgba(16, 185, 129, 0.75)',
+                            'rgba(239, 68, 68, 0.75)',
+                            'rgba(37, 99, 235, 0.75)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 16 } }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+    }
+
+    // Charger Chart.js dynamiquement pour éviter les problèmes de CSP / race condition
+    const chartScript = document.createElement('script');
+    chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+    chartScript.onload = initCharts;
+    chartScript.onerror = function() {
+        console.warn('Impossible de charger Chart.js depuis le CDN.');
+    };
+    document.head.appendChild(chartScript);
 </script>
 @endpush

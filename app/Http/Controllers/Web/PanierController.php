@@ -10,16 +10,33 @@ use App\Models\Produit;
 class PanierController extends Controller
 {
     /**
+     * Obtenir le panier courant (DB)
+     */
+    private function getCurrentCart()
+    {
+        $userId = \Illuminate\Support\Facades\Auth::id();
+        $sessionId = session()->getId();
+        return \App\Models\Panier::forUserOrSession($userId, $sessionId);
+    }
+
+    /**
      * 📦 Voir le panier
      */
     public function index()
     {
-        $cart = session()->get('cart', []);
+        $panier = $this->getCurrentCart();
+        $cart = [];
+        $total = $panier->calculateTotal();
 
-        $total = 0;
-
-        foreach ($cart as $item) {
-            $total += $item['prix'] * $item['quantite'];
+        foreach ($panier->items as $item) {
+            $cart[$item->produit_id] = [
+                "id"       => $item->produit_id,
+                "nom"      => $item->produit->nom,
+                "prix"     => $item->prix_unitaire,
+                "quantite" => $item->quantite,
+                "image"    => $item->produit->image,
+                "taille"   => $item->taille,
+            ];
         }
 
         return view('panier.index', compact('cart', 'total'));
@@ -31,28 +48,30 @@ class PanierController extends Controller
     public function ajouter(Request $request, $id)
     {
         $produit = Produit::with('category')->findOrFail($id);
-
-        $cart = session()->get('cart', []);
+        $panier = $this->getCurrentCart();
 
         $variantLabel = null;
         if ($request->taille) {
             $variantLabel = 'Taille : ' . $request->taille;
         }
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantite']++;
+        // Vérifier si l'article existe déjà
+        $item = $panier->items()->where('produit_id', $id)->first();
+
+        if ($item) {
+            $item->updateQuantity($item->quantite + 1);
         } else {
-            $cart[$id] = [
-                "id"       => $produit->id,
-                "nom"      => $produit->nom,
-                "prix"     => $produit->prix,
-                "quantite" => 1,
-                "image"    => $produit->image,
-                "taille"   => $request->taille ?? null,
-            ];
+            $panier->items()->create([
+                'produit_id' => $id,
+                'quantite' => 1,
+                'prix_unitaire' => $produit->prix,
+                'taille' => $request->taille ?? null,
+            ]);
+            $panier->updateTotal();
         }
 
-        session()->put('cart', $cart);
+        // On recharge la relation pour avoir les items à jour
+        $panier->load('items');
 
         // AJAX response
         if ($request->ajax() || $request->wantsJson()) {
@@ -63,7 +82,7 @@ class PanierController extends Controller
             return response()->json([
                 'success'    => true,
                 'message'    => 'Produit ajouté au panier',
-                'cart_count' => collect($cart)->sum('quantite'),
+                'cart_count' => $panier->countItems(),
                 'product'    => [
                     'nom'      => $produit->nom,
                     'prix'     => number_format($produit->prix, 0, ' ', ' ') . ' CDF',
@@ -82,25 +101,20 @@ class PanierController extends Controller
      */
     public function update($id, $action)
     {
-        $cart = session()->get('cart', []);
+        $panier = $this->getCurrentCart();
+        $item = $panier->items()->where('produit_id', $id)->first();
 
-        if (!isset($cart[$id])) {
+        if (!$item) {
             return redirect()->back();
         }
 
         if ($action === "plus") {
-            $cart[$id]['quantite']++;
+            $item->updateQuantity($item->quantite + 1);
         }
 
         if ($action === "moins") {
-            $cart[$id]['quantite']--;
-
-            if ($cart[$id]['quantite'] <= 0) {
-                unset($cart[$id]);
-            }
+            $item->updateQuantity($item->quantite - 1);
         }
-
-        session()->put('cart', $cart);
 
         return redirect()->back();
     }
@@ -110,11 +124,12 @@ class PanierController extends Controller
      */
     public function supprimer($id)
     {
-        $cart = session()->get('cart', []);
+        $panier = $this->getCurrentCart();
+        $item = $panier->items()->where('produit_id', $id)->first();
 
-        if (isset($cart[$id])) {
-            unset($cart[$id]);
-            session()->put('cart', $cart);
+        if ($item) {
+            $item->delete();
+            $panier->updateTotal();
         }
 
         return redirect()->back()->with('success', 'Produit supprimé');
@@ -125,7 +140,8 @@ class PanierController extends Controller
      */
     public function vider()
     {
-        session()->forget('cart');
+        $panier = $this->getCurrentCart();
+        $panier->empty();
 
         return redirect()->back()->with('success', 'Panier vidé');
     }

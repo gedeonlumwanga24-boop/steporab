@@ -39,8 +39,8 @@
     </div>
 </div>
 
-<div class="admin-card">
-    <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+<div class="admin-card" style="max-width: 100%; overflow: hidden;">
+    <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: flex-start; word-break: break-word;">
         <div>
             <h3 class="admin-card-title" style="color: #ef4444; font-family: monospace; font-size: 1.25rem;">
                 {{ $error->message }}

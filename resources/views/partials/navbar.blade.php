@@ -1,8 +1,21 @@
 @php
-    $cartItems = session('cart_items', []);
-    $cartCount = is_array($cartItems)
-        ? array_sum(array_column($cartItems, 'quantite'))
-        : 0;
+    $panier = \App\Models\Panier::where(function($query) {
+        if (Auth::check()) {
+            $query->where('user_id', Auth::id());
+        } else {
+            $query->where('session_id', session()->getId())->whereNull('user_id');
+        }
+    })->where('status', 'active')->first();
+    $cartCount = $panier ? $panier->countItems() : 0;
+
+
+    $unreadMessagesClient = 0;
+    if (Auth::check()) {
+        $unreadMessagesClient = \App\Models\Message::where('email', Auth::user()->email)
+            ->where('status', 'répondu')
+            ->where('client_read', false)
+            ->count();
+    }
 @endphp
 
 <nav class="navbar" id="mainNavbar">
@@ -66,8 +79,11 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
 
-            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill" aria-label="Compte">
+            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill" aria-label="Compte" style="position: relative;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                @if($unreadMessagesClient > 0)
+                    <span style="position: absolute; top: -2px; right: -2px; background: #3b82f6; color: white; border-radius: 999px; font-size: 0.6rem; padding: 0.1rem 0.3rem; font-weight: bold; min-width: 16px; text-align: center; line-height: 1;">{{ $unreadMessagesClient > 9 ? '9+' : $unreadMessagesClient }}</span>
+                @endif
             </a>
 
             <a href="{{ route('panier.index') }}" class="icon-btn icon-btn--pill nav-cart-btn" aria-label="Panier" id="navCartLink">

@@ -70,15 +70,30 @@
             </div>
 
             <!-- Size Selection -->
+            @php
+                $catSlug = $produit->category ? strtolower($produit->category->slug) : '';
+                $catParentSlug = ($produit->category && $produit->category->parent) ? strtolower($produit->category->parent->slug) : '';
+                $sizes = [];
+                $sizeLabel = 'Sélectionner la taille';
+                
+                if (in_array($catSlug, ['chaussures', 'sneakers', 'baskets']) || in_array($catParentSlug, ['chaussures'])) {
+                    $sizes = ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44', 'EU 45'];
+                    $sizeLabel = 'Sélectionner la pointure';
+                } elseif (in_array($catSlug, ['vetements', 't-shirts', 'pantalons', 'sweats']) || in_array($catParentSlug, ['vetements'])) {
+                    $sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+                }
+            @endphp
+
+            @if(!empty($sizes))
             <div class="product-size-section">
-                <label class="size-label">Sélectionner la taille</label>
+                <label class="size-label">{{ $sizeLabel }}</label>
                 <div class="size-grid">
-                    @php $sizes = ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44', 'EU 45']; @endphp
                     @foreach($sizes as $size)
-                        <button class="size-btn" onclick="selectSize(this)">{{ $size }}</button>
+                        <button type="button" class="size-btn" onclick="selectSize(this)">{{ $size }}</button>
                     @endforeach
                 </div>
             </div>
+            @endif
 
             <!-- Color Selection -->
             <div class="product-color-section">
