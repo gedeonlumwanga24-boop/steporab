@@ -1,4 +1,9 @@
-/* Product card styles */
+/* Product card styles — pages hors catalogue */
+
+.catalog-main .product-card {
+    border: none;
+    box-shadow: none;
+}
 
 .product-card {
     display: flex;

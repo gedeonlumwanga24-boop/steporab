@@ -20,7 +20,7 @@
         <div class="catalog-quick-info">
             <span>{{ $produits->count() }} modèles disponibles</span>
             <label for="tri" class="sr-only">Trier par</label>
-            <select id="tri" name="tri" form="productFiltersForm" class="catalog-sort" onchange="document.getElementById('productFiltersForm').submit()">
+            <select id="tri" name="tri" form="productFiltersForm" class="catalog-sort" onchange="submitCatalogFilters(document.getElementById('productFiltersForm'))">
                 <option value="recent" {{ request('tri', 'recent') == 'recent' ? 'selected' : '' }}>Plus récents</option>
                 <option value="price_asc" {{ request('tri') == 'price_asc' ? 'selected' : '' }}>Prix croissant</option>
                 <option value="price_desc" {{ request('tri') == 'price_desc' ? 'selected' : '' }}>Prix décroissant</option>
@@ -29,11 +29,14 @@
     </div>
 
     <div class="catalog-layout">
-        <button type="button" class="mobile-filter-btn" onclick="document.querySelector('.catalog-sidebar').classList.toggle('open')">
+        <div class="filters-overlay" id="filtersOverlay" aria-hidden="true"></div>
+
+        <button type="button" class="mobile-filter-btn" id="mobileFilterBtn">
             Filtres et tri
         </button>
 
-        <aside class="catalog-sidebar">
+        <aside class="catalog-sidebar" id="catalogSidebar">
+            <button type="button" class="filters-close-btn" id="filtersCloseBtn" aria-label="Fermer les filtres">&times;</button>
             <form action="{{ route('produits.index') }}" method="GET" id="productFiltersForm" class="sidebar-form">
                 @include('produits._filters')
             </form>
@@ -44,7 +47,7 @@
                 @forelse($produits as $p)
                     @include('produits._card', ['p' => $p])
                 @empty
-                    <p>Aucun produit trouvé.</p>
+                    <p class="catalog-empty">Aucun produit ne correspond à votre recherche. <a href="{{ route('produits.index') }}">Voir tout le catalogue</a></p>
                 @endforelse
             </div>
         </main>
@@ -59,6 +62,26 @@
         }
     }
 
+    function submitCatalogFilters(form) {
+        if (!form) return;
+        form.submit();
+        if (window.innerWidth <= 900) {
+            closeFilters();
+        }
+    }
+
+    function openFilters() {
+        document.getElementById('catalogSidebar')?.classList.add('open');
+        document.getElementById('filtersOverlay')?.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFilters() {
+        document.getElementById('catalogSidebar')?.classList.remove('open');
+        document.getElementById('filtersOverlay')?.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const slider = document.getElementById('prixMax');
         if (slider) {
@@ -67,6 +90,10 @@
                 updatePriceDisplay(this.value);
             });
         }
+
+        document.getElementById('mobileFilterBtn')?.addEventListener('click', openFilters);
+        document.getElementById('filtersCloseBtn')?.addEventListener('click', closeFilters);
+        document.getElementById('filtersOverlay')?.addEventListener('click', closeFilters);
     });
 </script>
 

@@ -76,7 +76,7 @@
                     <line x1="3" y1="6" x2="21" y2="6"/>
                     <path d="M16 10a4 4 0 0 1-8 0"/>
                 </svg>
-                <span class="cart-dot {{ $cartCount > 0 ? '' : 'cart-dot--hidden' }}" id="navCartBadge"></span>
+                <span class="cart-badge {{ $cartCount > 0 ? '' : 'cart-badge--hidden' }}" id="navCartBadge">{{ $cartCount > 9 ? '9+' : $cartCount }}</span>
             </a>
 
             <button class="icon-btn icon-btn--pill mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu" aria-expanded="false" aria-controls="mobileNavShell">

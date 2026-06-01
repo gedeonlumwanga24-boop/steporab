@@ -1,25 +1,19 @@
 /* ==========================================================================
-   Page À propos — Stepora  |  Style éditorial Nike / Adidas
+   Page À propos — Stepora
    ========================================================================== */
 
-/* ─── Variables locales ─── */
 :root {
-    --ap-black:   #0a0a0a;
-    --ap-dark:    #111111;
-    --ap-white:   #ffffff;
-    --ap-muted:   #6b6b6b;
-    --ap-light:   #f5f5f5;
-    --ap-border:  rgba(0,0,0,.08);
-    --ap-accent:  #111111;
+    --ap-black: #111111;
+    --ap-white: #ffffff;
+    --ap-muted: #6b7280;
+    --ap-light: #f5f5f3;
+    --ap-border: #e5e7eb;
 }
 
-/* ══════════════════════════════════════════
-   HERO
-══════════════════════════════════════════ */
 .apropos-hero {
     position: relative;
-    min-height: 100vh;
-    background: var(--ap-black);
+    min-height: 72vh;
+    background: #111111;
     display: flex;
     align-items: flex-end;
     overflow: hidden;
@@ -28,97 +22,64 @@
 .apropos-hero-bg {
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(ellipse 80% 60% at 120% 20%, rgba(255,255,255,.04) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at -20% 80%, rgba(255,255,255,.03) 0%, transparent 60%);
+    background: linear-gradient(135deg, #111111 0%, #1a1a1a 100%);
     pointer-events: none;
 }
 
-/* Texture bruit subtile */
 .apropos-hero-noise {
-    position: absolute;
-    inset: 0;
-    opacity: .03;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 128px;
+    display: none;
 }
 
 .apropos-hero-inner {
     position: relative;
     z-index: 2;
-    padding: 14rem 6% 8rem;
-    max-width: 1400px;
+    padding: 8rem 5% 5rem;
+    max-width: 1200px;
     width: 100%;
+    margin: 0 auto;
 }
 
 .apropos-eyebrow {
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.22em;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--ap-muted);
-    margin: 0 0 2rem;
+    color: #9ca3af;
+    margin: 0 0 1.25rem;
     display: block;
 }
 
 .apropos-hero-title {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin: 0 0 3rem;
-    line-height: 0.9;
+    margin: 0 0 1.5rem;
+    max-width: 14ch;
 }
 
 .apropos-line {
     display: block;
-    font-size: clamp(4rem, 9vw, 9rem);
-    font-weight: 900;
+    font-size: clamp(2.5rem, 7vw, 5rem);
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: -0.04em;
-}
-
-.apropos-line--solid {
-    color: var(--ap-white);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    color: #ffffff;
 }
 
 .apropos-line--outline {
-    color: transparent;
-    -webkit-text-stroke: 1.5px rgba(255,255,255,.45);
-    padding-left: 3rem;
+    color: #ffffff;
+    -webkit-text-stroke: 0;
+    padding-left: 0;
 }
 
 .apropos-hero-sub {
-    max-width: 52ch;
+    max-width: 48ch;
     font-size: 1rem;
-    color: rgba(255,255,255,.55);
-    line-height: 1.75;
+    color: #d1d5db;
+    line-height: 1.7;
     margin: 0;
-    font-weight: 400;
 }
 
-/* Indicateur de scroll */
 .apropos-hero-scroll {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-}
-
-.apropos-hero-scroll span {
-    display: block;
-    width: 1px;
-    height: 48px;
-    background: linear-gradient(to bottom, transparent, rgba(255,255,255,.35));
-    animation: scrollLine 2s ease-in-out infinite;
-    margin: 0 auto;
-}
-
-@keyframes scrollLine {
-    0%   { transform: scaleY(0); transform-origin: top; }
-    50%  { transform: scaleY(1); transform-origin: top; }
-    51%  { transform: scaleY(1); transform-origin: bottom; }
-    100% { transform: scaleY(0); transform-origin: bottom; }
+    display: none;
 }
 
 /* ══════════════════════════════════════════
@@ -304,37 +265,39 @@
 ══════════════════════════════════════════ */
 .apropos-values {
     background: var(--ap-light);
-    padding: 8rem 6%;
+    padding: 5rem 5%;
 }
 
 .apropos-values-header {
-    margin-bottom: 5rem;
+    max-width: 1200px;
+    margin: 0 auto 3rem;
 }
 
 .apropos-values-title {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    font-weight: 900;
-    text-transform: uppercase;
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--ap-black);
-    line-height: 1.05;
-    margin: 0.75rem 0 0;
-    max-width: 600px;
+    line-height: 1.1;
+    margin: 0.5rem 0 0;
+    max-width: 20ch;
 }
 
 .apropos-values-grid {
+    max-width: 1200px;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0;
     border: 1px solid var(--ap-border);
+    background: var(--ap-white);
 }
 
 .value-card {
-    padding: 3.5rem 3rem;
+    padding: 2.5rem 2rem;
     border-right: 1px solid var(--ap-border);
-    position: relative;
-    transition: background 0.25s;
     background: var(--ap-white);
+    transition: background 150ms ease;
 }
 
 .value-card:last-child {
@@ -342,40 +305,31 @@
 }
 
 .value-card:hover {
-    background: var(--ap-black);
-}
-
-.value-card:hover .value-card-index,
-.value-card:hover .value-card-title,
-.value-card:hover .value-card-text {
-    color: var(--ap-white);
+    background: #fafafa;
 }
 
 .value-card-index {
-    font-size: 0.65rem;
+    font-size: 0.6875rem;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     color: var(--ap-muted);
-    margin-bottom: 2rem;
-    transition: color 0.25s;
+    margin-bottom: 1.25rem;
 }
 
 .value-card-title {
-    font-size: 1.5rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
     color: var(--ap-black);
-    margin: 0 0 1.25rem;
-    transition: color 0.25s;
+    margin: 0 0 0.75rem;
+    text-transform: none;
 }
 
 .value-card-text {
-    font-size: 0.88rem;
-    color: #666;
-    line-height: 1.75;
+    font-size: 0.9375rem;
+    color: #4b5563;
+    line-height: 1.65;
     margin: 0;
-    transition: color 0.25s;
 }
 
 /* ══════════════════════════════════════════
@@ -667,115 +621,54 @@
    RESPONSIVE — Mobile ≤ 768
 ══════════════════════════════════════════ */
 @media (max-width: 768px) {
-
-    /* Hero */
     .apropos-hero {
         min-height: auto;
-        padding-top: 80px;
     }
 
     .apropos-hero-inner {
-        padding: 5rem 1.25rem 5rem;
+        padding: 5rem 1.25rem 3rem;
     }
 
     .apropos-line {
-        font-size: clamp(3rem, 13vw, 5rem);
+        font-size: clamp(2rem, 10vw, 3rem);
     }
 
-    .apropos-line--outline {
-        padding-left: 1.5rem;
-    }
-
-    .apropos-hero-sub {
-        font-size: 0.9rem;
-    }
-
-    /* Stats */
     .apropos-stats-inner {
         flex-wrap: wrap;
-        padding: 0 1.25rem;
+        padding: 0;
     }
 
     .apropos-stat {
         flex: 0 0 50%;
-        padding: 2rem 0;
+        padding: 1.75rem 1rem;
     }
 
     .apropos-stat-sep {
         display: none;
     }
 
-    .stat-number {
-        font-size: 2.2rem;
-    }
-
-    /* Story */
     .story-col--text {
-        padding: 3.5rem 1.25rem;
-    }
-
-    .story-title {
-        font-size: 2.2rem;
+        padding: 3rem 1.25rem;
     }
 
     .story-col--visual {
-        height: 320px;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr;
+        height: 280px;
     }
 
     .story-visual-card--bottom {
         display: none;
     }
 
-    /* Valeurs */
     .apropos-values {
-        padding: 4rem 1.25rem;
+        padding: 3rem 1.25rem;
     }
 
-    .apropos-values-header {
-        margin-bottom: 2.5rem;
-    }
-
-    .value-card {
-        padding: 2rem 1.5rem;
-    }
-
-    /* Timeline */
     .apropos-timeline {
-        padding: 4rem 1.25rem;
+        padding: 3rem 1.25rem;
     }
 
-    .timeline-title {
-        font-size: 2rem;
-    }
-
-    .timeline-event {
-        font-size: 1rem;
-    }
-
-    /* Brands */
-    .apropos-brands {
-        padding: 3rem 0;
-    }
-
-    /* CTA */
     .apropos-final-cta {
-        padding: 6rem 1.25rem;
-    }
-
-    .final-cta-title {
-        font-size: clamp(2.2rem, 10vw, 3.5rem);
-    }
-
-    .final-cta-actions {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .final-cta-btn {
-        width: 100%;
-        max-width: 300px;
+        padding: 4rem 1.25rem;
     }
 }
 

@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-
-use Illuminate\Http\Request;
-use App\Models\Produit;
 use App\Models\Category;
+use App\Models\Produit;
+use Illuminate\Http\Request;
 
 class ProduitController extends Controller
 {
     public function index(Request $request)
     {
-        $sliderMax = max(80000, Produit::max('prix') ?? 80000);
-        $prixMax = $request->prixMax ? intval($request->prixMax) : $sliderMax;
+        $sliderMax = max(80000, (int) (Produit::max('prix') ?? 80000));
+        $prixMax = $request->filled('prixMax') ? (int) $request->prixMax : $sliderMax;
 
         $query = Produit::with('category');
 
@@ -21,37 +20,44 @@ class ProduitController extends Controller
             $query->where('prix', '<=', $prixMax);
         }
 
-        if ($request->categorie) {
-            $category = Category::with('children')
-                ->where('id', $request->categorie)
-                ->orWhere('slug', $request->categorie)
+        if ($request->filled('categorie')) {
+            $category = Category::query()
+                ->with('children')
+                ->where(function ($q) use ($request) {
+                    $q->where('slug', $request->categorie)
+                        ->orWhere('id', $request->categorie);
+                })
                 ->first();
 
             if ($category) {
-                $categoryIds = $category->children->pluck('id')->push($category->id);
+                $categoryIds = $category->children->pluck('id')
+                    ->push($category->id)
+                    ->unique()
+                    ->values();
+
                 $query->whereIn('category_id', $categoryIds);
             }
         }
 
-        if ($request->q) {
+        if ($request->filled('q')) {
             $q = $request->q;
-            $query->where(function($sq) use ($q) {
-                $sq->where('nom', 'LIKE', "%$q%")
-                   ->orWhere('description', 'LIKE', "%$q%");
+            $query->where(function ($sq) use ($q) {
+                $sq->where('nom', 'LIKE', "%{$q}%")
+                    ->orWhere('description', 'LIKE', "%{$q}%");
             });
         }
 
-        switch ($request->tri) {
-            case 'price_asc':
-                $query->orderBy('prix', 'asc');
-                break;
-            case 'price_desc':
-                $query->orderBy('prix', 'desc');
-                break;
-            default:
-                $query->latest();
-                break;
+        if ($request->boolean('promotion')) {
+            $avgPrice = (int) (Produit::avg('prix') ?? 0);
+            $threshold = max(1, (int) ($avgPrice * 0.85));
+            $query->where('prix', '<=', $threshold);
         }
+
+        match ($request->input('tri', 'recent')) {
+            'price_asc' => $query->orderBy('prix', 'asc'),
+            'price_desc' => $query->orderBy('prix', 'desc'),
+            default => $query->latest(),
+        };
 
         $produits = $query->get();
         $categories = Category::navigation()->get();

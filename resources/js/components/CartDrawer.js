@@ -151,10 +151,13 @@ class CartDrawerManager {
      * Update cart count in header/navbar
      */
     updateCartCount(count) {
-        const cartCountElements = document.querySelectorAll(
-            ".cart-count, [data-cart-count]",
-        );
-        cartCountElements.forEach((el) => {
+        const badge = document.getElementById("navCartBadge");
+        if (badge) {
+            badge.textContent = count > 9 ? "9+" : String(count);
+            badge.classList.toggle("cart-badge--hidden", count <= 0);
+        }
+
+        document.querySelectorAll(".cart-count, [data-cart-count]").forEach((el) => {
             el.textContent = count;
         });
     }
