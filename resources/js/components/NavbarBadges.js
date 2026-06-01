@@ -7,6 +7,7 @@ export class NavbarBadges {
     constructor() {
         this.cartBadge = document.getElementById("navCartBadge");
         this.accountBadge = document.getElementById("navAccountBadge");
+        this.contactBadge = document.getElementById("navContactBadge");
     }
 
     /**
@@ -15,10 +16,51 @@ export class NavbarBadges {
     init() {
         this.setupCartBadgeListener();
         this.setupAccountBadgeListener();
+        this.setupContactBadgeListener();
         this.setupCartBadgeGuard();
+        this.setupContactBadgeGuard();
 
         // Vérifier le panier initial
         this.checkInitialCart();
+    }
+
+    /**
+     * Écouter les changements du contact (réponses admin) via des événements personnalisés
+     */
+    setupContactBadgeListener() {
+        window.addEventListener("contact:updated", (event) => {
+            const count = event.detail?.count || 0;
+            this.updateContactBadge(count);
+        });
+    }
+
+    /**
+     * Guard pour le badge contact
+     */
+    setupContactBadgeGuard() {
+        if (!this.contactBadge || typeof MutationObserver === 'undefined') return;
+
+        const guard = (mutationsList) => {
+            for (const m of mutationsList) {
+                const text = (this.contactBadge.textContent || '').trim();
+                const count = text.endsWith('+') ? parseInt(text, 10) || 9 : parseInt(text, 10) || 0;
+                if (count > 0 && this.contactBadge.classList.contains('contact-badge--hidden')) {
+                    this.contactBadge.classList.remove('contact-badge--hidden');
+                }
+                if (count <= 0 && !this.contactBadge.classList.contains('contact-badge--hidden')) {
+                    this.contactBadge.classList.add('contact-badge--hidden');
+                }
+            }
+        };
+
+        this._contactBadgeObserver = new MutationObserver(guard);
+        this._contactBadgeObserver.observe(this.contactBadge, {
+            attributes: true,
+            attributeFilter: ['class'],
+            childList: true,
+            characterData: true,
+            subtree: true,
+        });
     }
 
     /**
@@ -104,6 +146,21 @@ export class NavbarBadges {
             this.accountBadge.classList.remove("account-badge--hidden");
         } else {
             this.accountBadge.classList.add("account-badge--hidden");
+        }
+    }
+
+    /**
+     * Mettre à jour le compteur contact (réponses admin)
+     * @param {number} count
+     */
+    updateContactBadge(count) {
+        if (!this.contactBadge) return;
+
+        if (count > 0) {
+            this.contactBadge.textContent = count > 9 ? '9+' : count;
+            this.contactBadge.classList.remove('contact-badge--hidden');
+        } else {
+            this.contactBadge.classList.add('contact-badge--hidden');
         }
     }
 

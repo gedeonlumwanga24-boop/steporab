@@ -10,9 +10,23 @@ import api from "../api/axios.js";
  * @param {number} count - Nombre de réponses non lues
  */
 function emitAccountUpdate(count) {
-    window.dispatchEvent(new CustomEvent('account:updated', {
-        detail: { count }
-    }));
+    window.dispatchEvent(
+        new CustomEvent("account:updated", {
+            detail: { count },
+        }),
+    );
+}
+
+/**
+ * Émettre un événement personnalisé pour les mises à jour du contact (réponses admin)
+ * @param {number} count
+ */
+function emitContactUpdate(count) {
+    window.dispatchEvent(
+        new CustomEvent("contact:updated", {
+            detail: { count },
+        }),
+    );
 }
 
 export const AccountService = {
@@ -24,13 +38,16 @@ export const AccountService = {
         try {
             const response = await api.get("/account/messages/unread-count");
             const count = response.data?.data?.count || 0;
-            
+
             // Émettre l'événement pour mettre à jour le badge
             emitAccountUpdate(count);
-            
+
             return count;
         } catch (error) {
-            console.error("Erreur lors de la récupération des messages non lus:", error);
+            console.error(
+                "Erreur lors de la récupération des messages non lus:",
+                error,
+            );
             return 0;
         }
     },
@@ -43,13 +60,19 @@ export const AccountService = {
         try {
             const response = await api.get("/account/vendor/replies-count");
             const count = response.data?.data?.count || 0;
-            
-            // Émettre l'événement pour mettre à jour le badge
+
+            // Émettre l'événement pour mettre à jour le badge contact (réponses admin)
+            emitContactUpdate(count);
+
+            // Également émettre update générique au besoin
             emitAccountUpdate(count);
-            
+
             return count;
         } catch (error) {
-            console.error("Erreur lors de la récupération des réponses:", error);
+            console.error(
+                "Erreur lors de la récupération des réponses:",
+                error,
+            );
             return 0;
         }
     },
@@ -61,13 +84,17 @@ export const AccountService = {
     async markAllAsRead() {
         try {
             const response = await api.post("/account/messages/mark-all-read");
-            
+
             // Réinitialiser le compteur
             emitAccountUpdate(0);
-            
+            emitContactUpdate(0);
+
             return response.data;
         } catch (error) {
-            console.error("Erreur lors du marquage des messages comme lus:", error);
+            console.error(
+                "Erreur lors du marquage des messages comme lus:",
+                error,
+            );
             throw error;
         }
     },
@@ -83,5 +110,5 @@ export const AccountService = {
         } catch {
             return 0;
         }
-    }
+    },
 };
