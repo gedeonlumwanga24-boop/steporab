@@ -56,6 +56,16 @@
         .btn:hover {
             opacity: 0.8;
         }
+        .btn-outline {
+            background: transparent;
+            color: #111827;
+            border: 2px solid #111827;
+        }
+        .btn-outline:hover {
+            background: #111827;
+            color: #ffffff;
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +73,10 @@
         <h1>500</h1>
         <h2>Oups ! Quelque chose s'est mal passé.</h2>
         <p>Nous rencontrons actuellement un problème technique. Pas d'inquiétude, nos équipes ont été notifiées et sont déjà sur le coup.</p>
-        <a href="{{ url('/') }}" class="btn">Retourner à l'accueil</a>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url('/') }}" class="btn">Retourner à l'accueil</a>
+            <a href="{{ route('contact.index') }}" class="btn btn-outline">Contacter le support</a>
+        </div>
     </div>
 </body>
 </html>

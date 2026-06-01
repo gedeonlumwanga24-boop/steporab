@@ -354,7 +354,115 @@
     font-size: 1rem;
 }
 
-/* Brand Values Section */
+/* Brand Statement — editorial Nike/Adidas style */
+.brand-statement {
+    background: #f5f5f3;
+    color: #111111;
+    padding: 5rem 5%;
+    border-top: 1px solid #e8e8e6;
+}
+
+.brand-statement__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.brand-statement__header {
+    max-width: 640px;
+    margin-bottom: 3.5rem;
+}
+
+.brand-statement__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #6b7280;
+    margin: 0 0 1rem;
+}
+
+.brand-statement__title {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: #111111;
+}
+
+.brand-statement__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid #dcdcd9;
+}
+
+.brand-statement__item {
+    padding: 2rem 2rem 2rem 0;
+    border-right: 1px solid #dcdcd9;
+}
+
+.brand-statement__item:last-child {
+    border-right: none;
+    padding-right: 0;
+}
+
+.brand-statement__item:not(:first-child) {
+    padding-left: 2rem;
+}
+
+.brand-statement__item-title {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem;
+    color: #111111;
+}
+
+.brand-statement__item-text {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: #4b5563;
+    max-width: 28ch;
+}
+
+@media (max-width: 900px) {
+    .brand-statement {
+        padding: 3rem 1.25rem;
+    }
+
+    .brand-statement__header {
+        margin-bottom: 2rem;
+    }
+
+    .brand-statement__grid {
+        grid-template-columns: 1fr;
+        border-top: none;
+    }
+
+    .brand-statement__item {
+        padding: 1.5rem 0;
+        border-right: none;
+        border-bottom: 1px solid #dcdcd9;
+    }
+
+    .brand-statement__item:not(:first-child) {
+        padding-left: 0;
+    }
+
+    .brand-statement__item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    .brand-statement__item-text {
+        max-width: none;
+    }
+}
+
+/* Legacy values classes kept for other pages if referenced */
 .values-section {
     background-color: #111827;
     color: #ffffff;

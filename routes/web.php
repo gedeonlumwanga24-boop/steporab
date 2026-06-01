@@ -17,6 +17,7 @@ use App\Http\Controllers\Web\Admin\CommandeController as AdminCommandeController
 use App\Http\Controllers\Web\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Web\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Web\Admin\StatsController;
+use App\Http\Controllers\Web\Admin\ErrorLogController;
 
 
 // -------------------- FRONT-END --------------------
@@ -109,4 +110,9 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     // Configuration du site
     Route::get('config', [\App\Http\Controllers\Web\Admin\ConfigController::class, 'index'])->name('admin.config.index');
     Route::post('config', [\App\Http\Controllers\Web\Admin\ConfigController::class, 'update'])->name('admin.config.update');
+
+    // Journal des erreurs
+    Route::resource('errors', ErrorLogController::class)
+        ->except(['create', 'store', 'edit'])
+        ->names('admin.errors');
 });

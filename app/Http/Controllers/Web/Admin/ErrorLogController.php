@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ErrorLog;
@@ -8,35 +8,30 @@ use Illuminate\Http\Request;
 
 class ErrorLogController extends Controller
 {
-    /**
-     * Liste des erreurs.
-     */
     public function index(Request $request)
     {
-        $status = $request->query('status', 'en_attente');
+        $status = $request->query('status', ErrorLog::STATUS_PENDING);
+
+        if (! in_array($status, [ErrorLog::STATUS_PENDING, ErrorLog::STATUS_RESOLVED], true)) {
+            $status = ErrorLog::STATUS_PENDING;
+        }
 
         $errors = ErrorLog::where('status', $status)
-            ->orderBy('created_at', 'desc')
+            ->orderByDesc('created_at')
             ->paginate(15);
 
         return view('admin.errors.index', compact('errors', 'status'));
     }
 
-    /**
-     * Détail d'une erreur spécifique.
-     */
     public function show(ErrorLog $error)
     {
         return view('admin.errors.show', compact('error'));
     }
 
-    /**
-     * Marquer comme résolue (ou en attente).
-     */
     public function update(Request $request, ErrorLog $error)
     {
         $request->validate([
-            'status' => 'required|in:en_attente,resolu'
+            'status' => 'required|in:'.ErrorLog::STATUS_PENDING.','.ErrorLog::STATUS_RESOLVED,
         ]);
 
         $error->update(['status' => $request->status]);
@@ -44,9 +39,6 @@ class ErrorLogController extends Controller
         return back()->with('success', 'Statut de l\'erreur mis à jour avec succès.');
     }
 
-    /**
-     * Supprimer une erreur définitivement.
-     */
     public function destroy(ErrorLog $error)
     {
         $error->delete();

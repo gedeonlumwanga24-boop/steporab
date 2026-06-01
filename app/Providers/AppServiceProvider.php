@@ -75,5 +75,83 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('navCategories', $fallback);
             }
         });
+
+        View::composer('partials.footer', function ($view): void {
+            $view->with('footerData', $this->footerData());
+        });
+    }
+
+    private function footerData(): array
+    {
+        $productIndex = fn (array $params = []) => route('produits.index', $params);
+
+        return [
+            'selection' => [
+                [
+                    ['label' => 'Sneakers', 'url' => $productIndex(['categorie' => 'sneakers'])],
+                    ['label' => 'Lifestyle', 'url' => $productIndex(['categorie' => 'lifestyle'])],
+                    ['label' => 'Jordan', 'url' => $productIndex(['categorie' => 'jordan'])],
+                    ['label' => 'Basketball', 'url' => $productIndex(['categorie' => 'basketball'])],
+                    ['label' => 'Chaussures', 'url' => $productIndex(['categorie' => 'chaussures'])],
+                ],
+                [
+                    ['label' => 'Nike', 'url' => $productIndex(['q' => 'Nike'])],
+                    ['label' => 'Adidas', 'url' => $productIndex(['q' => 'Adidas'])],
+                    ['label' => 'Puma', 'url' => $productIndex(['q' => 'Puma'])],
+                    ['label' => 'New Balance', 'url' => $productIndex(['q' => 'New Balance'])],
+                    ['label' => 'Jordan', 'url' => $productIndex(['q' => 'Jordan'])],
+                ],
+                [
+                    ['label' => 'Vêtements', 'url' => $productIndex(['categorie' => 'vetements'])],
+                    ['label' => 'Sweats & hoodies', 'url' => $productIndex(['categorie' => 'sweats-a-capuche-et-sweats'])],
+                    ['label' => 'Pantalons', 'url' => $productIndex(['categorie' => 'pantalons-et-leggings'])],
+                    ['label' => 'Accessoires', 'url' => $productIndex(['categorie' => 'accessoires'])],
+                    ['label' => 'Nouveautés', 'url' => $productIndex()],
+                ],
+                [
+                    ['label' => 'Sacs & sacs à dos', 'url' => $productIndex(['categorie' => 'sacs-et-sacs-a-dos'])],
+                    ['label' => 'Casquettes', 'url' => $productIndex(['categorie' => 'casquettes'])],
+                    ['label' => 'Chaussettes', 'url' => $productIndex(['categorie' => 'chaussettes'])],
+                    ['label' => 'Meilleures ventes', 'url' => $productIndex(['tri' => 'price_desc'])],
+                    ['label' => 'Promotions', 'url' => $productIndex(['tri' => 'price_asc'])],
+                ],
+            ],
+            'columns' => [
+                [
+                    'title' => 'Aide',
+                    'links' => [
+                        ['label' => 'Assistance client', 'url' => route('contact.index')],
+                        ['label' => 'Suivi de commande', 'url' => auth()->check() ? route('compte.show') : route('login')],
+                        ['label' => 'Livraison & retours', 'url' => route('contact.index')],
+                        ['label' => 'Modes de paiement', 'url' => route('contact.index')],
+                        ['label' => 'FAQ', 'url' => route('contact.index')],
+                    ],
+                ],
+                [
+                    'title' => 'À propos',
+                    'links' => [
+                        ['label' => 'Qui sommes-nous ?', 'url' => route('apropos')],
+                        ['label' => 'Nos valeurs', 'url' => route('apropos').'#apropos-values'],
+                        ['label' => 'Nos partenaires', 'url' => route('apropos').'#apropos-brands'],
+                        ['label' => 'Carrières', 'url' => route('contact.index')],
+                        ['label' => 'Éthique', 'url' => route('apropos').'#apropos-values'],
+                    ],
+                ],
+                [
+                    'title' => 'Offres',
+                    'links' => [
+                        ['label' => 'Toute la collection', 'url' => $productIndex()],
+                        ['label' => 'Nouveautés', 'url' => $productIndex()],
+                        ['label' => 'Promotions', 'url' => $productIndex(['tri' => 'price_asc'])],
+                        ['label' => 'Meilleures ventes', 'url' => $productIndex(['tri' => 'price_desc'])],
+                    ],
+                ],
+            ],
+            'legal' => [
+                ['label' => 'Guides', 'url' => $productIndex()],
+                ['label' => 'Conditions d\'utilisation', 'url' => route('contact.index')],
+                ['label' => 'Politique de confidentialité', 'url' => route('contact.index')],
+            ],
+        ];
     }
 }

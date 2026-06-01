@@ -181,27 +181,32 @@
     </div>
 </section>
 
-<!-- BRAND VALUES -->
-<section class="values-section reveal">
-    <h2 class="values-title">Conçu pour la rue.<br>Pensé pour le confort.</h2>
-    
-    <div class="values-grid">
-        <div class="value-item">
-            <i class="fa-solid fa-truck-fast"></i>
-            <h3>Livraison Express</h3>
-            <p>Recevez vos sneakers rapidement partout avec notre réseau de livraison premium.</p>
-        </div>
-        
-        <div class="value-item">
-            <i class="fa-solid fa-arrow-rotate-left"></i>
-            <h3>Retours Gratuits</h3>
-            <p>La taille ne convient pas ? Retournez vos articles facilement sous 30 jours.</p>
-        </div>
-        
-        <div class="value-item">
-            <i class="fa-solid fa-check-double"></i>
-            <h3>Authenticité Garantie</h3>
-            <p>Tous nos produits sont 100% authentiques et vérifiés par nos experts avant expédition.</p>
+<!-- BRAND STATEMENT -->
+<section class="brand-statement reveal" aria-label="Engagements Stepora">
+    <div class="brand-statement__inner">
+        <header class="brand-statement__header">
+            <p class="brand-statement__label">Stepora</p>
+            <h2 class="brand-statement__title">
+                Conçu pour la rue.<br>
+                Pensé pour le confort.
+            </h2>
+        </header>
+
+        <div class="brand-statement__grid">
+            <article class="brand-statement__item">
+                <h3 class="brand-statement__item-title">Livraison express</h3>
+                <p class="brand-statement__item-text">Expédition rapide partout en RDC avec suivi dès la prise en charge de votre commande.</p>
+            </article>
+
+            <article class="brand-statement__item">
+                <h3 class="brand-statement__item-title">Retours sous 30 jours</h3>
+                <p class="brand-statement__item-text">Échange ou retour simplifié si la taille ou le modèle ne convient pas.</p>
+            </article>
+
+            <article class="brand-statement__item">
+                <h3 class="brand-statement__item-title">Authenticité garantie</h3>
+                <p class="brand-statement__item-text">Chaque paire est contrôlée avant expédition pour garantir qualité et conformité.</p>
+            </article>
         </div>
     </div>
 </section>

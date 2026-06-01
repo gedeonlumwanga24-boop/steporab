@@ -487,47 +487,27 @@ body.is-scrolled .navbar {
     }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-       VALUES / BRAND SECTION
+       BRAND STATEMENT
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+    .brand-statement {
+        padding: 2.75rem 1.25rem !important;
+    }
+
+    .brand-statement__title {
+        font-size: clamp(1.75rem, 8vw, 2.25rem) !important;
+    }
+
+    .brand-statement__item-title {
+        font-size: 0.75rem !important;
+    }
+
+    .brand-statement__item-text {
+        font-size: 0.875rem !important;
+    }
+
+    /* Legacy values — hide if still present elsewhere */
     .values-section {
-        border-radius: 0 !important;
-        margin-top: 0.5rem !important;
         padding: 2.5rem 1rem !important;
-    }
-
-    .values-title {
-        font-size: 1.45rem !important;
-        line-height: 1.2 !important;
-        margin-bottom: 2rem !important;
-        text-align: center;
-    }
-
-    .values-grid {
-        gap: 0.85rem !important;
-    }
-
-    .value-item {
-        background: rgba(255, 255, 255, 0.06) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 14px !important;
-        padding: 1.1rem !important;
-        text-align: left;
-    }
-
-    .value-item i {
-        font-size: 1.8rem !important;
-        margin-bottom: 0.65rem !important;
-    }
-
-    .value-item h3 {
-        font-size: 0.95rem !important;
-        margin-bottom: 0.4rem !important;
-    }
-
-    .value-item p {
-        font-size: 0.82rem !important;
-        line-height: 1.5 !important;
-        color: #9ca3af !important;
     }
 
     /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

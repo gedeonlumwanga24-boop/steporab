@@ -1,106 +1,129 @@
 <footer class="footer">
-    <!-- TOP SECTION -->
     <div class="footer-top">
-        <h3>SÉLECTION STEPORA</h3>
+        <h3 class="footer-top-title">Sélection Stepora</h3>
 
         <div class="footer-categories">
-            <ul>
-                <li>Baskets pour homme</li>
-                <li>Baskets pour femme</li>
-                <li>Baskets streetwear</li>
-                <li>Chaussures de sport</li>
-                <li>Chaussures running</li>
-            </ul>
-
-            <ul>
-                <li>Nike</li>
-                <li>Adidas</li>
-                <li>Puma</li>
-                <li>New Balance</li>
-                <li>Jordan</li>
-            </ul>
-
-            <ul>
-                <li>Baskets blanches</li>
-                <li>Baskets noires</li>
-                <li>Baskets en cuir</li>
-                <li>Baskets respirantes</li>
-                <li>Nouveautés</li>
-            </ul>
-
-            <ul>
-                <li>Accessoires chaussures</li>
-                <li>Produits d’entretien</li>
-                <li>Meilleures ventes</li>
-                <li>Promotions</li>
-                <li>Cartes cadeaux</li>
-            </ul>
+            @foreach($footerData['selection'] ?? [] as $column)
+                <ul>
+                    @foreach($column as $link)
+                        <li>
+                            <a href="{{ $link['url'] }}">{{ $link['label'] }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+            @endforeach
         </div>
 
         <p class="footer-description">
-            Découvre les meilleures baskets et chaussures tendance sur <strong>Stepora Shoes</strong>. 
-            Du streetwear au sport, nous sélectionnons des modèles stylés, confortables et durables pour t’accompagner au quotidien. 
-            Trouve la paire parfaite et fais passer ton style au niveau supérieur.
+            Découvrez les sneakers et chaussures tendance sur <strong>Stepora</strong>.
+            Du streetwear au sport, une sélection pensée pour le style, le confort et le quotidien en RDC.
         </p>
     </div>
 
-    <!-- SOCIALS SECTION -->
     <div class="footer-socials">
-        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="https://www.instagram.com/ged8806/" target="_blank" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://x.com/GedeonLumw77743" target="_blank" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a>
-        <a href="https://wa.me/243970297987" target="_blank" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
-        <a href="https://t.me/gedeonlumwanga" target="_blank" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+        <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <a href="https://www.instagram.com/ged8806/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+        <a href="https://x.com/GedeonLumw77743" target="_blank" rel="noopener noreferrer" aria-label="X">
+            <i class="fa-brands fa-x-twitter"></i>
+        </a>
+        <a href="https://wa.me/243970297987" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <a href="https://t.me/gedeonlumwanga" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+            <i class="fa-brands fa-telegram"></i>
+        </a>
     </div>
 
-    <!-- MAIN LINKS SECTION -->
-    <div class="footer-bottom">
-        <div class="footer-column">
-            <h4>AIDE</h4>
-            <ul>
-                <li><a href="{{ route('contact.index') }}">Assistance client</a></li>
-                <li><a href="#">Suivi de commande</a></li>
-                <li><a href="#">Livraison & retours</a></li>
-                <li><a href="#">Modes de paiement</a></li>
-                <li><a href="#">FAQ</a></li>
-            </ul>
-        </div>
+    {{-- Desktop : colonnes --}}
+    <div class="footer-bottom footer-bottom--desktop">
+        @foreach($footerData['columns'] ?? [] as $column)
+            <div class="footer-column">
+                <h4>{{ $column['title'] }}</h4>
+                <ul>
+                    @foreach($column['links'] as $link)
+                        <li><a href="{{ $link['url'] }}">{{ $link['label'] }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
+        @endforeach
 
         <div class="footer-column">
-            <h4>À PROPOS</h4>
-            <ul>
-                <li><a href="#">Qui sommes-nous ?</a></li>
-                <li><a href="#">Nos valeurs</a></li>
-                <li><a href="#">Nos partenaires</a></li>
-                <li><a href="#">Carrières</a></li>
-                <li><a href="#">Éthique</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-column">
-            <h4>OFFRES</h4>
-            <ul>
-                <li><a href="#">Cartes cadeaux</a></li>
-                <li><a href="#">Offres spéciales</a></li>
-                <li><a href="#">Soldes</a></li>
-                <li><a href="#">Black Friday</a></li>
-            </ul>
-        </div>
-
-        <div class="footer-column">
-            <h4>PAYS</h4>
-            <p style="font-size: 0.813rem; color: #7e7e7e; margin-bottom: 0.5rem;">Vous êtes en 🇨🇩 RDC</p>
-            <a href="#" class="change-country">CHANGER DE PAYS</a>
+            <h4>Pays</h4>
+            <p class="footer-country">Vous êtes en 🇨🇩 RDC</p>
+            <a href="{{ route('contact.index') }}" class="change-country">Nous contacter</a>
         </div>
     </div>
 
-    <!-- LEGAL & COPYRIGHT -->
+    {{-- Mobile : accordéon --}}
+    <div class="footer-bottom footer-bottom--mobile">
+        @foreach($footerData['columns'] ?? [] as $column)
+            <div class="footer-accordion" data-footer-accordion>
+                <button type="button" class="footer-accordion-trigger" aria-expanded="false">
+                    <span>{{ $column['title'] }}</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                </button>
+                <div class="footer-accordion-panel" hidden>
+                    <ul>
+                        @foreach($column['links'] as $link)
+                            <li><a href="{{ $link['url'] }}">{{ $link['label'] }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endforeach
+
+        <div class="footer-accordion" data-footer-accordion>
+            <button type="button" class="footer-accordion-trigger" aria-expanded="false">
+                <span>Pays</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="6 9 12 15 18 9"/>
+                </svg>
+            </button>
+            <div class="footer-accordion-panel" hidden>
+                <p class="footer-country">Vous êtes en 🇨🇩 RDC</p>
+                <a href="{{ route('contact.index') }}" class="change-country">Nous contacter</a>
+            </div>
+        </div>
+    </div>
+
     <div class="footer-copy-container">
         <div class="footer-copy">© {{ date('Y') }} Stepora — Tous droits réservés.</div>
         <div class="footer-legal">
-            <a href="#">Guides</a>
-            <a href="#">Conditions d'utilisation</a>
-            <a href="#">Politique de confidentialité</a>
+            @foreach($footerData['legal'] ?? [] as $link)
+                <a href="{{ $link['url'] }}">{{ $link['label'] }}</a>
+            @endforeach
         </div>
     </div>
 </footer>
+
+<script>
+(function () {
+    document.querySelectorAll('[data-footer-accordion]').forEach(function (item) {
+        var trigger = item.querySelector('.footer-accordion-trigger');
+        var panel = item.querySelector('.footer-accordion-panel');
+        if (!trigger || !panel) return;
+
+        trigger.addEventListener('click', function () {
+            var isOpen = item.classList.contains('is-open');
+
+            document.querySelectorAll('[data-footer-accordion].is-open').forEach(function (other) {
+                if (other === item) return;
+                other.classList.remove('is-open');
+                other.querySelector('.footer-accordion-trigger')?.setAttribute('aria-expanded', 'false');
+                var otherPanel = other.querySelector('.footer-accordion-panel');
+                if (otherPanel) otherPanel.hidden = true;
+            });
+
+            item.classList.toggle('is-open', !isOpen);
+            trigger.setAttribute('aria-expanded', String(!isOpen));
+            panel.hidden = isOpen;
+        });
+    });
+})();
+</script>

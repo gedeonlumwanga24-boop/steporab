@@ -43,6 +43,9 @@
             <a href="{{ route('admin.config.index') }}" class="admin-nav-item {{ request()->routeIs('admin.config.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-gear"></i> Configuration
             </a>
+            <a href="{{ route('admin.errors.index') }}" class="admin-nav-item {{ request()->routeIs('admin.errors.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-bug"></i> Gestion des erreurs
+            </a>
         </nav>
         <div class="admin-sidebar-footer">
             <form action="{{ route('logout') }}" method="POST" class="admin-logout-form">

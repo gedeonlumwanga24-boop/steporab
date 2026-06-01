@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use App\Services\ErrorLogService;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -63,6 +65,31 @@ return Application::configure(basePath: dirname(__DIR__))
                     'message' => 'Action non autorisée.',
                 ], 403);
             }
+        });
+
+        $exceptions->report(function (Throwable $e): void {
+            app(ErrorLogService::class)->logFromThrowable($e);
+        });
+
+        $exceptions->render(function (Throwable $e, Request $request) {
+            if (config('app.debug')) {
+                return null;
+            }
+
+            $statusCode = $e instanceof HttpExceptionInterface ? $e->getStatusCode() : 500;
+
+            if ($statusCode < 500) {
+                return null;
+            }
+
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Une erreur interne est survenue. Veuillez réessayer plus tard.',
+                ], 500);
+            }
+
+            return response()->view('errors.500', [], 500);
         });
 
     })->create();
