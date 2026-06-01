@@ -1,21 +1,8 @@
 @php
-    $panier = \App\Models\Panier::where(function($query) {
-        if (Auth::check()) {
-            $query->where('user_id', Auth::id());
-        } else {
-            $query->where('session_id', session()->getId())->whereNull('user_id');
-        }
-    })->where('status', 'active')->first();
-    $cartCount = $panier ? $panier->countItems() : 0;
-
-
-    $unreadMessagesClient = 0;
-    if (Auth::check()) {
-        $unreadMessagesClient = \App\Models\Message::where('email', Auth::user()->email)
-            ->where('status', 'répondu')
-            ->where('client_read', false)
-            ->count();
-    }
+    $cartItems = session('cart_items', []);
+    $cartCount = is_array($cartItems)
+        ? array_sum(array_column($cartItems, 'quantite'))
+        : 0;
 @endphp
 
 <nav class="navbar" id="mainNavbar">
@@ -44,22 +31,10 @@
                     </a>
                     <div class="nav-mega-menu">
                         <div class="nav-mega-inner">
-                            @php
-                                $megaImg = data_get($category, 'image')
-                                    ? asset('storage/categories/' . data_get($category, 'image'))
-                                    : match ($categorySlug) {
-                                        'chaussures'  => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop',
-                                        'vetements'   => 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=600&auto=format&fit=crop',
-                                        'accessoires' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop',
-                                        default       => 'https://images.unsplash.com/photo-1552346154-21d32810baa3?q=80&w=600&auto=format&fit=crop',
-                                    };
-                            @endphp
-                            <div class="nav-mega-feature"
-                                 style="background-image: url('{{ $megaImg }}'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
-                                <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0.82) 100%);"></div>
-                                <span style="position: relative; z-index: 1;">Collection</span>
-                                <strong style="position: relative; z-index: 1;">{{ $categoryName }}</strong>
-                                <p style="position: relative; z-index: 1;">Découvre une sélection pensée pour le style, le confort et le quotidien.</p>
+                            <div class="nav-mega-feature">
+                                <span>Collection</span>
+                                <strong>{{ $categoryName }}</strong>
+                                <p>Découvre une sélection pensée pour le style, le confort et le quotidien.</p>
                             </div>
                             <div class="nav-mega-links">
                                 <a href="{{ route('produits.index', ['categorie' => $categorySlug]) }}" class="nav-mega-link nav-mega-link--all">
@@ -91,11 +66,8 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
 
-            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill" aria-label="Compte" style="position: relative;">
+            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill" aria-label="Compte">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                @if($unreadMessagesClient > 0)
-                    <span style="position: absolute; top: -2px; right: -2px; background: #3b82f6; color: white; border-radius: 999px; font-size: 0.6rem; padding: 0.1rem 0.3rem; font-weight: bold; min-width: 16px; text-align: center; line-height: 1;">{{ $unreadMessagesClient > 9 ? '9+' : $unreadMessagesClient }}</span>
-                @endif
             </a>
 
             <a href="{{ route('panier.index') }}" class="icon-btn icon-btn--pill nav-cart-btn" aria-label="Panier" id="navCartLink">

@@ -135,62 +135,6 @@
     </div>
 </div>
 
-<!-- Configuration Page À Propos -->
-<div class="admin-card" style="max-width: 900px; margin-top: 2rem;">
-    <div class="admin-card-header">
-        <h3 class="admin-card-title">Paramètres de la page "À Propos"</h3>
-    </div>
-    
-    <div style="padding: 1.5rem;">
-        <form action="{{ route('admin.config.update') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            
-            <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
-                <div class="admin-form-group">
-                    <label class="admin-label">Image de la Bannière Principale (Hero)</label>
-                    @if(isset($configs['about_hero_image']))
-                        <div style="margin-bottom: 1rem;">
-                            @php $url = str_starts_with($configs['about_hero_image'], 'http') ? $configs['about_hero_image'] : asset('storage/' . $configs['about_hero_image']); @endphp
-                            <img src="{{ $url }}" alt="Hero Apropos" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);">
-                        </div>
-                    @endif
-                    <input type="file" name="about_hero_image" class="admin-input" accept="image/*">
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                    <div class="admin-form-group">
-                        <label class="admin-label">Première Image (Histoire)</label>
-                        @if(isset($configs['about_image_1']))
-                            <div style="margin-bottom: 1rem;">
-                                @php $url1 = str_starts_with($configs['about_image_1'], 'http') ? $configs['about_image_1'] : asset('storage/' . $configs['about_image_1']); @endphp
-                                <img src="{{ $url1 }}" alt="Apropos 1" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);">
-                            </div>
-                        @endif
-                        <input type="file" name="about_image_1" class="admin-input" accept="image/*">
-                    </div>
-
-                    <div class="admin-form-group">
-                        <label class="admin-label">Deuxième Image (Détail/Illustration)</label>
-                        @if(isset($configs['about_image_2']))
-                            <div style="margin-bottom: 1rem;">
-                                @php $url2 = str_starts_with($configs['about_image_2'], 'http') ? $configs['about_image_2'] : asset('storage/' . $configs['about_image_2']); @endphp
-                                <img src="{{ $url2 }}" alt="Apropos 2" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; border: 1px solid var(--admin-border);">
-                            </div>
-                        @endif
-                        <input type="file" name="about_image_2" class="admin-input" accept="image/*">
-                    </div>
-                </div>
-            </div>
-
-            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); text-align: right;">
-                <button type="submit" class="btn-primary-sm" style="padding: 0.75rem 2rem; font-size: 1rem;">
-                    <i class="fa-solid fa-save" style="margin-right: 5px;"></i> Enregistrer les images
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-
 <div class="admin-card" style="max-width: 900px; margin-top: 2rem;">
     <div class="admin-card-header">
         <h3 class="admin-card-title">Aperçu des Animations</h3>
