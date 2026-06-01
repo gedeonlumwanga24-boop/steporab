@@ -32,11 +32,13 @@
     z-index: var(--nav-z) !important;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    transition: box-shadow 0.2s ease, background 0.2s ease;
+    transition:
+        box-shadow 0.2s ease,
+        background 0.2s ease;
 }
 
 .navbar.scrolled {
-    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.10);
+    box-shadow: 0 4px 20px rgba(15, 23, 42, 0.1);
 }
 
 /* ── Inner container ──────────────────────────────────────── */
@@ -93,7 +95,9 @@
     border: none;
     background: transparent;
     border-radius: 6px;
-    transition: background 150ms ease, color 150ms ease;
+    transition:
+        background 150ms ease,
+        color 150ms ease;
     white-space: nowrap;
     min-height: 44px;
 }
@@ -110,8 +114,6 @@
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
-
-
 
 /* Arrow on trigger */
 .desktop-nav-list .nav-menu-trigger::after {
@@ -262,7 +264,9 @@
     color: #111827;
     font-size: 0.9rem;
     font-weight: 400;
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
 }
 
 .search-input::placeholder {
@@ -452,7 +456,8 @@
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
-    font-family: "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family:
+        "Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -865,7 +870,6 @@ body {
 
 .cart-badge--hidden {
     display: none;
-    animation: cartBadgeFadeOut 0.5s cubic-bezier(0.4, 0, 1, 1) forwards !important;
 }
 
 /* Animations */
