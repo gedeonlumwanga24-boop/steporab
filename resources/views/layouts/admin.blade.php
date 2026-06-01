@@ -37,14 +37,23 @@
             <a href="{{ route('admin.clients.index') }}" class="admin-nav-item {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-users"></i> Clients
             </a>
-            <a href="{{ route('admin.messages.index') }}" class="admin-nav-item {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-envelope"></i> Messages
+            @php
+                $unreadMessagesCount = \App\Models\Message::where('status', 'non lu')->count();
+            @endphp
+            <a href="{{ route('admin.messages.index') }}" class="admin-nav-item {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}" style="display: flex; align-items: center;">
+                <i class="fa-solid fa-envelope" style="margin-right: 10px; width: 20px; text-align: center;"></i> Messages
+                @if($unreadMessagesCount > 0)
+                    <span style="background: #3b82f6; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $unreadMessagesCount }}</span>
+                @endif
             </a>
             <a href="{{ route('admin.config.index') }}" class="admin-nav-item {{ request()->routeIs('admin.config.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-gear"></i> Configuration
             </a>
             <a href="{{ route('admin.errors.index') }}" class="admin-nav-item {{ request()->routeIs('admin.errors.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-bug"></i> Gestion des erreurs
+            </a>
+            <a href="{{ route('admin.admins.index') }}" class="admin-nav-item {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-user-shield"></i> Administrateurs
             </a>
         </nav>
         <div class="admin-sidebar-footer">

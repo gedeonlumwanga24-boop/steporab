@@ -150,5 +150,98 @@
         </ul>
     </div>
 </div>
+
+{{-- ═══════════════ IMAGES PAGE À PROPOS ═══════════════ --}}
+<div class="admin-card" style="max-width: 900px; margin-top: 2rem;">
+    <div class="admin-card-header">
+        <h3 class="admin-card-title">
+            <i class="fa-solid fa-image" style="margin-right: 8px; color: #6366f1;"></i>
+            Images de la Page "À Propos"
+        </h3>
+    </div>
+    <div style="padding: 1.5rem;">
+        <form action="{{ route('admin.config.update') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;">
+
+                {{-- Image Hero --}}
+                <div>
+                    <label class="admin-label" style="margin-bottom: 0.75rem; display: block;">
+                        <i class="fa-solid fa-panorama" style="margin-right: 5px; color: #6366f1;"></i>
+                        Image principale (Hero)
+                    </label>
+                    @if(isset($configs['about_hero_image']))
+                        @php
+                            $aHero = $configs['about_hero_image'];
+                            $aHeroUrl = str_starts_with($aHero, 'http') ? $aHero : asset('storage/' . $aHero);
+                        @endphp
+                        <img src="{{ $aHeroUrl }}" alt="Hero À Propos"
+                             style="width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:0.75rem; border:1px solid var(--admin-border);">
+                    @else
+                        <div style="width:100%; height:160px; background:#f3f4f6; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:0.75rem; border:1px dashed #d1d5db;">
+                            <span style="color:#9ca3af; font-size:0.85rem;">Aucune image</span>
+                        </div>
+                    @endif
+                    <input type="file" name="about_hero_image" class="admin-input" accept="image/*">
+                    <p style="font-size:0.78rem; color:#6b7280; margin-top:0.4rem;">Plein écran en haut de la page</p>
+                </div>
+
+                {{-- Image 1 --}}
+                <div>
+                    <label class="admin-label" style="margin-bottom: 0.75rem; display: block;">
+                        <i class="fa-solid fa-image" style="margin-right: 5px; color: #10b981;"></i>
+                        Image secondaire 1 (grande)
+                    </label>
+                    @if(isset($configs['about_image_1']))
+                        @php
+                            $aImg1 = $configs['about_image_1'];
+                            $aImg1Url = str_starts_with($aImg1, 'http') ? $aImg1 : asset('storage/' . $aImg1);
+                        @endphp
+                        <img src="{{ $aImg1Url }}" alt="About Image 1"
+                             style="width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:0.75rem; border:1px solid var(--admin-border);">
+                    @else
+                        <div style="width:100%; height:160px; background:#f3f4f6; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:0.75rem; border:1px dashed #d1d5db;">
+                            <span style="color:#9ca3af; font-size:0.85rem;">Aucune image</span>
+                        </div>
+                    @endif
+                    <input type="file" name="about_image_1" class="admin-input" accept="image/*">
+                    <p style="font-size:0.78rem; color:#6b7280; margin-top:0.4rem;">Section "Nos Racines" (grande visuel gauche)</p>
+                </div>
+
+                {{-- Image 2 --}}
+                <div>
+                    <label class="admin-label" style="margin-bottom: 0.75rem; display: block;">
+                        <i class="fa-solid fa-image" style="margin-right: 5px; color: #f97316;"></i>
+                        Image secondaire 2 (petite)
+                    </label>
+                    @if(isset($configs['about_image_2']))
+                        @php
+                            $aImg2 = $configs['about_image_2'];
+                            $aImg2Url = str_starts_with($aImg2, 'http') ? $aImg2 : asset('storage/' . $aImg2);
+                        @endphp
+                        <img src="{{ $aImg2Url }}" alt="About Image 2"
+                             style="width:100%; height:160px; object-fit:cover; border-radius:8px; margin-bottom:0.75rem; border:1px solid var(--admin-border);">
+                    @else
+                        <div style="width:100%; height:160px; background:#f3f4f6; border-radius:8px; display:flex; align-items:center; justify-content:center; margin-bottom:0.75rem; border:1px dashed #d1d5db;">
+                            <span style="color:#9ca3af; font-size:0.85rem;">Aucune image</span>
+                        </div>
+                    @endif
+                    <input type="file" name="about_image_2" class="admin-input" accept="image/*">
+                    <p style="font-size:0.78rem; color:#6b7280; margin-top:0.4rem;">Section "Notre Sélection" (visuel droit)</p>
+                </div>
+
+            </div>
+
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--admin-border); text-align: right;">
+                <button type="submit" class="btn-primary-sm" style="padding: 0.75rem 2rem; font-size: 1rem;">
+                    <i class="fa-solid fa-save" style="margin-right: 5px;"></i> Enregistrer les images À Propos
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 @endsection
+
 

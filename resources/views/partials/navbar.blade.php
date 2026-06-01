@@ -31,10 +31,22 @@
                     </a>
                     <div class="nav-mega-menu">
                         <div class="nav-mega-inner">
-                            <div class="nav-mega-feature">
-                                <span>Collection</span>
-                                <strong>{{ $categoryName }}</strong>
-                                <p>Découvre une sélection pensée pour le style, le confort et le quotidien.</p>
+                            @php
+                                $megaImg = data_get($category, 'image')
+                                    ? asset('storage/categories/' . data_get($category, 'image'))
+                                    : match ($categorySlug) {
+                                        'chaussures'  => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=600&auto=format&fit=crop',
+                                        'vetements'   => 'https://images.unsplash.com/photo-1608231387042-66d1773070a5?q=80&w=600&auto=format&fit=crop',
+                                        'accessoires' => 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop',
+                                        default       => 'https://images.unsplash.com/photo-1552346154-21d32810baa3?q=80&w=600&auto=format&fit=crop',
+                                    };
+                            @endphp
+                            <div class="nav-mega-feature"
+                                 style="background-image: url('{{ $megaImg }}'); background-size: cover; background-position: center; position: relative; overflow: hidden;">
+                                <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0.85) 100%);"></div>
+                                <span style="position: relative; z-index: 1;">Collection</span>
+                                <strong style="position: relative; z-index: 1;">{{ $categoryName }}</strong>
+                                <p style="position: relative; z-index: 1;">Découvre une sélection pensée pour le style, le confort et le quotidien.</p>
                             </div>
                             <div class="nav-mega-links">
                                 <a href="{{ route('produits.index', ['categorie' => $categorySlug]) }}" class="nav-mega-link nav-mega-link--all">

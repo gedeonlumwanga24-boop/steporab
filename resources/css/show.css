@@ -340,17 +340,29 @@
     border-radius: 16px;
     aspect-ratio: 1;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-.product-main-image .product-image-main {
+.product-image-slider {
+    display: flex;
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    padding: 2rem;
-    transition: opacity 0.3s ease;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+}
+
+.product-image-slider::-webkit-scrollbar {
+    display: none;
+}
+
+.product-image-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Fill the card completely */
+    scroll-snap-align: center;
+    padding: 0;
 }
 
 /* Nav Buttons */
@@ -386,16 +398,162 @@
 .gallery-nav-btn.prev { left: 1.5rem; }
 .gallery-nav-btn.next { right: 1.5rem; }
 
+/* Desktop: hide dots */
+.product-gallery-dots {
+    display: none;
+}
+
 @media (max-width: 768px) {
-    .product-gallery {
-        flex-direction: column-reverse;
+    /* Full bleed for the container on mobile so image touches edges */
+    .product-show-container {
+        padding: 0;
     }
     
+    .product-show-layout {
+        gap: 0;
+        margin-bottom: 0;
+    }
+
+    /* Gallery: Main image top, thumbnails scrollable below */
+    .product-gallery {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .product-main-image {
+        border-radius: 0;
+        border-bottom: 1px solid #f1f5f9;
+        background: #fafafa;
+    }
+    
+    .product-image-slide {
+        padding: 0;
+        object-fit: cover;
+    }
+    
+    .gallery-nav-btn {
+        width: 38px;
+        height: 38px;
+        opacity: 1; /* Always show arrows on mobile */
+        background: rgba(255,255,255,0.85);
+    }
+    .gallery-nav-btn.prev { left: 1rem; }
+    .gallery-nav-btn.next { right: 1rem; }
+
+    /* Thumbnails - Hidden on mobile, replaced by dots */
     .product-thumbnails-container {
-        flex-direction: row;
+        display: none;
+    }
+
+    /* Pagination Dots */
+    .product-gallery-dots {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem 0 1.5rem 0;
+        background: #fafafa;
+    }
+    
+    .gallery-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #d1d5db;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .gallery-dot.active {
+        background: #111;
+        width: 20px;
+        border-radius: 4px;
+    }
+    
+    /* Product Info Panel */
+    .product-info-panel {
+        padding: 1rem 1.5rem 2.5rem;
+        gap: 1.25rem;
+    }
+
+    .product-show-title {
+        font-size: 1.6rem;
+    }
+
+    .product-price {
+        font-size: 1.4rem;
+    }
+
+    /* Sizes Grid - Nike Style (3 columns) */
+    .size-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .size-btn {
+        padding: 0.75rem 0.25rem;
+        font-size: 0.9rem;
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+        background: #fff;
+    }
+
+    .size-btn.unavailable {
+        background: #f9fafb;
+        color: #d1d5db;
+        border-color: #f3f4f6;
+        cursor: not-allowed;
+        position: relative;
+    }
+
+    .size-btn.unavailable::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        right: 10%;
+        height: 1px;
+        background-color: #d1d5db;
+        transform: translateY(-50%);
+    }
+
+    /* Actions - Pill Buttons */
+    .product-action-buttons {
+        gap: 0.75rem;
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .btn-add-to-cart.pill-btn,
+    .btn-wishlist.pill-btn {
+        border-radius: 50px;
+        padding: 1.15rem;
+        font-size: 1rem;
+        font-weight: 700;
         width: 100%;
-        max-height: none;
-        overflow-x: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btn-add-to-cart.pill-btn {
+        background: #111;
+        color: #fff;
+    }
+    
+    .btn-wishlist.pill-btn {
+        background: #fff;
+        color: #111;
+        border: 1px solid #d1d5db;
+    }
+    
+    /* Info box and description */
+    .product-info-box {
+        font-size: 0.85rem;
+    }
+
+    .product-additional-section {
+        padding: 0 1.5rem 2rem;
     }
 }
 

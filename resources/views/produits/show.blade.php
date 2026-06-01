@@ -44,11 +44,28 @@
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
                     
-                    <img id="mainImage" src="{{ $productImageUrl }}" alt="{{ $produit->nom }}" class="product-image-main">
+                    <div class="product-image-slider" id="imageSlider">
+                        <img src="{{ $productImageUrl }}" alt="{{ $produit->nom }}" class="product-image-slide">
+                        @if($produit->galerie && is_array($produit->galerie))
+                            @foreach($produit->galerie as $miniature)
+                                <img src="{{ asset('storage/produits/'.$miniature) }}" alt="{{ $produit->nom }}" class="product-image-slide">
+                            @endforeach
+                        @endif
+                    </div>
                     
                     <button class="gallery-nav-btn next" onclick="navigateGallery(1)" aria-label="Image suivante">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
+                </div>
+                
+                <!-- Pagination Dots for Mobile -->
+                <div class="product-gallery-dots">
+                    <span class="gallery-dot active" onclick="goToSlide(0)"></span>
+                    @if($produit->galerie && is_array($produit->galerie))
+                        @foreach($produit->galerie as $index => $miniature)
+                            <span class="gallery-dot" onclick="goToSlide({{ $index + 1 }})"></span>
+                        @endforeach
+                    @endif
                 </div>
             </div>
         </div>
@@ -71,11 +88,25 @@
 
             <!-- Size Selection -->
             <div class="product-size-section">
-                <label class="size-label">Sélectionner la taille</label>
+                <div class="size-header-wrapper" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem;">
+                    <label class="size-label" style="font-weight: 700; margin-bottom: 0;">Sélectionner la taille</label>
+                    <a href="#" class="size-guide" style="font-size: 0.85rem; font-weight: 700; color: #111; text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
+                        <i class="fa-solid fa-ruler-horizontal"></i> Guide des tailles
+                    </a>
+                </div>
                 <div class="size-grid">
-                    @php $sizes = ['EU 36', 'EU 37', 'EU 38', 'EU 39', 'EU 40', 'EU 41', 'EU 42', 'EU 43', 'EU 44', 'EU 45']; @endphp
-                    @foreach($sizes as $size)
-                        <button class="size-btn" onclick="selectSize(this)">{{ $size }}</button>
+                    @php 
+                        $sizes = [
+                            'EU 38.5' => false, 'EU 39' => false, 'EU 40' => true, 
+                            'EU 40.5' => true, 'EU 41' => true, 'EU 42' => true, 
+                            'EU 42.5' => true, 'EU 43' => true, 'EU 44' => true, 
+                            'EU 44.5' => false, 'EU 45' => false, 'EU 45.5' => true, 
+                            'EU 46' => false, 'EU 47' => true, 'EU 47.5' => false, 
+                            'EU 48.5' => false, 'EU 49.5' => false
+                        ]; 
+                    @endphp
+                    @foreach($sizes as $size => $available)
+                        <button type="button" class="size-btn {{ $available ? '' : 'unavailable' }}" {{ $available ? 'onclick=selectSize(this)' : 'disabled' }}>{{ $size }}</button>
                     @endforeach
                 </div>
             </div>
@@ -97,12 +128,12 @@
                     @csrf
                     <input type="hidden" name="taille" id="selectedSizeInput" value="">
                     <input type="hidden" name="couleur" id="selectedColorInput" value="">
-                    <button type="submit" class="btn-add-to-cart" id="addToCartBtn">
+                    <button type="submit" class="btn-add-to-cart pill-btn" id="addToCartBtn">
                         Ajouter au panier
                     </button>
                 </form>
-                <button class="btn-wishlist">
-                    <i class="fa-solid fa-heart"></i> Ajouter aux favoris
+                <button type="button" class="btn-wishlist pill-btn">
+                    Ajouter aux favoris <i class="fa-regular fa-heart" style="margin-left: 0.5rem; font-size: 1.1rem;"></i>
                 </button>
             </div>
 
@@ -263,25 +294,53 @@
 </style>
 
 <script>
-let currentIndex = 0;
 const thumbnails = document.querySelectorAll('.product-thumbnail');
-const mainImage  = document.getElementById('mainImage');
+const slider = document.getElementById('imageSlider');
+const dots = document.querySelectorAll('.gallery-dot');
+let totalSlides = dots.length;
 
-function changeImage(element, index) {
-    currentIndex = index;
-    const newSrc = element.querySelector('img').src;
-    mainImage.style.opacity = '0';
-    setTimeout(() => { mainImage.src = newSrc; mainImage.style.opacity = '1'; }, 200);
-    thumbnails.forEach(t => t.classList.remove('active'));
-    element.classList.add('active');
-    element.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+function goToSlide(index) {
+    if(!slider) return;
+    const slideWidth = slider.clientWidth;
+    slider.scrollTo({ left: slideWidth * index, behavior: 'smooth' });
+    updateActiveState(index);
 }
 
 function navigateGallery(direction) {
-    let idx = currentIndex + direction;
-    if (idx < 0) idx = thumbnails.length - 1;
-    if (idx >= thumbnails.length) idx = 0;
-    changeImage(thumbnails[idx], idx);
+    if(!slider) return;
+    const slideWidth = slider.clientWidth;
+    let currentIndex = Math.round(slider.scrollLeft / slideWidth);
+    let nextIndex = currentIndex + direction;
+    if (nextIndex < 0) nextIndex = totalSlides - 1;
+    if (nextIndex >= totalSlides) nextIndex = 0;
+    goToSlide(nextIndex);
+}
+
+function updateActiveState(index) {
+    dots.forEach((dot, i) => {
+        if (i === index) dot.classList.add('active');
+        else dot.classList.remove('active');
+    });
+    thumbnails.forEach((t, i) => {
+        if (i === index) {
+            t.classList.add('active');
+            if (t.scrollIntoView) t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        } else {
+            t.classList.remove('active');
+        }
+    });
+}
+
+if(slider) {
+    slider.addEventListener('scroll', () => {
+        const slideWidth = slider.clientWidth;
+        const index = Math.round(slider.scrollLeft / slideWidth);
+        updateActiveState(index);
+    }, {passive: true});
+}
+
+function changeImage(element, index) {
+    goToSlide(index);
 }
 
 document.addEventListener('keydown', e => {

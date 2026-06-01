@@ -18,6 +18,7 @@ use App\Http\Controllers\Web\Admin\ClientController as AdminClientController;
 use App\Http\Controllers\Web\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Web\Admin\StatsController;
 use App\Http\Controllers\Web\Admin\ErrorLogController;
+use App\Http\Controllers\Web\Admin\AdminUserController;
 
 
 // -------------------- FRONT-END --------------------
@@ -32,7 +33,8 @@ Route::get('/', function () {
 
 // A propos
 Route::get('/apropos', function () {
-    return view('apropos');
+    $configs = \App\Models\SiteConfig::pluck('value', 'key');
+    return view('apropos', compact('configs'));
 })->name('apropos');
 
 // Serve images stored in resources/images when the public/images folder is not present
@@ -102,9 +104,11 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('commandes', AdminCommandeController::class)->names('admin.commandes');
 
     // Clients
+    Route::post('clients/{id}/restore', [AdminClientController::class, 'restore'])->name('admin.clients.restore');
     Route::resource('clients', AdminClientController::class)->names('admin.clients');
 
     // Messages
+    Route::post('messages/{message}/reply', [AdminMessageController::class, 'reply'])->name('admin.messages.reply');
     Route::resource('messages', AdminMessageController::class)->names('admin.messages');
 
     // Configuration du site
@@ -115,4 +119,10 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('errors', ErrorLogController::class)
         ->except(['create', 'store', 'edit'])
         ->names('admin.errors');
+
+    // Gestion des administrateurs
+    Route::get('admins', [AdminUserController::class, 'index'])->name('admin.admins.index');
+    Route::get('admins/create', [AdminUserController::class, 'create'])->name('admin.admins.create');
+    Route::post('admins', [AdminUserController::class, 'store'])->name('admin.admins.store');
+    Route::delete('admins/{user}', [AdminUserController::class, 'destroy'])->name('admin.admins.destroy');
 });
