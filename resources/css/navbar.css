@@ -325,37 +325,6 @@
     background: #f3f4f6;
 }
 
-/* Cart badge — compteur rouge */
-.cart-badge {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    background: #e02020;
-    color: #fff;
-    font-size: 0.625rem;
-    font-weight: 800;
-    min-width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    padding: 0 4px;
-    border: 2px solid #fff;
-    line-height: 1;
-    pointer-events: none;
-}
-
-.nav-actions .icon-btn--pill .cart-badge,
-.nav-cart-btn .cart-badge {
-    top: 2px;
-    right: 2px;
-}
-
-.cart-badge--hidden {
-    display: none;
-}
-
 /* Red dot badge (mobile Nike-style) */
 .cart-dot {
     position: absolute;
@@ -834,4 +803,104 @@ body {
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border-width: 0;
+}
+
+/* ════════════════════════════════════════════════════════════
+   COMPTEURS - BADGES BLEUS ET ROUGES
+   ════════════════════════════════════════════════════════════ */
+
+/* Badge bleu pour les réponses clients */
+.account-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: #3b82f6;
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 800;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0 4px;
+    border: 2px solid #fff;
+    line-height: 1;
+    pointer-events: none;
+    animation: badgeSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.account-badge--hidden {
+    display: none;
+}
+
+/* Badge rouge pour le panier avec animation */
+.cart-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: #e02020;
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 800;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0 4px;
+    border: 2px solid #fff;
+    line-height: 1;
+    pointer-events: none;
+    animation: cartBadgePulse 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-actions .icon-btn--pill .cart-badge,
+.nav-cart-btn .cart-badge {
+    top: 2px;
+    right: 2px;
+}
+
+.cart-badge--hidden {
+    display: none;
+    animation: cartBadgeFadeOut 0.5s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+}
+
+/* Animations */
+@keyframes badgeSlideIn {
+    from {
+        transform: scale(0) translateY(-10px);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes cartBadgePulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes cartBadgeFadeOut {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
 }

@@ -78,8 +78,9 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </button>
 
-            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill" aria-label="Compte">
+            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill nav-account-btn" aria-label="Compte" id="navAccountLink">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="account-badge account-badge--hidden" id="navAccountBadge">0</span>
             </a>
 
             <a href="{{ route('panier.index') }}" class="icon-btn icon-btn--pill nav-cart-btn" aria-label="Panier" id="navCartLink">

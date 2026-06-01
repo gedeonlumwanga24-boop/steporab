@@ -1,14 +1,16 @@
 import './bootstrap';
 import './components/CartDrawer';
+import './components/NavbarBadges';
 
 // API Services — available globally via import or window for Blade templates
 import { ProductService } from './services/ProductService.js';
 import { CartService }    from './services/CartService.js';
 import { AuthService }    from './services/AuthService.js';
 import { OrderService }   from './services/OrderService.js';
+import { AccountService } from './services/AccountService.js';
 
 // Expose to window for Blade-embedded scripts (progressive enhancement)
-window.SteporaApi = { ProductService, CartService, AuthService, OrderService };
+window.SteporaApi = { ProductService, CartService, AuthService, OrderService, AccountService };
 
 // Global: handle unauthenticated event fired by Axios interceptor
 window.addEventListener('stepora:unauthenticated', () => {
