@@ -10,9 +10,11 @@ import api from "../api/axios.js";
  * @param {number} count - Nombre d'articles
  */
 function emitCartUpdate(count) {
-    window.dispatchEvent(new CustomEvent('cart:updated', {
-        detail: { count }
-    }));
+    window.dispatchEvent(
+        new CustomEvent("cart:updated", {
+            detail: { count },
+        }),
+    );
 }
 
 export const CartService = {
@@ -42,11 +44,11 @@ export const CartService = {
                 quantite: data.quantite || 1,
                 taille: data.taille || null,
             });
-            
+
             // Émettre l'événement de mise à jour
             const count = await this.getItemCount();
             emitCartUpdate(count);
-            
+
             return response.data?.data || response.data;
         } catch (error) {
             if (error.response?.status === 422) {
@@ -71,11 +73,11 @@ export const CartService = {
                 quantite,
                 taille,
             });
-            
+
             // Émettre l'événement de mise à jour
             const count = await this.getItemCount();
             emitCartUpdate(count);
-            
+
             return response.data?.data || response.data;
         } catch (error) {
             if (error.response?.status === 422) {
@@ -99,11 +101,11 @@ export const CartService = {
             const response = await api.delete(`/cart/items/${productId}`, {
                 data: { taille },
             });
-            
+
             // Émettre l'événement de mise à jour
             const count = await this.getItemCount();
             emitCartUpdate(count);
-            
+
             return response.data?.data || response.data;
         } catch (error) {
             console.error("Erreur lors de la suppression:", error);
@@ -118,10 +120,10 @@ export const CartService = {
     async clear() {
         try {
             const response = await api.delete("/cart");
-            
+
             // Émettre l'événement de mise à jour (compteur à 0)
             emitCartUpdate(0);
-            
+
             return response.data?.data || response.data;
         } catch (error) {
             console.error("Erreur lors du vidage du panier:", error);

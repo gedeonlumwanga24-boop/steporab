@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: stepora-web
+    env: php
+    plan: free
+    region: oregon
+    branch: main
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      npm ci
+      npm run build
+      php artisan optimize
+    startCommand: php artisan serve --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        value: https://your-app-name.onrender.com
+      - key: APP_KEY
+        value: YOUR_APP_KEY_HERE
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: YOUR_MYSQL_HOST
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_DATABASE
+        value: YOUR_MYSQL_DATABASE
+      - key: DB_USERNAME
+        value: YOUR_MYSQL_USERNAME
+      - key: DB_PASSWORD
+        value: YOUR_MYSQL_PASSWORD
+      - key: BROADCAST_DRIVER
+        value: log
+      - key: CACHE_DRIVER
+        value: file
+      - key: SESSION_DRIVER
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: LOG_CHANNEL
+        value: stack

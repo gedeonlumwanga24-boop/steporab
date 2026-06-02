@@ -38,17 +38,30 @@ export class NavbarBadges {
      * Guard pour le badge contact
      */
     setupContactBadgeGuard() {
-        if (!this.contactBadge || typeof MutationObserver === 'undefined') return;
+        if (!this.contactBadge || typeof MutationObserver === "undefined")
+            return;
 
         const guard = (mutationsList) => {
             for (const m of mutationsList) {
-                const text = (this.contactBadge.textContent || '').trim();
-                const count = text.endsWith('+') ? parseInt(text, 10) || 9 : parseInt(text, 10) || 0;
-                if (count > 0 && this.contactBadge.classList.contains('contact-badge--hidden')) {
-                    this.contactBadge.classList.remove('contact-badge--hidden');
+                const text = (this.contactBadge.textContent || "").trim();
+                const count = text.endsWith("+")
+                    ? parseInt(text, 10) || 9
+                    : parseInt(text, 10) || 0;
+                if (
+                    count > 0 &&
+                    this.contactBadge.classList.contains(
+                        "contact-badge--hidden",
+                    )
+                ) {
+                    this.contactBadge.classList.remove("contact-badge--hidden");
                 }
-                if (count <= 0 && !this.contactBadge.classList.contains('contact-badge--hidden')) {
-                    this.contactBadge.classList.add('contact-badge--hidden');
+                if (
+                    count <= 0 &&
+                    !this.contactBadge.classList.contains(
+                        "contact-badge--hidden",
+                    )
+                ) {
+                    this.contactBadge.classList.add("contact-badge--hidden");
                 }
             }
         };
@@ -56,7 +69,7 @@ export class NavbarBadges {
         this._contactBadgeObserver = new MutationObserver(guard);
         this._contactBadgeObserver.observe(this.contactBadge, {
             attributes: true,
-            attributeFilter: ['class'],
+            attributeFilter: ["class"],
             childList: true,
             characterData: true,
             subtree: true,
@@ -68,19 +81,27 @@ export class NavbarBadges {
      * Utilise un MutationObserver pour rétablir la visibilité si nécessaire
      */
     setupCartBadgeGuard() {
-        if (!this.cartBadge || typeof MutationObserver === 'undefined') return;
+        if (!this.cartBadge || typeof MutationObserver === "undefined") return;
 
         const guard = (mutationsList) => {
             for (const m of mutationsList) {
                 // Si contenu texte changé, ou classes changées, réappliquer la règle
-                const text = (this.cartBadge.textContent || '').trim();
-                const count = text.endsWith('+') ? parseInt(text, 10) || 9 : parseInt(text, 10) || 0;
-                if (count > 0 && this.cartBadge.classList.contains('cart-badge--hidden')) {
-                    this.cartBadge.classList.remove('cart-badge--hidden');
+                const text = (this.cartBadge.textContent || "").trim();
+                const count = text.endsWith("+")
+                    ? parseInt(text, 10) || 9
+                    : parseInt(text, 10) || 0;
+                if (
+                    count > 0 &&
+                    this.cartBadge.classList.contains("cart-badge--hidden")
+                ) {
+                    this.cartBadge.classList.remove("cart-badge--hidden");
                 }
                 // If count is zero, ensure hidden
-                if (count <= 0 && !this.cartBadge.classList.contains('cart-badge--hidden')) {
-                    this.cartBadge.classList.add('cart-badge--hidden');
+                if (
+                    count <= 0 &&
+                    !this.cartBadge.classList.contains("cart-badge--hidden")
+                ) {
+                    this.cartBadge.classList.add("cart-badge--hidden");
                 }
             }
         };
@@ -88,7 +109,7 @@ export class NavbarBadges {
         this._cartBadgeObserver = new MutationObserver(guard);
         this._cartBadgeObserver.observe(this.cartBadge, {
             attributes: true,
-            attributeFilter: ['class'],
+            attributeFilter: ["class"],
             childList: true,
             characterData: true,
             subtree: true,
@@ -157,10 +178,10 @@ export class NavbarBadges {
         if (!this.contactBadge) return;
 
         if (count > 0) {
-            this.contactBadge.textContent = count > 9 ? '9+' : count;
-            this.contactBadge.classList.remove('contact-badge--hidden');
+            this.contactBadge.textContent = count > 9 ? "9+" : count;
+            this.contactBadge.classList.remove("contact-badge--hidden");
         } else {
-            this.contactBadge.classList.add('contact-badge--hidden');
+            this.contactBadge.classList.add("contact-badge--hidden");
         }
     }
 

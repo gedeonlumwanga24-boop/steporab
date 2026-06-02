@@ -1,28 +1,33 @@
-import './bootstrap';
-import './components/CartDrawer';
-import './components/NavbarBadges';
+import "./bootstrap";
+import "./components/CartDrawer";
+import "./components/NavbarBadges";
 
 // API Services — available globally via import or window for Blade templates
-import { ProductService } from './services/ProductService.js';
-import { CartService }    from './services/CartService.js';
-import { AuthService }    from './services/AuthService.js';
-import { OrderService }   from './services/OrderService.js';
-import { AccountService } from './services/AccountService.js';
+import { ProductService } from "./services/ProductService.js";
+import { CartService } from "./services/CartService.js";
+import { AuthService } from "./services/AuthService.js";
+import { OrderService } from "./services/OrderService.js";
+import { AccountService } from "./services/AccountService.js";
 
 // Expose to window for Blade-embedded scripts (progressive enhancement)
-window.SteporaApi = { ProductService, CartService, AuthService, OrderService, AccountService };
+window.SteporaApi = {
+    ProductService,
+    CartService,
+    AuthService,
+    OrderService,
+    AccountService,
+};
 
 // Global: handle unauthenticated event fired by Axios interceptor
-window.addEventListener('stepora:unauthenticated', () => {
-    console.warn('[Stepora] Session expirée. Redirection vers /login...');
+window.addEventListener("stepora:unauthenticated", () => {
+    console.warn("[Stepora] Session expirée. Redirection vers /login...");
     // For Blade: redirect to login. For SPA: emit a store event.
-    if (!window.location.pathname.startsWith('/login')) {
-        window.location.href = '/login';
+    if (!window.location.pathname.startsWith("/login")) {
+        window.location.href = "/login";
     }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const toggle = document.querySelector(".menu-toggle");
     const menu = document.querySelector(".mobile-menu");
     const close = document.querySelector(".close-menu");
@@ -38,12 +43,11 @@ document.addEventListener("DOMContentLoaded", () => {
             menu.classList.remove("active");
         });
     }
-
 });
 
 window.toggleFilters = function () {
-    const panel = document.getElementById('filtersPanel');
+    const panel = document.getElementById("filtersPanel");
     if (panel) {
-        panel.classList.toggle('hidden');
+        panel.classList.toggle("hidden");
     }
 };
