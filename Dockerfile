@@ -27,10 +27,14 @@ WORKDIR /var/www/html
 
 COPY . /var/www/html
 
-RUN composer install --no-dev --optimize-autoloader --prefer-dist
+# Generate a temporary APP_KEY early to allow Laravel facades during composer install
+RUN echo "APP_KEY=base64:Ynk5bXZrTXlyZXR6aHBCdzlFVjU2YnBxQzAwWEU2Yk0=" > .env.docker && \
+    export $(cat .env.docker | xargs) && \
+    composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction && \
+    rm .env.docker
+
 RUN npm ci
 RUN npm run build
-RUN php artisan key:generate --force
 RUN php artisan optimize
 
 EXPOSE 10000
