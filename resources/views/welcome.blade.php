@@ -390,14 +390,6 @@
     </div>
 </section>
 
-{{-- ═══════════════════════════════ BRANDS MARQUEE ═══════════════════════════════ --}}
-<div class="home-brands-marquee">
-    <div class="home-brands-inner">
-        Nike <span class="home-brands-sep">·</span> Adidas <span class="home-brands-sep">·</span> Jordan <span class="home-brands-sep">·</span> New Balance <span class="home-brands-sep">·</span> Puma <span class="home-brands-sep">·</span> Reebok <span class="home-brands-sep">·</span> Converse <span class="home-brands-sep">·</span> Vans <span class="home-brands-sep">·</span>
-        Nike <span class="home-brands-sep">·</span> Adidas <span class="home-brands-sep">·</span> Jordan <span class="home-brands-sep">·</span> New Balance <span class="home-brands-sep">·</span> Puma <span class="home-brands-sep">·</span> Reebok <span class="home-brands-sep">·</span> Converse <span class="home-brands-sep">·</span> Vans <span class="home-brands-sep">·</span>
-    </div>
-</div>
-
 {{-- ═══════════════════════════════ VIDEO BANNER ═══════════════════════════════ --}}
 <section class="video-banner-section reveal">
     <div class="video-banner-media">
@@ -465,6 +457,35 @@
     </div>
 </section>
 
+{{-- ═══════════════════════════════ STATS BAR ═══════════════════════════════ --}}
+<div class="home-stats-bar">
+    <div class="home-stat">
+        <span class="home-stat-num">2021</span>
+        <span class="home-stat-lbl">Fondation</span>
+    </div>
+    <div class="home-stat">
+        <span class="home-stat-num">500<sup>+</sup></span>
+        <span class="home-stat-lbl">Références</span>
+    </div>
+    <div class="home-stat">
+        <span class="home-stat-num">12K<sup>+</sup></span>
+        <span class="home-stat-lbl">Clients</span>
+    </div>
+    <div class="home-stat">
+        <span class="home-stat-num">100%</span>
+        <span class="home-stat-lbl">Authentique</span>
+    </div>
+</div>
+
+
+{{-- ═══════════════════════════════ BRANDS MARQUEE ═══════════════════════════════ --}}
+<div class="home-brands-marquee">
+    <div class="home-brands-inner">
+        Nike <span class="home-brands-sep">·</span> Adidas <span class="home-brands-sep">·</span> Jordan <span class="home-brands-sep">·</span> New Balance <span class="home-brands-sep">·</span> Puma <span class="home-brands-sep">·</span> Reebok <span class="home-brands-sep">·</span> Converse <span class="home-brands-sep">·</span> Vans <span class="home-brands-sep">·</span>
+        Nike <span class="home-brands-sep">·</span> Adidas <span class="home-brands-sep">·</span> Jordan <span class="home-brands-sep">·</span> New Balance <span class="home-brands-sep">·</span> Puma <span class="home-brands-sep">·</span> Reebok <span class="home-brands-sep">·</span> Converse <span class="home-brands-sep">·</span> Vans <span class="home-brands-sep">·</span>
+    </div>
+</div>
+
 {{-- ═══════════════════════════════ BRAND STATEMENT ═══════════════════════════════ --}}
 <section class="brand-statement reveal">
     <div class="brand-statement__inner">
@@ -492,25 +513,7 @@
     </div>
 </section>
 
-{{-- ═══════════════════════════════ STATS BAR ═══════════════════════════════ --}}
-<div class="home-stats-bar">
-    <div class="home-stat">
-        <span class="home-stat-num">2021</span>
-        <span class="home-stat-lbl">Fondation</span>
-    </div>
-    <div class="home-stat">
-        <span class="home-stat-num">500<sup>+</sup></span>
-        <span class="home-stat-lbl">Références</span>
-    </div>
-    <div class="home-stat">
-        <span class="home-stat-num">12K<sup>+</sup></span>
-        <span class="home-stat-lbl">Clients</span>
-    </div>
-    <div class="home-stat">
-        <span class="home-stat-num">100%</span>
-        <span class="home-stat-lbl">Authentique</span>
-    </div>
-</div>
+
 
 @endsection
 
