@@ -1,41 +1,43 @@
 FROM php:8.2-cli
 
-# Installer les dépendances système nécessaires pour Laravel, composer et npm
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
+    zip \
+    curl \
     libzip-dev \
-    libonig-dev \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
     libxml2-dev \
-    zip \
-    curl \
-    wget \
-    gnupg \
+    libonig-dev \
     nodejs \
-    npm \
-    && rm -rf /var/lib/apt/lists/*
+    npm
 
-RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd xml zip
+RUN docker-php-ext-install \
+    pdo \
+    pdo_mysql \
+    mbstring \
+    bcmath \
+    exif \
+    pcntl \
+    zip
 
-# Installer Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-COPY . /var/www/html
+COPY . .
 
-# Generate a temporary APP_KEY early to allow Laravel facades during composer install
-RUN echo "APP_KEY=base64:Ynk5bXZrTXlyZXR6aHBCdzlFVjU2YnBxQzAwWEU2Yk0=" > .env.docker && \
-    export $(cat .env.docker | xargs) && \
-    composer install --no-dev --optimize-autoloader --prefer-dist --no-interaction && \
-    rm .env.docker
+RUN composer install \
+    --no-dev \
+    --prefer-dist \
+    --optimize-autoloader \
+    --no-interaction \
+    --no-scripts
 
-RUN npm ci
+RUN npm install
 RUN npm run build
-RUN php artisan optimize
 
 EXPOSE 10000
 
