@@ -111,7 +111,7 @@ class CommandeController extends Controller
         }
 
         $validated = $request->validate([
-            'payment_method'    => 'required|in:mpesa,orange_money',
+            'payment_method'    => 'required|in:mpesa,orange_money,airtel_money',
             'payment_phone'     => 'required|string|max:20',
             'payment_reference' => 'required|string|max:100',
             'payment_proof'     => 'required|file|max:10240',

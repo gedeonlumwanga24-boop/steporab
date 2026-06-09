@@ -77,6 +77,7 @@ class Commande extends Model
         return match($this->payment_method) {
             'mpesa'        => 'M-Pesa',
             'orange_money' => 'Orange Money',
+            'airtel_money' => 'Airtel Money',
             default        => 'Manuel',
         };
     }
