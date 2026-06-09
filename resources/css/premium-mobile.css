@@ -17,13 +17,21 @@ body {
 }
 
 /* ── Empêche tout overflow horizontal ── */
-html {
-    overflow-x: hidden;
+@media (min-width: 901px) {
+    html, body {
+        overflow-x: clip; /* Permet à position: sticky de fonctionner sur desktop */
+    }
 }
 
-body {
-    overflow-x: hidden;
-    min-width: 320px;
+@media (max-width: 900px) {
+    html {
+        overflow-x: hidden;
+    }
+
+    body {
+        overflow-x: hidden;
+        min-width: 320px;
+    }
 }
 
 /* ── Scroll scrolled state ── */
