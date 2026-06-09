@@ -38,17 +38,32 @@
                         </td>
                         <td>{{ $commande->created_at->format('d/m/Y H:i') }}</td>
                         <td>
-                            @if($commande->statut === 'en_attente')
-                                <span class="badge badge-pending">En attente</span>
-                            @elseif($commande->statut === 'payee' || $commande->statut === 'expediee')
-                                <span class="badge" style="background: #e0f2fe; color: #0369a1;">{{ ucfirst($commande->statut) }}</span>
-                            @elseif($commande->statut === 'terminee')
-                                <span class="badge badge-success">Terminée</span>
-                            @elseif($commande->statut === 'annulee')
-                                <span class="badge badge-error">Annulée</span>
-                            @else
-                                <span class="badge">{{ ucfirst($commande->statut) }}</span>
-                            @endif
+                            <div style="display: flex; flex-direction: column; gap: 0.25rem;">
+                                <div>
+                                    @if($commande->payment_status === 'payee')
+                                        <span class="badge badge-success" style="font-size: 0.7rem;">Paiement: Payé</span>
+                                    @elseif($commande->payment_status === 'en_verification')
+                                        <span class="badge badge-pending" style="font-size: 0.7rem;">Paiement: En vérif</span>
+                                    @elseif($commande->payment_status === 'refusee')
+                                        <span class="badge badge-error" style="font-size: 0.7rem;">Paiement: Refusé</span>
+                                    @else
+                                        <span class="badge" style="font-size: 0.7rem; background:#f3f4f6;">Paiement: Non payé</span>
+                                    @endif
+                                </div>
+                                @if($commande->statut !== 'en_attente')
+                                <div>
+                                    @if($commande->statut === 'payee')
+                                        <span class="badge" style="background: #e0e7ff; color: #3730a3; font-size: 0.7rem;">Livraison: Préparation</span>
+                                    @elseif($commande->statut === 'expediee')
+                                        <span class="badge" style="background: #cffafe; color: #164e63; font-size: 0.7rem;">Livraison: Expédiée</span>
+                                    @elseif($commande->statut === 'terminee' || $commande->statut === 'livree')
+                                        <span class="badge badge-success" style="font-size: 0.7rem;">Livraison: Livrée</span>
+                                    @elseif($commande->statut === 'annulee')
+                                        <span class="badge badge-error" style="font-size: 0.7rem;">Livraison: Annulée</span>
+                                    @endif
+                                </div>
+                                @endif
+                            </div>
                         </td>
                         <td><strong>{{ number_format($commande->total, 0, ' ', ' ') }} CDF</strong></td>
                         <td>

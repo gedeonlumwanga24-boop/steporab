@@ -61,7 +61,7 @@
         <!-- Changer le Statut -->
         <div class="admin-card">
             <div class="admin-card-header">
-                <h3 class="admin-card-title">Statut de la Commande</h3>
+                <h3 class="admin-card-title">Statut de Livraison (Fulfillment)</h3>
             </div>
             <div style="padding: 1.5rem;">
                 <form action="{{ route('admin.commandes.update', $commande->id) }}" method="POST">
@@ -70,10 +70,10 @@
                     
                     <div class="admin-form-group">
                         <select name="statut" class="admin-select" style="margin-bottom: 1rem;">
-                            <option value="en_attente" {{ $commande->statut === 'en_attente' ? 'selected' : '' }}>En attente</option>
-                            <option value="payee" {{ $commande->statut === 'payee' ? 'selected' : '' }}>Payée</option>
+                            <option value="en_attente" {{ $commande->statut === 'en_attente' ? 'selected' : '' }}>En attente de paiement</option>
+                            <option value="payee" {{ $commande->statut === 'payee' ? 'selected' : '' }}>En préparation (Paiement validé)</option>
                             <option value="expediee" {{ $commande->statut === 'expediee' ? 'selected' : '' }}>Expédiée</option>
-                            <option value="terminee" {{ $commande->statut === 'terminee' ? 'selected' : '' }}>Terminée</option>
+                            <option value="terminee" {{ $commande->statut === 'terminee' ? 'selected' : '' }}>Livrée (Terminée)</option>
                             <option value="annulee" {{ $commande->statut === 'annulee' ? 'selected' : '' }}>Annulée</option>
                         </select>
                         <button type="submit" class="btn-primary-sm" style="width: 100%;">Mettre à jour le statut</button>

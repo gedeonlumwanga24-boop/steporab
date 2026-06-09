@@ -33,7 +33,7 @@
     </div>
 
     {{-- Actions --}}
-    <a href="{{ route('commande.mes_commandes') }}"
+    <a href="{{ route('compte.show') }}"
        style="display: block; width: 100%; text-align: center; background: #111; color: #fff; font-weight: 800; font-size: 0.95rem; padding: 0.9rem; border-radius: 10px; text-decoration: none; margin-bottom: 0.75rem; box-sizing: border-box; transition: background 0.2s;"
        onmouseover="this.style.background='#000'" onmouseout="this.style.background='#111'">
         Voir mes commandes

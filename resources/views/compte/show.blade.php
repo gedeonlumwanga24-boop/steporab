@@ -84,17 +84,37 @@
                                 <div style="text-align: right;">
                                     <p style="font-weight: 800; color: #111; margin: 0; font-size: 1rem;">{{ number_format($commande->total, 0, ' ', ' ') }} CDF</p>
                                     @php
+                                        // Badge paiement
                                         $ps = $commande->payment_status;
-                                        $badge = match($ps) {
+                                        $badgePaiement = match($ps) {
                                             'payee'          => ['bg' => '#d1fae5', 'color' => '#065f46', 'label' => 'Payée'],
-                                            'en_verification'=> ['bg' => '#fef3c7', 'color' => '#92400e', 'label' => 'En vérification'],
+                                            'en_verification'=> ['bg' => '#fef3c7', 'color' => '#92400e', 'label' => 'En vérif.'],
                                             'refusee'        => ['bg' => '#fee2e2', 'color' => '#991b1b', 'label' => 'Refusée'],
-                                            default          => ['bg' => '#f3f4f6', 'color' => '#374151', 'label' => 'En attente'],
+                                            default          => ['bg' => '#f3f4f6', 'color' => '#374151', 'label' => 'Non payé'],
+                                        };
+                                        
+                                        // Badge livraison
+                                        $st = $commande->statut;
+                                        $badgeLivraison = match($st) {
+                                            'en_attente' => null,
+                                            'payee'      => ['bg' => '#e0e7ff', 'color' => '#3730a3', 'label' => 'En préparation'],
+                                            'expediee'   => ['bg' => '#cffafe', 'color' => '#164e63', 'label' => 'Expédiée'],
+                                            'terminee'   => ['bg' => '#dcfce7', 'color' => '#166534', 'label' => 'Livrée'],
+                                            'livree'     => ['bg' => '#dcfce7', 'color' => '#166534', 'label' => 'Livrée'],
+                                            'annulee'    => ['bg' => '#fee2e2', 'color' => '#991b1b', 'label' => 'Annulée'],
+                                            default      => ['bg' => '#f3f4f6', 'color' => '#374151', 'label' => ucfirst($st)],
                                         };
                                     @endphp
-                                    <span style="background: {{ $badge['bg'] }}; color: {{ $badge['color'] }}; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px;">
-                                        {{ $badge['label'] }}
-                                    </span>
+                                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 0.25rem;">
+                                        <span style="background: {{ $badgePaiement['bg'] }}; color: {{ $badgePaiement['color'] }}; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px;">
+                                            Paiement : {{ $badgePaiement['label'] }}
+                                        </span>
+                                        @if($badgeLivraison && $st !== 'en_attente')
+                                        <span style="background: {{ $badgeLivraison['bg'] }}; color: {{ $badgeLivraison['color'] }}; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px;">
+                                            Livraison : {{ $badgeLivraison['label'] }}
+                                        </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
 
