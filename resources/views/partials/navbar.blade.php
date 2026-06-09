@@ -5,7 +5,7 @@
     $unreadAccountCount = 0;
     if (Auth::check()) {
         $unreadAccountCount = \App\Models\Message::where('email', Auth::user()->email)
-            ->whereNotNull('reply')
+            ->where('is_admin', true)
             ->where('client_read', false)
             ->count();
     }
@@ -94,7 +94,11 @@
             </a>
 
             <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill nav-account-btn" aria-label="Compte" id="navAccountLink">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                @if(Auth::check() && Auth::user()->avatar)
+                    <img src="{{ Auth::user()->avatar }}" alt="Avatar" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" referrerpolicy="no-referrer">
+                @else
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                @endif
             </a>
 
             <a href="{{ route('panier.index') }}" class="icon-btn icon-btn--pill nav-cart-btn" aria-label="Panier" id="navCartLink">

@@ -27,11 +27,11 @@ class ProfileController extends Controller
     public function messages()
     {
         $user = Auth::user();
-        $messages = \App\Models\Message::where('email', $user->email)->latest()->get();
+        $messages = \App\Models\Message::where('email', $user->email)->orderBy('created_at', 'asc')->get();
 
-        // Marquer les messages répondus comme lus par le client
+        // Marquer les messages de l'admin comme lus par le client
         \App\Models\Message::where('email', $user->email)
-            ->where('status', 'répondu')
+            ->where('is_admin', true)
             ->where('client_read', false)
             ->update(['client_read' => true]);
 

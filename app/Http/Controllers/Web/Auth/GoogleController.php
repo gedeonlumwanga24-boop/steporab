@@ -38,8 +38,11 @@ class GoogleController extends Controller
             $user = User::where('email', $googleUser->getEmail())->first();
 
             if ($user) {
-                // Lier le compte existant à Google
-                $user->update(['google_id' => $googleUser->getId()]);
+                // Lier le compte existant à Google et mettre à jour l'avatar
+                $user->update([
+                    'google_id' => $googleUser->getId(),
+                    'avatar'    => $googleUser->getAvatar()
+                ]);
             } else {
                 // 3. Créer un nouveau compte
                 $user = User::create([
@@ -49,10 +52,14 @@ class GoogleController extends Controller
                     'password'          => null, // Pas de mot de passe pour les comptes OAuth
                     'role'              => 'client',
                     'email_verified_at' => now(), // Google garantit l'email vérifié
+                    'avatar'            => $googleUser->getAvatar(),
                 ]);
 
                 Client::create(['user_id' => $user->id]);
             }
+        } else {
+            // Utilisateur trouvé par google_id, on met à jour son avatar au cas où
+            $user->update(['avatar' => $googleUser->getAvatar()]);
         }
 
         Auth::login($user, remember: true);

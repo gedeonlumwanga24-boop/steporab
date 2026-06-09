@@ -10,17 +10,33 @@ class MessageController extends Controller
 {
     public function index()
     {
-        $messages = Message::latest()->paginate(15);
-        return view('admin.messages.index', compact('messages'));
+        // On récupère la dernière interaction par email
+        $messages = Message::selectRaw('MAX(id) as max_id')
+            ->groupBy('email')
+            ->pluck('max_id');
+
+        $conversations = Message::whereIn('id', $messages)
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return view('admin.messages.index', compact('conversations'));
     }
 
     public function show(Message $message)
     {
-        if ($message->status === 'non lu') {
-            $message->update(['status' => 'lu']);
-        }
+        $email = $message->email;
 
-        return view('admin.messages.show', compact('message'));
+        // Marquer les messages de cet utilisateur comme lus (sauf les nôtres)
+        Message::where('email', $email)
+            ->where('is_admin', false)
+            ->where('status', 'non lu')
+            ->update(['status' => 'lu']);
+
+        $thread = Message::where('email', $email)
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('admin.messages.show', compact('thread', 'email', 'message'));
     }
 
     public function reply(Request $request, Message $message)
@@ -29,13 +45,25 @@ class MessageController extends Controller
             'reply' => 'required|string',
         ]);
 
-        $message->update([
-            'reply' => $request->reply,
-            'status' => 'répondu',
+        // Créer un nouveau message côté admin
+        Message::create([
+            'is_admin'   => true,
+            'nom'        => 'Support Stepora',
+            'email'      => $message->email,
+            'message'    => $request->reply,
+            'status'     => 'répondu',
+            // On peut optionnellement envoyer un mail ici
         ]);
+
+        // Mettre à jour le statut du dernier message client
+        Message::where('email', $message->email)
+            ->where('is_admin', false)
+            ->latest('id')
+            ->first()
+            ?->update(['status' => 'répondu']);
 
         \Illuminate\Support\Facades\Mail::to($message->email)->send(new \App\Mail\MessageReplyMail($message));
 
-        return redirect()->route('admin.messages.index')->with('success', 'Réponse envoyée avec succès.');
+        return redirect()->back()->with('success', 'Réponse envoyée avec succès.');
     }
 }

@@ -20,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($messages as $message)
+                @forelse($conversations as $message)
                     <tr style="{{ $message->status === 'non lu' ? 'background-color: #f0f9ff;' : '' }}">
                         <td style="white-space: nowrap;">{{ $message->created_at->format('d/m/Y H:i') }}</td>
                         <td>
@@ -38,7 +38,7 @@
                             {{ Str::limit($message->message, 50) }}
                         </td>
                         <td>
-                            <a href="{{ route('admin.messages.show', $message) }}" class="btn btn-primary" style="padding: 0.25rem 0.5rem; background: #000; color: #fff; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">Consulter</a>
+                            <a href="{{ route('admin.messages.show', $message) }}" class="btn btn-primary" style="padding: 0.25rem 0.5rem; background: #000; color: #fff; text-decoration: none; border-radius: 4px; font-size: 0.8rem;">Conversation</a>
                         </td>
                     </tr>
                 @empty
@@ -50,9 +50,9 @@
         </table>
     </div>
     
-    @if($messages->hasPages())
+    @if($conversations->hasPages())
         <div style="padding: 1rem 1.5rem; border-top: 1px solid var(--admin-border);">
-            {{ $messages->links() }}
+            {{ $conversations->links() }}
         </div>
     @endif
 </div>
