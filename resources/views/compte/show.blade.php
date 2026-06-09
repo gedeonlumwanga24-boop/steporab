@@ -70,63 +70,74 @@
                         <a href="{{ route('produits.index') }}" class="auth-link" style="text-decoration:underline;">Découvrir nos produits</a>
                     </div>
                 @else
-                    <div class="commandes-list">
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
                         @foreach($commandes as $commande)
-                            <div class="commande-item">
-                                <div class="commande-info">
-                                    <h4>Commande #{{ str_pad($commande->id, 5, '0', STR_PAD_LEFT) }}</h4>
-                                    <p class="commande-date">{{ $commande->created_at->format('d/m/Y à H:i') }}</p>
+                        <div style="background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden; transition: box-shadow 0.2s;"
+                             onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow='none'">
+
+                            {{-- Header commande --}}
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-bottom: 1px solid #f3f4f6;">
+                                <div>
+                                    <p style="font-weight: 800; color: #111; margin: 0; font-size: 0.95rem;">Commande #{{ str_pad($commande->id, 5, '0', STR_PAD_LEFT) }}</p>
+                                    <p style="color: #9ca3af; font-size: 0.78rem; margin: 0.1rem 0 0;">{{ $commande->created_at->format('d/m/Y à H:i') }}</p>
                                 </div>
-                                <div class="commande-status status-{{ $commande->statut }}">
-                                    {{ str_replace('_', ' ', $commande->statut) }}
-                                </div>
-                                <div class="commande-total">
-                                    {{ number_format($commande->total, 0, ' ', ' ') }} CDF
+                                <div style="text-align: right;">
+                                    <p style="font-weight: 800; color: #111; margin: 0; font-size: 1rem;">{{ number_format($commande->total, 0, ' ', ' ') }} CDF</p>
+                                    @php
+                                        $ps = $commande->payment_status;
+                                        $badge = match($ps) {
+                                            'payee'          => ['bg' => '#d1fae5', 'color' => '#065f46', 'label' => 'Payée'],
+                                            'en_verification'=> ['bg' => '#fef3c7', 'color' => '#92400e', 'label' => 'En vérification'],
+                                            'refusee'        => ['bg' => '#fee2e2', 'color' => '#991b1b', 'label' => 'Refusée'],
+                                            default          => ['bg' => '#f3f4f6', 'color' => '#374151', 'label' => 'En attente'],
+                                        };
+                                    @endphp
+                                    <span style="background: {{ $badge['bg'] }}; color: {{ $badge['color'] }}; font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 999px;">
+                                        {{ $badge['label'] }}
+                                    </span>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
 
-            {{-- MESSAGES --}}
-            <div class="compte-card" style="margin-top: 2rem;">
-                <h3 class="compte-card-title">Mes Demandes & Messages</h3>
-
-                @if($messages->isEmpty())
-                    <div class="commandes-empty">
-                        <i class="fa-regular fa-message" style="font-size: 2rem; margin-bottom: 1rem; color: #cbd5e1;"></i>
-                        <p>Vous n'avez envoyé aucun message.</p>
-                        <a href="{{ route('contact.index') }}" class="auth-link" style="text-decoration:underline;">Nous contacter</a>
-                    </div>
-                @else
-                    <div class="commandes-list">
-                        @foreach($messages as $msg)
-                            <div class="commande-item" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
-                                <div style="display: flex; justify-content: space-between; width: 100%;">
-                                    <div class="commande-info">
-                                        <h4>Message du {{ $msg->created_at->format('d/m/Y') }}</h4>
-                                    </div>
-                                    <div>
-                                        @if($msg->status === 'non lu')
-                                            <span style="background: #fee2e2; color: #991b1b; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">En attente</span>
-                                        @elseif($msg->status === 'lu')
-                                            <span style="background: #fef9c3; color: #854d0e; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">Lu par l'équipe</span>
-                                        @elseif($msg->status === 'répondu')
-                                            <span style="background: #dcfce7; color: #166534; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">Répondu</span>
+                            {{-- Produits --}}
+                            <div style="padding: 0.75rem 1.25rem;">
+                                @foreach($commande->produits->take(2) as $produit)
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0;">
+                                    <img src="{{ $produit->image_url }}" alt="{{ $produit->nom }}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid #f3f4f6;">
+                                    <div style="flex: 1; min-width: 0;">
+                                        <p style="font-weight: 600; color: #111; margin: 0; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $produit->nom }}</p>
+                                        @if($produit->pivot->taille ?? null)
+                                            <p style="color: #9ca3af; margin: 0; font-size: 0.75rem;">Taille : {{ $produit->pivot->taille }}</p>
                                         @endif
                                     </div>
+                                    <span style="color: #374151; font-size: 0.85rem; font-weight: 700; flex-shrink: 0;">x{{ $produit->pivot->quantite }}</span>
                                 </div>
-                                <div style="background: #f9fafb; padding: 1rem; border-radius: 6px; width: 100%; border: 1px solid var(--color-border, #e5e7eb);">
-                                    <p style="margin: 0; font-size: 0.9rem; color: #4b5563;">{{ $msg->message }}</p>
-                                </div>
-                                @if($msg->reply)
-                                    <div style="background: #f0fdf4; padding: 1rem; border-radius: 6px; width: 100%; border: 1px solid #bbf7d0;">
-                                        <p style="margin: 0 0 0.5rem 0; font-size: 0.8rem; font-weight: bold; color: #166534;">Réponse de l'équipe :</p>
-                                        <p style="margin: 0; font-size: 0.9rem; color: #166534;">{!! nl2br(e($msg->reply)) !!}</p>
-                                    </div>
+                                @endforeach
+                                @if($commande->produits->count() > 2)
+                                    <p style="color: #9ca3af; font-size: 0.78rem; margin: 0.25rem 0 0;">+ {{ $commande->produits->count() - 2 }} autre(s) article(s)</p>
                                 @endif
                             </div>
+
+                            {{-- Actions selon statut --}}
+                            @if($commande->payment_status === 'non_paye')
+                            <div style="padding: 0.75rem 1.25rem; border-top: 1px solid #f3f4f6; background: #fffbeb;">
+                                <a href="{{ route('commande.paiement', $commande->id) }}"
+                                   style="display: inline-block; background: #111; color: #fff; font-weight: 700; font-size: 0.85rem; padding: 0.6rem 1.25rem; border-radius: 8px; text-decoration: none;">
+                                    Payer maintenant
+                                </a>
+                            </div>
+                            @endif
+
+                            @if($commande->payment_status === 'refusee')
+                            <div style="padding: 0.75rem 1.25rem; border-top: 1px solid #fee2e2; background: #fff5f5;">
+                                <p style="color: #991b1b; font-size: 0.82rem; margin: 0 0 0.5rem;">Votre paiement a été refusé. Veuillez soumettre une nouvelle preuve.</p>
+                                <a href="{{ route('commande.preuve', $commande->id) }}"
+                                   style="display: inline-block; background: #dc2626; color: #fff; font-weight: 700; font-size: 0.82rem; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none;">
+                                    Renvoyer la preuve
+                                </a>
+                            </div>
+                            @endif
+
+                        </div>
                         @endforeach
                     </div>
                 @endif

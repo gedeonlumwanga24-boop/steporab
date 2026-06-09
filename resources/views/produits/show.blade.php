@@ -87,29 +87,53 @@
             </div>
 
             <!-- Size Selection -->
+            @php 
+                $isShoe = false;
+                $isAccessory = false;
+                $categoryName = strtolower($produit->category->nom ?? '');
+                $parentCategoryName = $produit->category && $produit->category->parent ? strtolower($produit->category->parent->nom) : '';
+                
+                if (in_array($categoryName, ['chaussures', 'lifestyle', 'jordan', 'basketball', 'sneakers']) || $parentCategoryName === 'chaussures') {
+                    $isShoe = true;
+                } elseif (in_array($categoryName, ['accessoires', 'chaussettes', 'sacs et sacs à dos', 'casquettes', 'lunettes de soleil']) || $parentCategoryName === 'accessoires') {
+                    $isAccessory = true;
+                }
+            @endphp
+            
+            @if(!$isAccessory)
             <div class="product-size-section">
+                @php 
+                    if ($isShoe) {
+                        $sizeLabel = "Sélectionner la pointure";
+                        $sizes = [
+                            '38.5' => false, '39' => false, '40' => true, 
+                            '40.5' => true, '41' => true, '42' => true, 
+                            '42.5' => true, '43' => true, '44' => true, 
+                            '44.5' => false, '45' => false, '45.5' => true, 
+                            '46' => false, '47' => true, '47.5' => false, 
+                            '48.5' => false, '49.5' => false
+                        ];
+                    } else {
+                        $sizeLabel = "Sélectionner la taille";
+                        $sizes = [
+                            'XS' => true, 'S' => true, 'M' => true, 
+                            'L' => true, 'XL' => true, 'XXL' => false
+                        ];
+                    }
+                @endphp
                 <div class="size-header-wrapper" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem;">
-                    <label class="size-label" style="font-weight: 700; margin-bottom: 0;">Sélectionner la taille</label>
+                    <label class="size-label" style="font-weight: 700; margin-bottom: 0;">{{ $sizeLabel }}</label>
                     <a href="#" class="size-guide" style="font-size: 0.85rem; font-weight: 700; color: #111; text-decoration: none; display: flex; align-items: center; gap: 0.4rem;">
                         <i class="fa-solid fa-ruler-horizontal"></i> Guide des tailles
                     </a>
                 </div>
                 <div class="size-grid">
-                    @php 
-                        $sizes = [
-                            'EU 38.5' => false, 'EU 39' => false, 'EU 40' => true, 
-                            'EU 40.5' => true, 'EU 41' => true, 'EU 42' => true, 
-                            'EU 42.5' => true, 'EU 43' => true, 'EU 44' => true, 
-                            'EU 44.5' => false, 'EU 45' => false, 'EU 45.5' => true, 
-                            'EU 46' => false, 'EU 47' => true, 'EU 47.5' => false, 
-                            'EU 48.5' => false, 'EU 49.5' => false
-                        ]; 
-                    @endphp
                     @foreach($sizes as $size => $available)
                         <button type="button" class="size-btn {{ $available ? '' : 'unavailable' }}" {{ $available ? 'onclick=selectSize(this)' : 'disabled' }}>{{ $size }}</button>
                     @endforeach
                 </div>
             </div>
+            @endif
 
             <!-- Color Selection -->
             <div class="product-color-section">

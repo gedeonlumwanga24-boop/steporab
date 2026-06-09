@@ -15,7 +15,12 @@ class Commande extends Model
         'user_id',
         'total',
         'statut',
-        'adresse'
+        'adresse',
+        'payment_method',
+        'payment_phone',
+        'payment_reference',
+        'payment_proof',
+        'payment_status',
     ];
 
     protected $casts = [
@@ -29,6 +34,52 @@ class Commande extends Model
     const STATUS_SHIPPED = 'expédiée';
     const STATUS_DELIVERED = 'livrée';
     const STATUS_CANCELLED = 'annulée';
+
+    // Statuts paiement
+    const PAY_NON_PAYE      = 'non_paye';
+    const PAY_EN_VERIF      = 'en_verification';
+    const PAY_PAYEE         = 'payee';
+    const PAY_REFUSEE       = 'refusee';
+
+    public function isPaymentPending(): bool
+    {
+        return $this->payment_status === self::PAY_NON_PAYE;
+    }
+
+    public function isVerifying(): bool
+    {
+        return $this->payment_status === self::PAY_EN_VERIF;
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->payment_status === self::PAY_PAYEE;
+    }
+
+    public function isRefused(): bool
+    {
+        return $this->payment_status === self::PAY_REFUSEE;
+    }
+
+    public function getPaymentStatusLabelAttribute(): string
+    {
+        return match($this->payment_status) {
+            self::PAY_NON_PAYE  => 'Non payé',
+            self::PAY_EN_VERIF  => 'En vérification',
+            self::PAY_PAYEE     => 'Payée',
+            self::PAY_REFUSEE   => 'Refusée',
+            default             => $this->payment_status,
+        };
+    }
+
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return match($this->payment_method) {
+            'mpesa'        => 'M-Pesa',
+            'orange_money' => 'Orange Money',
+            default        => 'Manuel',
+        };
+    }
 
     /**
      * L'utilisateur qui a passé la commande

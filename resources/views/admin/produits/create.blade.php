@@ -26,10 +26,17 @@
                     <label class="admin-label">Catégorie</label>
                     <select name="category_id" class="admin-select" required>
                         <option value="">Sélectionner une catégorie</option>
-                        @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>
-                                {{ $cat->nom }}
-                            </option>
+                        @foreach($categories as $parent)
+                            <optgroup label="{{ $parent->nom }}">
+                                <option value="{{ $parent->id }}" {{ old('category_id') == $parent->id ? 'selected' : '' }}>
+                                    {{ $parent->nom }} (Général)
+                                </option>
+                                @foreach($parent->children as $child)
+                                    <option value="{{ $child->id }}" {{ old('category_id') == $child->id ? 'selected' : '' }}>
+                                        -- {{ $child->nom }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
                         @endforeach
                     </select>
                     @error('category_id') <span style="color: red; font-size: 0.8rem;">{{ $message }}</span> @enderror

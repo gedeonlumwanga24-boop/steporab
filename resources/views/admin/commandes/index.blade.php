@@ -4,8 +4,17 @@
 
 @section('content')
 <div class="admin-card">
-    <div class="admin-card-header">
+    <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h3 class="admin-card-title">Toutes les commandes</h3>
+        @if($pendingCount > 0)
+        <a href="{{ route('admin.commandes.paiements') }}"
+           style="display: inline-flex; align-items: center; gap: 0.5rem; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: background 0.2s;"
+           onmouseover="this.style.background='#fde68a'" onmouseout="this.style.background='#fef3c7'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Paiements en attente
+            <span style="background: #dc2626; color: #fff; font-size: 0.72rem; font-weight: 800; padding: 0.1rem 0.5rem; border-radius: 999px;">{{ $pendingCount }}</span>
+        </a>
+        @endif
     </div>
     <div class="admin-table-wrapper">
         <table class="admin-table">

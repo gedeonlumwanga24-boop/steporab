@@ -60,11 +60,14 @@ Route::get('/panier/update/{id}/{action}', [PanierController::class, 'update'])-
 Route::get('/panier/supprimer/{id}', [PanierController::class, 'supprimer'])->name('panier.supprimer');
 Route::get('/panier/vider', [PanierController::class, 'vider'])->name('panier.vider');
 
-// Commande
-Route::post('/commande', [CommandeController::class, 'checkout'])->name('commande.store');
-Route::get('/commande/succes', function() {
-    return view('commande.succes');
-})->name('commande.succes');
+// Commande & Paiement
+Route::middleware('auth')->group(function () {
+    Route::post('/commande', [CommandeController::class, 'checkout'])->name('commande.store');
+    Route::get('/commande/{commande}/paiement', [CommandeController::class, 'showPayment'])->name('commande.paiement');
+    Route::get('/commande/{commande}/preuve', [CommandeController::class, 'showProof'])->name('commande.preuve');
+    Route::post('/commande/{commande}/preuve', [CommandeController::class, 'submitProof'])->name('commande.submitProof');
+    Route::get('/commande/{commande}/confirmation', [CommandeController::class, 'confirmation'])->name('commande.confirmation');
+});
 
 // Contact
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
@@ -80,11 +83,14 @@ Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name
 Route::get('/auth/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Compte Client
+// Compte Client & Messagerie
 Route::middleware('auth')->group(function () {
     Route::get('/compte', [ProfileController::class, 'show'])->name('compte.show');
     Route::get('/compte/modifier', [ProfileController::class, 'edit'])->name('compte.edit');
     Route::put('/compte/modifier', [ProfileController::class, 'update'])->name('compte.update');
+    
+    Route::get('/messagerie', [ProfileController::class, 'messages'])->name('messagerie.index');
+    Route::post('/messagerie', [ProfileController::class, 'sendMessage'])->name('messagerie.store');
 });
 
 // -------------------- ADMIN --------------------
@@ -101,6 +107,9 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::resource('categories', \App\Http\Controllers\Web\Admin\CategoryController::class)->names('admin.categories');
 
     // Commandes
+    Route::get('commandes/paiements-en-attente', [AdminCommandeController::class, 'pendingPayments'])->name('admin.commandes.paiements');
+    Route::post('commandes/{commande}/valider', [AdminCommandeController::class, 'validatePayment'])->name('admin.commandes.valider');
+    Route::post('commandes/{commande}/refuser', [AdminCommandeController::class, 'refusePayment'])->name('admin.commandes.refuser');
     Route::resource('commandes', AdminCommandeController::class)->names('admin.commandes');
 
     // Clients

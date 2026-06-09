@@ -42,16 +42,16 @@
     </div>
 
     <div class="filter-group">
-        <p class="filter-label">Pointure</p>
+        <p class="filter-label">Taille / Pointure</p>
         <div class="filter-tags">
-            @foreach(['36', '37', '38', '39', '40', '41', '42', '43', '44', '45'] as $size)
+            @foreach(['38', '39', '40', '41', '42', '43', '44', '45', 'XS', 'S', 'M', 'L', 'XL'] as $size)
                 <label class="filter-chip">
-                    <input type="radio" name="pointure" value="{{ $size }}" onchange="this.form.submit()" {{ request('pointure') == $size ? 'checked' : '' }}>
+                    <input type="radio" name="taille" value="{{ $size }}" onchange="this.form.submit()" {{ request('taille') == $size ? 'checked' : '' }}>
                     <span>{{ $size }}</span>
                 </label>
             @endforeach
             <label class="filter-chip filter-chip--all">
-                <input type="radio" name="pointure" value="" onchange="this.form.submit()" {{ request('pointure') ? '' : 'checked' }}>
+                <input type="radio" name="taille" value="" onchange="this.form.submit()" {{ request('taille') ? '' : 'checked' }}>
                 <span>Toutes</span>
             </label>
         </div>

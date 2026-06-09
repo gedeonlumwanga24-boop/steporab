@@ -16,7 +16,17 @@ class ProfileController extends Controller
     {
         $user    = Auth::user();
         $client  = $user->client;
-        $commandes = $user->commandes()->latest()->get();
+        $commandes = $user->commandes()->with('produits')->latest()->get();
+
+        return view('compte.show', compact('user', 'client', 'commandes'));
+    }
+
+    /**
+     * Messagerie client
+     */
+    public function messages()
+    {
+        $user = Auth::user();
         $messages = \App\Models\Message::where('email', $user->email)->latest()->get();
 
         // Marquer les messages répondus comme lus par le client
@@ -25,7 +35,27 @@ class ProfileController extends Controller
             ->where('client_read', false)
             ->update(['client_read' => true]);
 
-        return view('compte.show', compact('user', 'client', 'commandes', 'messages'));
+        return view('messagerie.index', compact('messages'));
+    }
+
+    /**
+     * Envoyer un message depuis la messagerie
+     */
+    public function sendMessage(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'message' => 'required|string|max:5000',
+        ]);
+
+        \App\Models\Message::create([
+            'nom' => $user->name,
+            'email' => $user->email,
+            'message' => $request->message,
+        ]);
+
+        return redirect()->route('messagerie.index')->with('success', 'Votre message a été envoyé à l\'administration.');
     }
 
     /**

@@ -1,14 +1,22 @@
 @php
-    $cartItems = session('cart_items', []);
-    $cartCount = is_array($cartItems)
-        ? array_sum(array_column($cartItems, 'quantite'))
-        : 0;
+    $panier = \App\Models\Panier::forUserOrSession(\Illuminate\Support\Facades\Auth::id(), session()->getId());
+    $cartCount = $panier ? $panier->countItems() : 0;
+
+    $unreadAccountCount = 0;
+    if (Auth::check()) {
+        $unreadAccountCount = \App\Models\Message::where('email', Auth::user()->email)
+            ->whereNotNull('reply')
+            ->where('client_read', false)
+            ->count();
+    }
 @endphp
 
 <nav class="navbar" id="mainNavbar">
     <div class="nav-inner">
         <div class="nav-brand">
-            <a href="{{ route('home') }}" class="logo">STEPORA</a>
+            <a href="{{ route('home') }}" class="logo" style="display: inline-flex; align-items: center;">
+                <img src="{{ asset('logo.jpg') }}" alt="The Box" style="height: 92px; width: 57px; object-fit: contain;">
+            </a>
         </div>
 
         {{-- Desktop nav --}}
@@ -80,9 +88,13 @@
 
 
 
+            <a href="{{ Auth::check() ? route('messagerie.index') : route('login') }}" class="icon-btn icon-btn--pill" aria-label="Messagerie">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                <span class="account-badge {{ $unreadAccountCount > 0 ? '' : 'account-badge--hidden' }}" id="navMessageBadge" style="background-color: #dc2626;">{{ $unreadAccountCount > 9 ? '9+' : $unreadAccountCount }}</span>
+            </a>
+
             <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="icon-btn icon-btn--pill nav-account-btn" aria-label="Compte" id="navAccountLink">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <span class="account-badge account-badge--hidden" id="navAccountBadge">0</span>
             </a>
 
             <a href="{{ route('panier.index') }}" class="icon-btn icon-btn--pill nav-cart-btn" aria-label="Panier" id="navCartLink">
@@ -182,10 +194,16 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                 Panier
             </a>
-            <a href="{{ Auth::check() ? route('compte.show') : route('login') }}" class="mobile-bottom-link">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                Commandes
+            @auth
+            <a href="{{ route('messagerie.index') }}" class="mobile-bottom-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Messagerie
             </a>
+            <a href="{{ route('compte.show') }}" class="mobile-bottom-link">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Compte & Commandes
+            </a>
+            @endauth
 
             <a href="{{ url('/contact') }}" class="mobile-bottom-link">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">

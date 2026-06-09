@@ -4,7 +4,9 @@
 <div class="auth-page">
     <div class="auth-card">
         <div class="auth-header">
-            <a href="/" class="auth-logo">STEPORA</a>
+            <a href="/" class="auth-logo" style="display: inline-flex; align-items: center; justify-content: center; width: 100%;">
+                <img src="{{ asset('logo.jpg') }}" alt="The Box" style="height: 80px; width: auto; object-fit: contain;">
+            </a>
             <h1 class="auth-title">Vérifiez votre email</h1>
             <p class="auth-desc">Un lien de vérification a été envoyé à votre adresse email.</p>
         </div>

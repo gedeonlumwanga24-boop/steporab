@@ -31,9 +31,23 @@
             <a href="{{ route('admin.categories.index') }}" class="admin-nav-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-folder"></i> Catégories
             </a>
-            <a href="{{ route('admin.commandes.index') }}" class="admin-nav-item {{ request()->routeIs('admin.commandes.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-cart-shopping"></i> Commandes
+            @php
+                $pendingPaymentsCount = \App\Models\Commande::where('payment_status', \App\Models\Commande::PAY_EN_VERIF)->count();
+            @endphp
+            <a href="{{ route('admin.commandes.index') }}" class="admin-nav-item {{ request()->routeIs('admin.commandes.index') ? 'active' : '' }}" style="display: flex; align-items: center;">
+                <i class="fa-solid fa-cart-shopping" style="margin-right: 10px; width: 20px; text-align: center;"></i> Commandes
+                @if($pendingPaymentsCount > 0)
+                    <span style="background: #dc2626; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $pendingPaymentsCount }}</span>
+                @endif
             </a>
+            <a href="{{ route('admin.commandes.paiements') }}" class="admin-nav-item {{ request()->routeIs('admin.commandes.paiements') ? 'active' : '' }}" style="display: flex; align-items: center; padding-left: 2.5rem;">
+                <i class="fa-solid fa-clock" style="margin-right: 10px; width: 20px; text-align: center; color: {{ $pendingPaymentsCount > 0 ? '#dc2626' : 'inherit' }};"></i>
+                <span style="color: {{ $pendingPaymentsCount > 0 ? '#dc2626' : 'inherit' }}; font-size: 0.88rem;">Paiements en attente</span>
+                @if($pendingPaymentsCount > 0)
+                    <span style="background: #dc2626; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $pendingPaymentsCount }}</span>
+                @endif
+            </a>
+
             <a href="{{ route('admin.clients.index') }}" class="admin-nav-item {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-users"></i> Clients
             </a>
