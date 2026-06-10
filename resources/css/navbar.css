@@ -43,9 +43,9 @@
 
 /* ── Inner container ──────────────────────────────────────── */
 .nav-inner {
-    max-width: 1400px;
+    max-width: 1920px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 3rem; /* Plus large sur desktop */
     height: var(--navbar-h);
     display: flex;
     align-items: center;
