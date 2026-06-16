@@ -27,7 +27,7 @@
                     </div>
                     <div class="contact-info-content">
                         <h3>Notre Boutique</h3>
-                        <p>123 Avenue de la Mode<br>Kinshasa, RDC</p>
+                        <p>123 Avenue de la Mode<br>Lubumbashi, RDC</p>
                     </div>
                 </div>
 
@@ -37,8 +37,8 @@
                     </div>
                     <div class="contact-info-content">
                         <h3>Téléphone</h3>
-                        <p>+243 81 000 0000</p>
-                        <p>Lun – Sam, 8h00 – 18h00</p>
+                        <p>+243 97 029 7985</p>
+                        <p>Lun – Sam, 7h00 – 22h00</p>
                     </div>
                 </div>
 
