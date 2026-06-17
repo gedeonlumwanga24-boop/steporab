@@ -70,8 +70,14 @@
             <a href="{{ route('admin.config.index') }}" class="admin-nav-item {{ request()->routeIs('admin.config.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-gear"></i> <span>Configuration</span>
             </a>
-            <a href="{{ route('admin.errors.index') }}" class="admin-nav-item {{ request()->routeIs('admin.errors.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-bug"></i> <span>Gestion des erreurs</span>
+            @php
+                $unresolvedErrorsCount = \App\Models\ErrorLog::where('status', \App\Models\ErrorLog::STATUS_PENDING)->count();
+            @endphp
+            <a href="{{ route('admin.errors.index') }}" class="admin-nav-item {{ request()->routeIs('admin.errors.*') ? 'active' : '' }}" style="display: flex; align-items: center;">
+                <i class="fa-solid fa-bug" style="margin-right: 10px; width: 20px; text-align: center;"></i> <span>Gestion des erreurs</span>
+                @if($unresolvedErrorsCount > 0)
+                    <span class="badge-count" style="background: #ef4444; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $unresolvedErrorsCount }}</span>
+                @endif
             </a>
             <a href="{{ route('admin.admins.index') }}" class="admin-nav-item {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-user-shield"></i> <span>Administrateurs</span>
