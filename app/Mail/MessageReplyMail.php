@@ -4,9 +4,7 @@ namespace App\Mail;
 
 use App\Models\Message;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -16,45 +14,38 @@ class MessageReplyMail extends Mailable
     use Queueable, SerializesModels;
 
     public $messageModel;
+    public $replyText;
 
     /**
-     * Create a new message instance.
+     * @param Message $messageModel  Le message original du client
+     * @param string  $replyText     Le texte de la réponse de l'admin
      */
-    public function __construct(Message $messageModel)
+    public function __construct(Message $messageModel, string $replyText)
     {
         $this->messageModel = $messageModel;
+        $this->replyText    = $replyText;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Réponse à votre message - Stepora',
+            subject: 'Réponse à votre message — ' . config('app.name'),
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
         return new Content(
             markdown: 'emails.messages.reply',
             with: [
-                'nom' => $this->messageModel->nom,
-                'reponse' => $this->messageModel->reply,
+                'nom'             => $this->messageModel->nom,
                 'messageOriginal' => $this->messageModel->message,
+                'reponse'         => $this->replyText,
+                'lienMessagerie'  => route('messagerie.index'),
             ],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, Attachment>
-     */
     public function attachments(): array
     {
         return [];

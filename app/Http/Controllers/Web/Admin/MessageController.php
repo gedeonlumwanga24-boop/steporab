@@ -45,14 +45,15 @@ class MessageController extends Controller
             'reply' => 'required|string',
         ]);
 
+        $replyText = $request->reply;
+
         // Créer un nouveau message côté admin
         Message::create([
             'is_admin'   => true,
             'nom'        => 'Support Stepora',
             'email'      => $message->email,
-            'message'    => $request->reply,
+            'message'    => $replyText,
             'status'     => 'répondu',
-            // On peut optionnellement envoyer un mail ici
         ]);
 
         // Mettre à jour le statut du dernier message client
@@ -62,7 +63,9 @@ class MessageController extends Controller
             ->first()
             ?->update(['status' => 'répondu']);
 
-        \Illuminate\Support\Facades\Mail::to($message->email)->send(new \App\Mail\MessageReplyMail($message));
+        // Envoyer l'email de notification avec le lien vers la messagerie
+        \Illuminate\Support\Facades\Mail::to($message->email)
+            ->send(new \App\Mail\MessageReplyMail($message, $replyText));
 
         return redirect()->back()->with('success', 'Réponse envoyée avec succès.');
     }

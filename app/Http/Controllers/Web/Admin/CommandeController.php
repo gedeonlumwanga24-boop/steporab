@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Commande;
+use App\Mail\PaymentValidatedMail;
+use App\Mail\PaymentRefusedMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class CommandeController extends Controller
 {
@@ -44,7 +47,14 @@ class CommandeController extends Controller
             'statut'         => 'payee',
         ]);
 
-        return redirect()->back()->with('success', "Commande #{$commande->id} — paiement validé ✓");
+        // Envoyer email de confirmation au client
+        if ($commande->user && $commande->user->email) {
+            $commande->load('produits', 'user');
+            Mail::to($commande->user->email)
+                ->send(new PaymentValidatedMail($commande));
+        }
+
+        return redirect()->back()->with('success', "Commande #{$commande->id} — paiement validé ✓ (email envoyé au client)");
     }
 
     /**

@@ -60,6 +60,10 @@
                     <span style="background: #3b82f6; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $unreadMessagesCount }}</span>
                 @endif
             </a>
+            <a href="{{ route('admin.newsletter.create') }}" class="admin-nav-item {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}" style="display: flex; align-items: center;">
+                <i class="fa-solid fa-paper-plane" style="margin-right: 10px; width: 20px; text-align: center;"></i>
+                <span>Notifications</span>
+            </a>
             <a href="{{ route('admin.config.index') }}" class="admin-nav-item {{ request()->routeIs('admin.config.*') ? 'active' : '' }}">
                 <i class="fa-solid fa-gear"></i> Configuration
             </a>

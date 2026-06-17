@@ -19,6 +19,7 @@ use App\Http\Controllers\Web\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Web\Admin\StatsController;
 use App\Http\Controllers\Web\Admin\ErrorLogController;
 use App\Http\Controllers\Web\Admin\AdminUserController;
+use App\Http\Controllers\Web\Admin\NewsletterController as AdminNewsletterController;
 
 
 // -------------------- FRONT-END --------------------
@@ -134,4 +135,8 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('admins/create', [AdminUserController::class, 'create'])->name('admin.admins.create');
     Route::post('admins', [AdminUserController::class, 'store'])->name('admin.admins.store');
     Route::delete('admins/{user}', [AdminUserController::class, 'destroy'])->name('admin.admins.destroy');
+
+    // Newsletter / Notifications clients
+    Route::get('newsletter', [AdminNewsletterController::class, 'create'])->name('admin.newsletter.create');
+    Route::post('newsletter', [AdminNewsletterController::class, 'send'])->name('admin.newsletter.send');
 });
