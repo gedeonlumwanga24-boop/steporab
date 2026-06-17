@@ -18,46 +18,49 @@
 
     <!-- SIDEBAR -->
     <aside class="admin-sidebar">
-        <a href="{{ route('admin.dashboard') }}" class="admin-sidebar-header">
-            STEPORA ADMIN
-        </a>
+        <div class="admin-sidebar-header">
+            <a href="{{ route('admin.dashboard') }}" class="admin-brand">STEPORA ADMIN</a>
+            <button id="sidebarToggle" class="btn-sidebar-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
         <nav class="admin-nav">
             <a href="{{ route('admin.dashboard') }}" class="admin-nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="fa-solid fa-chart-line"></i> Dashboard
+                <i class="fa-solid fa-chart-line"></i> <span>Dashboard</span>
             </a>
             <a href="{{ route('admin.produits.index') }}" class="admin-nav-item {{ request()->routeIs('admin.produits.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-box"></i> Produits
+                <i class="fa-solid fa-box"></i> <span>Produits</span>
             </a>
             <a href="{{ route('admin.categories.index') }}" class="admin-nav-item {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-folder"></i> Catégories
+                <i class="fa-solid fa-folder"></i> <span>Catégories</span>
             </a>
             @php
                 $pendingPaymentsCount = \App\Models\Commande::where('payment_status', \App\Models\Commande::PAY_EN_VERIF)->count();
             @endphp
             <a href="{{ route('admin.commandes.index') }}" class="admin-nav-item {{ request()->routeIs('admin.commandes.index') ? 'active' : '' }}" style="display: flex; align-items: center;">
-                <i class="fa-solid fa-cart-shopping" style="margin-right: 10px; width: 20px; text-align: center;"></i> Commandes
+                <i class="fa-solid fa-cart-shopping" style="margin-right: 10px; width: 20px; text-align: center;"></i> <span>Commandes</span>
                 @if($pendingPaymentsCount > 0)
-                    <span style="background: #dc2626; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $pendingPaymentsCount }}</span>
+                    <span class="badge-count" style="background: #dc2626; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $pendingPaymentsCount }}</span>
                 @endif
             </a>
-            <a href="{{ route('admin.commandes.paiements') }}" class="admin-nav-item {{ request()->routeIs('admin.commandes.paiements') ? 'active' : '' }}" style="display: flex; align-items: center; padding-left: 2.5rem;">
+            <a href="{{ route('admin.commandes.paiements') }}" class="admin-nav-item sub-item {{ request()->routeIs('admin.commandes.paiements') ? 'active' : '' }}" style="display: flex; align-items: center;">
                 <i class="fa-solid fa-clock" style="margin-right: 10px; width: 20px; text-align: center; color: {{ $pendingPaymentsCount > 0 ? '#dc2626' : 'inherit' }};"></i>
-                <span style="color: {{ $pendingPaymentsCount > 0 ? '#dc2626' : 'inherit' }}; font-size: 0.88rem;">Paiements en attente</span>
+                <span class="nav-text" style="color: {{ $pendingPaymentsCount > 0 ? '#dc2626' : 'inherit' }}; font-size: 0.88rem;">Paiements en attente</span>
                 @if($pendingPaymentsCount > 0)
-                    <span style="background: #dc2626; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $pendingPaymentsCount }}</span>
+                    <span class="badge-count" style="background: #dc2626; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $pendingPaymentsCount }}</span>
                 @endif
             </a>
 
             <a href="{{ route('admin.clients.index') }}" class="admin-nav-item {{ request()->routeIs('admin.clients.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-users"></i> Clients
+                <i class="fa-solid fa-users"></i> <span>Clients</span>
             </a>
             @php
                 $unreadMessagesCount = \App\Models\Message::where('status', 'non lu')->count();
             @endphp
             <a href="{{ route('admin.messages.index') }}" class="admin-nav-item {{ request()->routeIs('admin.messages.*') ? 'active' : '' }}" style="display: flex; align-items: center;">
-                <i class="fa-solid fa-envelope" style="margin-right: 10px; width: 20px; text-align: center;"></i> Messages
+                <i class="fa-solid fa-envelope" style="margin-right: 10px; width: 20px; text-align: center;"></i> <span>Messages</span>
                 @if($unreadMessagesCount > 0)
-                    <span style="background: #3b82f6; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $unreadMessagesCount }}</span>
+                    <span class="badge-count" style="background: #3b82f6; color: white; padding: 0.1rem 0.4rem; border-radius: 999px; font-size: 0.7rem; font-weight: bold; margin-left: auto;">{{ $unreadMessagesCount }}</span>
                 @endif
             </a>
             <a href="{{ route('admin.newsletter.create') }}" class="admin-nav-item {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}" style="display: flex; align-items: center;">
@@ -65,20 +68,20 @@
                 <span>Notifications</span>
             </a>
             <a href="{{ route('admin.config.index') }}" class="admin-nav-item {{ request()->routeIs('admin.config.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-gear"></i> Configuration
+                <i class="fa-solid fa-gear"></i> <span>Configuration</span>
             </a>
             <a href="{{ route('admin.errors.index') }}" class="admin-nav-item {{ request()->routeIs('admin.errors.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-bug"></i> Gestion des erreurs
+                <i class="fa-solid fa-bug"></i> <span>Gestion des erreurs</span>
             </a>
             <a href="{{ route('admin.admins.index') }}" class="admin-nav-item {{ request()->routeIs('admin.admins.*') ? 'active' : '' }}">
-                <i class="fa-solid fa-user-shield"></i> Administrateurs
+                <i class="fa-solid fa-user-shield"></i> <span>Administrateurs</span>
             </a>
         </nav>
         <div class="admin-sidebar-footer">
             <form action="{{ route('logout') }}" method="POST" class="admin-logout-form">
                 @csrf
-                <button type="submit">
-                    <i class="fa-solid fa-arrow-right-from-bracket" style="margin-right: 8px;"></i> Déconnexion
+                <button type="submit" title="Déconnexion">
+                    <i class="fa-solid fa-arrow-right-from-bracket" style="margin-right: 8px;"></i> <span>Déconnexion</span>
                 </button>
             </form>
         </div>
@@ -115,5 +118,22 @@
     </main>
 
     @stack('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const body = document.querySelector('.admin-body');
+            
+            // Check localStorage for sidebar state
+            if (localStorage.getItem('sidebar-collapsed') === 'true') {
+                body.classList.add('sidebar-collapsed');
+            }
+
+            // Toggle Sidebar
+            toggleBtn.addEventListener('click', () => {
+                body.classList.toggle('sidebar-collapsed');
+                localStorage.setItem('sidebar-collapsed', body.classList.contains('sidebar-collapsed'));
+            });
+        });
+    </script>
 </body>
 </html>
