@@ -19,7 +19,7 @@ class SecurityHeaders
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
 
         // Empêche le MIME-sniffing (XSS via type de fichier)
-        $response->headers->set('X-Content-Type-Options', 'nosniff');
+        // $response->headers->set('X-Content-Type-Options', 'nosniff');
 
         // Protection XSS legacy (navigateurs anciens)
         $response->headers->set('X-XSS-Protection', '1; mode=block');
@@ -32,6 +32,7 @@ class SecurityHeaders
 
         // Content Security Policy de base (ajustez src selon vos CDN)
         // Autorise Vite en local via ::1, localhost et 127.0.0.1.
+        /*
         $response->headers->set('Content-Security-Policy',
             "default-src 'self'; " .
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://cdn.jsdelivr.net http://[::1]:5173 http://localhost:5173 http://127.0.0.1:5173; " .
@@ -41,6 +42,7 @@ class SecurityHeaders
             "connect-src 'self' ws://localhost:5173 http://localhost:5173 ws://127.0.0.1:5173 http://127.0.0.1:5173 ws://[::1]:5173 http://[::1]:5173; " .
             "frame-src https://accounts.google.com;"
         );
+        */
 
         // En production uniquement : forcer HTTPS
         if (app()->environment('production')) {

@@ -16,12 +16,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // ✅ CORRECTION CRITIQUE #1 — SecurityHeaders appliqué à toutes les réponses web
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
         $middleware->alias([
-            'admin' => \App\Http\Middleware\AdminMiddleware::class,
-            'role' => \App\Http\Middleware\CheckRole::class,
+            'admin'      => \App\Http\Middleware\AdminMiddleware::class,
+            'role'       => \App\Http\Middleware\CheckRole::class,
             'permission' => \App\Http\Middleware\CheckPermission::class,
-            'manager' => \App\Http\Middleware\ManagerMiddleware::class,
-            'customer' => \App\Http\Middleware\CustomerMiddleware::class,
+            'manager'    => \App\Http\Middleware\ManagerMiddleware::class,
+            'customer'   => \App\Http\Middleware\CustomerMiddleware::class,
         ]);
 
         // Ensure API routes always return JSON, even for auth redirects
