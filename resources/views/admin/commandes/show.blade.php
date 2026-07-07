@@ -57,6 +57,57 @@
 
     <!-- RIGHT COLUMN -->
     <div style="display: flex; flex-direction: column; gap: 2rem;">
+
+        <!-- Infos Paiement Mobile Money -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h3 class="admin-card-title">Paiement Mobile Money</h3>
+            </div>
+            <div style="padding: 1.5rem;">
+                <p style="margin-top: 0; display: flex; align-items: center; justify-content: space-between;">
+                    <strong>Statut actuel :</strong>
+                    @if($commande->payment_status === 'payee')
+                        <span class="badge badge-success">Payé</span>
+                    @elseif($commande->payment_status === 'en_verification')
+                        <span class="badge badge-pending">En vérification</span>
+                    @elseif($commande->payment_status === 'refusee')
+                        <span class="badge badge-error">Refusé / Échoué</span>
+                    @else
+                        <span class="badge" style="background:#f3f4f6;">Non payé</span>
+                    @endif
+                </p>
+
+                @if($commande->pawapay_deposit_id)
+                    <hr style="border: 0; border-top: 1px solid var(--admin-border); margin: 1rem 0;">
+                    
+                    <p style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                        <span style="color: #6b7280;">Opérateur :</span>
+                        <strong>{{ $commande->payment_method_label ?? 'Mobile Money' }}</strong>
+                    </p>
+                    <p style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                        <span style="color: #6b7280;">Numéro client :</span>
+                        <strong>+{{ $commande->mobile_money_number }}</strong>
+                    </p>
+                    <p style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #6b7280;">ID Transaction (PawaPay) :</span>
+                        <span style="font-family: monospace; font-size: 0.8rem; background: #f3f4f6; padding: 0.2rem 0.5rem; border-radius: 4px;">{{ substr($commande->pawapay_deposit_id, 0, 8) }}...</span>
+                    </p>
+
+                    @if($commande->payment_status === 'en_verification')
+                        <form action="{{ route('admin.commandes.sync-pawapay', $commande->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn-primary-sm" style="width: 100%; background: #2563eb; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                Forcer la vérification
+                            </button>
+                            <p style="font-size: 0.75rem; color: #6b7280; margin-top: 0.5rem; text-align: center;">Vérifie le statut directement chez PawaPay</p>
+                        </form>
+                    @endif
+                @else
+                    <p style="color: #6b7280; font-size: 0.85rem; margin-top: 1rem; text-align: center;">Aucune tentative de paiement Mobile Money enregistrée pour cette commande.</p>
+                @endif
+            </div>
+        </div>
         
         <!-- Changer le Statut -->
         <div class="admin-card">

@@ -65,6 +65,15 @@ Route::get('/panier/vider', [PanierController::class, 'vider'])->name('panier.vi
 Route::middleware('auth')->group(function () {
     Route::post('/commande', [CommandeController::class, 'checkout'])->name('commande.store');
     Route::get('/commande/{commande}/paiement', [CommandeController::class, 'showPayment'])->name('commande.paiement');
+
+    // Routes PawaPay (paiement automatique Mobile Money)
+    Route::post('/commande/{commande}/pawapay/initier', [CommandeController::class, 'initiatePawaPay'])->name('commande.pawapay.initiate');
+    Route::get('/commande/{commande}/pawapay/attente', [CommandeController::class, 'waitingPayment'])->name('commande.pawapay.waiting');
+    Route::get('/commande/{commande}/pawapay/statut', [CommandeController::class, 'checkPaymentStatus'])->name('commande.pawapay.status');
+    Route::get('/commande/{commande}/pawapay/succes', [CommandeController::class, 'paymentSuccess'])->name('commande.paiement.success');
+    Route::get('/commande/{commande}/pawapay/echec', [CommandeController::class, 'paymentFailed'])->name('commande.paiement.failed');
+
+    // Ancienne logique (upload preuve manuelle) - conservée pour compatibilité
     Route::get('/commande/{commande}/preuve', [CommandeController::class, 'showProof'])->name('commande.preuve');
     Route::post('/commande/{commande}/preuve', [CommandeController::class, 'submitProof'])->name('commande.submitProof');
     Route::get('/commande/{commande}/confirmation', [CommandeController::class, 'confirmation'])->name('commande.confirmation');
@@ -111,6 +120,7 @@ Route::prefix('admin')->middleware(['admin'])->group(function () {
     Route::get('commandes/paiements-en-attente', [AdminCommandeController::class, 'pendingPayments'])->name('admin.commandes.paiements');
     Route::post('commandes/{commande}/valider', [AdminCommandeController::class, 'validatePayment'])->name('admin.commandes.valider');
     Route::post('commandes/{commande}/refuser', [AdminCommandeController::class, 'refusePayment'])->name('admin.commandes.refuser');
+    Route::post('commandes/{commande}/sync-pawapay', [AdminCommandeController::class, 'syncPawaPay'])->name('admin.commandes.sync-pawapay');
     Route::resource('commandes', AdminCommandeController::class)->names('admin.commandes');
 
     // Clients

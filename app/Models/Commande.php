@@ -21,6 +21,10 @@ class Commande extends Model
         'payment_reference',
         'payment_proof',
         'payment_status',
+        // Champs PawaPay (paiement automatisé Mobile Money)
+        'pawapay_deposit_id',
+        'mobile_money_provider',
+        'mobile_money_number',
     ];
 
     protected $casts = [
@@ -40,6 +44,9 @@ class Commande extends Model
     const PAY_EN_VERIF      = 'en_verification';
     const PAY_PAYEE         = 'payee';
     const PAY_REFUSEE       = 'refusee';
+
+    // Statut PawaPay spécial : en attente de confirmation PIN sur téléphone
+    const PAY_PAWAPAY_PENDING = 'pawapay_pending';
 
     public function isPaymentPending(): bool
     {
@@ -75,11 +82,20 @@ class Commande extends Model
     public function getPaymentMethodLabelAttribute(): string
     {
         return match($this->payment_method) {
-            'mpesa'        => 'M-Pesa',
+            'mpesa'        => 'M-Pesa (Vodacom)',
             'orange_money' => 'Orange Money',
             'airtel_money' => 'Airtel Money',
-            default        => 'Manuel',
+            'mobile_money' => 'Mobile Money',
+            default        => $this->payment_method ?? 'Non défini',
         };
+    }
+
+    /**
+     * Vérifie si la commande est en attente de confirmation PawaPay
+     */
+    public function isPawaPayPending(): bool
+    {
+        return !empty($this->pawapay_deposit_id) && $this->payment_status === self::PAY_EN_VERIF;
     }
 
     /**

@@ -80,4 +80,40 @@ class CommandeController extends Controller
 
         return redirect()->back()->with('success', 'Statut de la commande mis à jour.');
     }
+
+    /**
+     * Synchroniser manuellement le statut avec PawaPay
+     */
+    public function syncPawaPay(Commande $commande)
+    {
+        if (!$commande->pawapay_deposit_id) {
+            return redirect()->back()->with('error', 'Cette commande n\'a pas de transaction PawaPay associée.');
+        }
+
+        $service = new \App\Services\PawaPayService();
+        $result = $service->checkDepositStatus($commande->pawapay_deposit_id);
+
+        if ($result['status'] === 'COMPLETED') {
+            $commande->update([
+                'payment_status' => Commande::PAY_PAYEE,
+                'statut'         => 'payee',
+            ]);
+            // Optionnel : Envoyer le mail de confirmation
+            if ($commande->user && $commande->user->email) {
+                $commande->load('produits');
+                Mail::to($commande->user->email)->send(new PaymentValidatedMail($commande));
+            }
+            return redirect()->back()->with('success', "Le paiement a été confirmé par PawaPay et la commande a été mise à jour.");
+        } 
+        
+        if (in_array($result['status'], ['FAILED', 'CANCELLED', 'TIMED_OUT', 'REJECTED'])) {
+            $commande->update([
+                'payment_status' => Commande::PAY_REFUSEE,
+                'statut'         => 'annulee',
+            ]);
+            return redirect()->back()->with('error', "Le paiement a échoué chez PawaPay (Statut: {$result['status']}). La commande a été mise à jour.");
+        }
+
+        return redirect()->back()->with('info', "Le statut actuel chez PawaPay est : {$result['status']}. Aucune modification n'a été apportée.");
+    }
 }

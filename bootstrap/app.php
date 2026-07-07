@@ -27,9 +27,15 @@ return Application::configure(basePath: dirname(__DIR__))
             'customer'   => \App\Http\Middleware\CustomerMiddleware::class,
         ]);
 
+        // Exclure le webhook PawaPay du CSRF (requête serveur → serveur, pas de navigateur)
+        $middleware->validateCsrfTokens(except: [
+            'api/webhooks/pawapay/callback',
+        ]);
+
         // Ensure API routes always return JSON, even for auth redirects
         $middleware->statefulApi();
     })
+
     ->withExceptions(function (Exceptions $exceptions): void {
 
         // Return JSON errors for all /api/* routes

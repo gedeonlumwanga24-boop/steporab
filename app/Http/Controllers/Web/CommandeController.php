@@ -9,6 +9,7 @@ use App\Models\CommandeProduit;
 use App\Models\Panier;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\PawaPayService;
 
 class CommandeController extends Controller
 {
@@ -172,4 +173,151 @@ class CommandeController extends Controller
     /**
      * Liste des commandes (maintenant gérées dans le ProfileController via compte.show)
      */
+
+    // ============================================================
+    //  PawaPay — Paiement Mobile Money Automatisé
+    // ============================================================
+
+    /**
+     * Initier un paiement PawaPay.
+     * Reçoit : téléphone + opérateur choisi par le client.
+     */
+    public function initiatePawaPay(Request $request, Commande $commande)
+    {
+        if ($commande->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'phone'    => 'required|string|min:9|max:15',
+            'provider' => 'required|string|in:VODACOM_MPESA_COD,AIRTEL_COD,ORANGE_COD',
+        ], [
+            'phone.required'    => 'Veuillez entrer votre numéro de téléphone.',
+            'provider.required' => 'Veuillez sélectionner votre réseau Mobile Money.',
+            'provider.in'       => 'Opérateur non reconnu.',
+        ]);
+
+        // Normaliser le numéro : retirer les espaces, tirets et +
+        $phone = preg_replace('/[\s\-\(\)\+]/', '', $validated['phone']);
+        
+        // Si ça commence par 0, on remplace par 243
+        if (preg_match('/^0/', $phone)) {
+            $phone = preg_replace('/^0/', '243', $phone);
+        } 
+        // Si c'est juste 9 chiffres (ex: 813456789), on ajoute 243
+        elseif (preg_match('/^[89]\d{8}$/', $phone)) {
+            $phone = '243' . $phone;
+        }
+
+        $service = new PawaPayService();
+        $result  = $service->initiateDeposit($commande, $phone, $validated['provider']);
+
+        if ($result['success']) {
+            return redirect()->route('commande.pawapay.waiting', $commande->id)
+                ->with('success', $result['message']);
+        }
+
+        return redirect()->back()
+            ->with('error', $result['message']);
+    }
+
+    /**
+     * Page d'attente de confirmation PIN par le client.
+     * Un script JS va interroger checkPaymentStatus() toutes les 5 secondes.
+     */
+    public function waitingPayment(Commande $commande)
+    {
+        if ($commande->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        // Si le paiement est déjà traité, rediriger directement
+        if ($commande->isPaid()) {
+            return redirect()->route('commande.paiement.success', $commande->id);
+        }
+        if ($commande->payment_status === Commande::PAY_REFUSEE) {
+            return redirect()->route('commande.paiement.failed', $commande->id);
+        }
+
+        $commande->load('produits');
+        return view('commande.pawapay_attente', compact('commande'));
+    }
+
+    /**
+     * Endpoint AJAX pour vérifier l'état du paiement (polling depuis la vue d'attente).
+     * Retourne JSON : { status: 'paid' | 'pending' | 'failed' }
+     */
+    public function checkPaymentStatus(Commande $commande)
+    {
+        if ($commande->user_id !== Auth::id()) {
+            return response()->json(['status' => 'error'], 403);
+        }
+
+        $commande->refresh(); // Recharger depuis la DB pour avoir le statut frais
+
+        if ($commande->isPaid()) {
+            return response()->json([
+                'status'      => 'paid',
+                'redirect_url' => route('commande.paiement.success', $commande->id),
+            ]);
+        }
+
+        if ($commande->payment_status === Commande::PAY_REFUSEE) {
+            return response()->json([
+                'status'      => 'failed',
+                'redirect_url' => route('commande.paiement.failed', $commande->id),
+            ]);
+        }
+
+        // Si le webhook n'est pas encore arrivé, on peut aussi vérifier directement chez PawaPay
+        if ($commande->pawapay_deposit_id) {
+            $service = new PawaPayService();
+            $result  = $service->checkDepositStatus($commande->pawapay_deposit_id);
+
+            if ($result['status'] === 'COMPLETED') {
+                // Mettre à jour manuellement si le webhook n'est pas arrivé
+                $commande->update([
+                    'payment_status' => Commande::PAY_PAYEE,
+                    'statut'         => 'confirmée',
+                ]);
+                return response()->json([
+                    'status'       => 'paid',
+                    'redirect_url' => route('commande.paiement.success', $commande->id),
+                ]);
+            }
+
+            if (in_array($result['status'], ['FAILED', 'CANCELLED', 'TIMED_OUT', 'REJECTED'])) {
+                $commande->update(['payment_status' => Commande::PAY_REFUSEE]);
+                return response()->json([
+                    'status'       => 'failed',
+                    'redirect_url' => route('commande.paiement.failed', $commande->id),
+                ]);
+            }
+        }
+
+        return response()->json(['status' => 'pending']);
+    }
+
+    /**
+     * Page de succès après confirmation du paiement.
+     */
+    public function paymentSuccess(Commande $commande)
+    {
+        if ($commande->user_id !== Auth::id()) {
+            abort(403);
+        }
+        $commande->load('produits');
+        return view('commande.pawapay_succes', compact('commande'));
+    }
+
+    /**
+     * Page d'échec de paiement (annulation, timeout, refus opérateur).
+     */
+    public function paymentFailed(Commande $commande)
+    {
+        if ($commande->user_id !== Auth::id()) {
+            abort(403);
+        }
+        return view('commande.pawapay_echec', compact('commande'));
+    }
 }

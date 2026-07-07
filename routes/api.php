@@ -8,16 +8,21 @@ use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\SearchController;
 use Illuminate\Support\Facades\Route;
 
+
 /*
 |--------------------------------------------------------------------------
-| API V1 Routes — Stepora E-Commerce
+| Webhook PawaPay — Paiement Mobile Money automatisé
 |--------------------------------------------------------------------------
-| Prefix  : /api/v1  (set in bootstrap/app.php)
-| Auth    : Laravel Sanctum (stateful for SPA, token for mobile)
-| Throttle: 60 req/min for public, 30 req/min for auth
+| Route POST publique, appelée par les serveurs PawaPay (pas de CSRF).
+| Exclue du middleware CSRF dans bootstrap/app.php.
 */
+use App\Http\Controllers\Api\PawaPayWebhookController;
+
+Route::post('/webhooks/pawapay/callback', [PawaPayWebhookController::class, 'handleDepositCallback'])
+    ->name('pawapay.webhook.callback');
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
+
 
     // ------------------------------------------------------------------
     // AUTH — rate limited to 10 attempts/min to prevent brute-force
