@@ -3,138 +3,187 @@
 @section('title', 'Confirmation en cours — Commande #' . str_pad($commande->id, 5, '0', STR_PAD_LEFT))
 
 @section('content')
-<div style="max-width: 500px; margin: 4rem auto; padding: 0 1rem; font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
 
-    <div style="background: #ffffff; border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05); padding: 2.5rem 1.5rem; text-align: center;">
-        
-        {{-- Icône de chargement professionnelle --}}
-        <div style="position: relative; width: 80px; height: 80px; margin: 0 auto 2rem;">
-            <svg class="spinner" width="80" height="80" viewBox="0 0 50 50" style="position: absolute; top: 0; left: 0;">
-                <circle cx="25" cy="25" r="20" fill="none" stroke="#e5e7eb" stroke-width="4"></circle>
-                <circle cx="25" cy="25" r="20" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="30"></circle>
-            </svg>
-            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: 700; color: #2563eb;" id="counter-display">
-                60s
-            </div>
-        </div>
-
-        {{-- Instructions --}}
-        <h1 style="font-size: 1.5rem; font-weight: 800; color: #111827; margin: 0 0 0.75rem; letter-spacing: -0.01em;">Confirmez sur votre téléphone</h1>
-        
-        <p style="color: #4b5563; font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem;">
-            Veuillez entrer votre code PIN Mobile Money sur votre téléphone pour autoriser le paiement de 
-            <strong style="color: #111827;">{{ number_format($commande->total, 0, ',', ' ') }} CDF</strong>.
-        </p>
-
-        {{-- Détails du paiement en cours --}}
-        <div style="background: #f9fafb; border: 1px solid #f3f4f6; border-radius: 12px; padding: 1.25rem; text-align: left; margin-bottom: 2rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                <span style="color: #6b7280; font-size: 0.9rem;">Commande</span>
-                <span style="font-weight: 600; color: #111827; font-size: 0.9rem;">#{{ str_pad($commande->id, 5, '0', STR_PAD_LEFT) }}</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-                <span style="color: #6b7280; font-size: 0.9rem;">Opérateur</span>
-                <span style="font-weight: 600; color: #111827; font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem;">
-                    @if($commande->mobile_money_provider === 'VODACOM_MPESA_COD')
-                        <img src="{{ asset('images/mpesa.png') }}" alt="M-Pesa" style="height: 14px; object-fit: contain;">
-                    @elseif($commande->mobile_money_provider === 'AIRTEL_COD')
-                        <img src="{{ asset('images/airtel_money.png') }}" alt="Airtel" style="height: 14px; object-fit: contain;">
-                    @elseif($commande->mobile_money_provider === 'ORANGE_COD')
-                        <img src="{{ asset('images/orange_money.png') }}" alt="Orange" style="height: 14px; object-fit: contain;">
-                    @endif
-                    {{ $commande->payment_method_label }}
-                </span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="color: #6b7280; font-size: 0.9rem;">Numéro à débiter</span>
-                <span style="font-weight: 600; color: #111827; font-size: 0.9rem;">+{{ $commande->mobile_money_number }}</span>
-            </div>
-        </div>
-
-        {{-- Statut texte --}}
-        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: #2563eb; animation: blink 1.5s infinite;"></span>
-            <span id="status-msg" style="color: #374151; font-size: 0.9rem; font-weight: 500;">En attente de votre confirmation...</span>
-        </div>
-
-        {{-- Bouton d'annulation discret --}}
-        <a href="{{ route('commande.paiement.failed', $commande->id) }}" style="color: #9ca3af; font-size: 0.85rem; text-decoration: none; font-weight: 500; transition: color 0.2s;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#9ca3af'">
-            Annuler la transaction
-        </a>
-    </div>
-
-</div>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-@keyframes spin {
-    100% { transform: rotate(360deg); }
-}
-.spinner {
-    animation: spin 2s linear infinite;
-}
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-}
+  .wait-wrap * { font-family: 'Inter', system-ui, sans-serif; box-sizing: border-box; }
+  .wait-wrap { max-width: 480px; margin: 4rem auto; padding: 0 1rem; }
+
+  .wait-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .wait-card-body { padding: 2.5rem 2rem 2rem; text-align: center; }
+
+  /* Ring spinner */
+  .ring-wrap { position: relative; width: 88px; height: 88px; margin: 0 auto 2rem; }
+  .ring-svg { position: absolute; inset: 0; animation: rotate-ring 2s linear infinite; }
+  .ring-track { fill: none; stroke: #e2e8f0; stroke-width: 5; }
+  .ring-fill  { fill: none; stroke: #1d4ed8; stroke-width: 5; stroke-linecap: round;
+                stroke-dasharray: 220; stroke-dashoffset: 60; }
+  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-timer { font-size: 1.1rem; font-weight: 800; color: #0f172a; line-height: 1; }
+  .ring-sub   { font-size: .65rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .04em; margin-top: .15rem; }
+  @keyframes rotate-ring { to { transform: rotate(360deg); } }
+
+  .wait-title { font-size: 1.35rem; font-weight: 800; color: #0f172a; margin: 0 0 .75rem; }
+  .wait-desc  { color: #475569; font-size: .9rem; line-height: 1.65; margin: 0 0 2rem; }
+
+  /* Récap */
+  .recap-box { background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 12px; padding: 1.25rem 1.5rem; text-align: left; margin-bottom: 1.75rem; }
+  .recap-row { display: flex; justify-content: space-between; align-items: center; padding: .45rem 0; font-size: .875rem; }
+  .recap-row:not(:last-child) { border-bottom: 1px solid #f1f5f9; }
+  .recap-label { color: #64748b; }
+  .recap-value { font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: .4rem; }
+  .recap-logo  { height: 16px; object-fit: contain; }
+
+  /* Statut pill */
+  .status-pill { display: inline-flex; align-items: center; gap: .45rem; background: #f1f5f9; border-radius: 999px; padding: .35rem 1rem; font-size: .82rem; font-weight: 600; color: #475569; margin-bottom: 1.5rem; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #1d4ed8; animation: blink 1.4s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  /* Annuler link */
+  .cancel-link { display: inline-block; margin-top: .25rem; color: #94a3b8; font-size: .82rem; font-weight: 500; text-decoration: none; transition: color .15s; }
+  .cancel-link:hover { color: #ef4444; }
+
+  /* Footer */
+  .wait-footer { border-top: 1px solid #f1f5f9; padding: .875rem 2rem; display: flex; align-items: center; justify-content: center; gap: .5rem; color: #94a3b8; font-size: .78rem; }
 </style>
 
+<div class="wait-wrap">
+  <div class="wait-card">
+    <div class="wait-card-body">
+
+      {{-- Spinner avec compteur --}}
+      <div class="ring-wrap">
+        <svg class="ring-svg" viewBox="0 0 88 88">
+          <circle class="ring-track" cx="44" cy="44" r="38"/>
+          <circle class="ring-fill"  cx="44" cy="44" r="38" id="ring-arc"/>
+        </svg>
+        <div class="ring-center">
+          <span class="ring-timer" id="timer-val">60</span>
+          <span class="ring-sub">sec</span>
+        </div>
+      </div>
+
+      <h1 class="wait-title">Confirmez sur votre téléphone</h1>
+      <p class="wait-desc">
+        Ouvrez votre application <strong>{{ $commande->payment_method_label }}</strong> et
+        entrez votre code PIN pour autoriser le paiement de&nbsp;
+        <strong>{{ number_format($commande->total, 0, ',', ' ') }}&nbsp;CDF</strong>.
+      </p>
+
+      {{-- Récap --}}
+      <div class="recap-box">
+        <div class="recap-row">
+          <span class="recap-label">Commande</span>
+          <span class="recap-value">#{{ str_pad($commande->id, 5, '0', STR_PAD_LEFT) }}</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Opérateur</span>
+          <span class="recap-value">
+            @if($commande->mobile_money_provider === 'VODACOM_MPESA_COD')
+              <img src="{{ asset('images/mpesa.png') }}" alt="M-Pesa" class="recap-logo">
+            @elseif($commande->mobile_money_provider === 'AIRTEL_COD')
+              <img src="{{ asset('images/airtel_money.png') }}" alt="Airtel" class="recap-logo">
+            @elseif($commande->mobile_money_provider === 'ORANGE_COD')
+              <img src="{{ asset('images/orange_money.png') }}" alt="Orange" class="recap-logo">
+            @endif
+            {{ $commande->payment_method_label }}
+          </span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Numéro débité</span>
+          <span class="recap-value">+{{ $commande->mobile_money_number }}</span>
+        </div>
+        <div class="recap-row">
+          <span class="recap-label">Montant</span>
+          <span class="recap-value">{{ number_format($commande->total, 0, ',', ' ') }} CDF</span>
+        </div>
+      </div>
+
+      {{-- Pill statut --}}
+      <div>
+        <span class="status-pill" id="status-pill">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">En attente de votre confirmation…</span>
+        </span>
+      </div>
+
+      <a href="{{ route('commande.paiement.failed', $commande->id) }}" class="cancel-link">
+        Annuler la transaction
+      </a>
+
+    </div>
+    <div class="wait-footer">
+      <svg width="13" height="13" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+      Sécurisé par <strong style="color:#475569;margin:0 .2rem;">PawaPay</strong>
+    </div>
+  </div>
+</div>
+
 <script>
-    const statusUrl  = "{{ route('commande.pawapay.status', $commande->id) }}";
-    const successUrl = "{{ route('commande.paiement.success', $commande->id) }}";
-    const failedUrl  = "{{ route('commande.paiement.failed', $commande->id) }}";
+(function(){
+  const statusUrl  = "{{ route('commande.pawapay.status', $commande->id) }}";
+  const successUrl = "{{ route('commande.paiement.success', $commande->id) }}";
+  const failedUrl  = "{{ route('commande.paiement.failed', $commande->id) }}";
+  const TOTAL_SEC  = 60;
+  const CIRCUMFERENCE = 2 * Math.PI * 38; // ≈ 238.76
 
-    let timeLeft    = 60;
-    let interval    = null;
-    let pollInterval = null;
+  let timeLeft = TOTAL_SEC;
+  const timerEl  = document.getElementById('timer-val');
+  const arcEl    = document.getElementById('ring-arc');
+  const dotEl    = document.getElementById('status-dot');
+  const textEl   = document.getElementById('status-text');
 
-    const counterDisplay = document.getElementById('counter-display');
-    const statusMsg      = document.getElementById('status-msg');
+  arcEl.style.strokeDasharray  = CIRCUMFERENCE;
+  arcEl.style.strokeDashoffset = 0;
 
-    // ---- Compte à rebours (60s) ----
-    interval = setInterval(() => {
-        timeLeft--;
-        counterDisplay.textContent = timeLeft + 's';
-
-        if (timeLeft <= 0) {
-            clearInterval(interval);
-            clearInterval(pollInterval);
-            statusMsg.innerHTML = 'Temps écoulé. Vérification finale...';
-            statusMsg.previousElementSibling.style.background = '#f59e0b'; // passe en orange
-            checkStatus(); // Dernier check
-        }
-    }, 1000);
-
-    // ---- Polling toutes les 5 secondes ----
-    function checkStatus() {
-        fetch(statusUrl, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.status === 'paid') {
-                clearInterval(interval);
-                clearInterval(pollInterval);
-                document.querySelector('.spinner').style.display = 'none';
-                counterDisplay.innerHTML = '<svg width="32" height="32" fill="none" stroke="#10b981" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>';
-                statusMsg.innerHTML = 'Paiement reçu avec succès !';
-                statusMsg.style.color = '#10b981';
-                statusMsg.previousElementSibling.style.background = '#10b981';
-                setTimeout(() => window.location.href = data.redirect_url || successUrl, 1200);
-            } else if (data.status === 'failed') {
-                clearInterval(interval);
-                clearInterval(pollInterval);
-                document.querySelector('.spinner').style.display = 'none';
-                counterDisplay.innerHTML = '<svg width="32" height="32" fill="none" stroke="#ef4444" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>';
-                statusMsg.innerHTML = 'Transaction échouée ou annulée.';
-                statusMsg.style.color = '#ef4444';
-                statusMsg.previousElementSibling.style.background = '#ef4444';
-                setTimeout(() => window.location.href = data.redirect_url || failedUrl, 1500);
-            }
-        })
-        .catch(err => console.warn('Poll error:', err));
+  let countdown = setInterval(() => {
+    timeLeft--;
+    timerEl.textContent = timeLeft;
+    const progress = (TOTAL_SEC - timeLeft) / TOTAL_SEC;
+    arcEl.style.strokeDashoffset = CIRCUMFERENCE * progress;
+    if(timeLeft <= 0){
+      clearInterval(countdown);
+      clearInterval(poller);
+      textEl.textContent = 'Vérification finale en cours…';
+      poll();
     }
+  }, 1000);
 
-    pollInterval = setInterval(checkStatus, 5000);
-    setTimeout(checkStatus, 3000); // Premier check rapide
+  function setSuccess(){
+    clearInterval(countdown); clearInterval(poller);
+    dotEl.style.background    = '#10b981';
+    dotEl.style.animation     = 'none';
+    textEl.textContent        = 'Paiement reçu avec succès !';
+    arcEl.style.stroke        = '#10b981';
+    arcEl.style.strokeDashoffset = 0;
+  }
+  function setFailed(){
+    clearInterval(countdown); clearInterval(poller);
+    dotEl.style.background    = '#ef4444';
+    dotEl.style.animation     = 'none';
+    textEl.textContent        = 'Transaction échouée ou annulée.';
+    arcEl.style.stroke        = '#ef4444';
+  }
+
+  function poll(){
+    fetch(statusUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest', Accept: 'application/json' } })
+      .then(r => r.json())
+      .then(data => {
+        if(data.status === 'paid'){
+          setSuccess();
+          setTimeout(() => window.location.href = data.redirect_url || successUrl, 1000);
+        } else if(data.status === 'failed'){
+          setFailed();
+          setTimeout(() => window.location.href = data.redirect_url || failedUrl, 1200);
+        }
+      })
+      .catch(() => {});
+  }
+
+  setTimeout(poll, 3000);
+  let poller = setInterval(poll, 5000);
+})();
 </script>
 @endsection
