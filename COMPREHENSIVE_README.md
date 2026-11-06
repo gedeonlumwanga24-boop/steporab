@@ -346,7 +346,7 @@ Propriétaire - Stepora
 ## 📧 Contact
 
 Pour toute question ou suggestion:
-
+[Dockerfile](Dockerfile)
 - Email: contact@stepora.local
 - Issues: Créer une issue sur GitHub
 
